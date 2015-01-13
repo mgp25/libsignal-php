@@ -1,6 +1,7 @@
 <?php
 namespace libaxolotl;
 
-public class UntrustedIdentityException extends Exception {
+class UntrustedIdentityException extends Exception {
+	
 }
 ?>

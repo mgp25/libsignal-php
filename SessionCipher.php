@@ -39,7 +39,7 @@ require "/util/ByteUtil.php";
 require "/util/Pair.php";
 require "/util/guava/Optional.php";
 
-require "/state/SessionState/UnacknowledgedPreKeyMessageItems.php;
+require "/state/SessionState/UnacknowledgedPreKeyMessageItems.php";
 
 class SessionCipher {
 
@@ -67,3 +67,5 @@ class SessionCipher {
   {
     SessionCipher_construct($store, $store, $store, $store, $recipientId, $deviceId);
   }
+ }
+ ?>
