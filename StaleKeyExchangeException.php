@@ -1,6 +1,7 @@
-<?pph
+<?php
 namespace libaxolotl;
 
-public class StaleKeyExchangeException {
+class StaleKeyExchangeException {
+	
 }
 ?>
