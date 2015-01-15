@@ -45,7 +45,7 @@ class Curve {
 		}
 		if (($publicKey->getType() == self::$DJB_TYPE))
 		{
-			return $Curve25519->calculateAgreement(call_user_func (array($publicKey,getPublicKey())) , call_user_func (array($privateKey,getPrivateKey())) );
+			return $Curve25519->calculateAgreement(call_user_func (array($publicKey,'getPublicKey')) , call_user_func (array($privateKey,getPrivateKey())) );
 		}
 		else
 		{
@@ -56,7 +56,7 @@ class Curve {
 	{
 		if (($signingKey->getType() == self::$DJB_TYPE))
 		{
-			return $Curve25519->verifySignature(call_user_func (array($signingKey,getPublicKey())), $message, $signature);
+			return $Curve25519->verifySignature(call_user_func (array($signingKey,'getPublicKey')), $message, $signature);
 		}
 		else
 		{
@@ -67,7 +67,7 @@ class Curve {
 	{
 		if (($signingKey->getType() == self::$DJB_TYPE))
 		{
-			return $Curve25519->calculateSignature(self::getSecureRandom(),call_user_func (array($signingKey,getPrivateKey())) , $message);
+			return $Curve25519->calculateSignature(self::getSecureRandom(),call_user_func (array($signingKey,'getPrivateKey'')) , $message);
 		}
 		else
 		{

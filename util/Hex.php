@@ -39,7 +39,7 @@ class Hex {
 			throw new IOException("Odd number of characters.");
 		}
 		$out = array();
-		for ($i = 0$j = 0; ($j < $len); ++$i) 
+		for ($i = 0,$j = 0; ($j < $len); ++$i) 
 		{
 			$f = ($Character->digit($data[$j], 16) << 4);
 			++$j;
