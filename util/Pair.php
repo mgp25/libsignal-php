@@ -24,7 +24,7 @@ class Pair {
 	}
 	public function equals ($o) // [Object o]
 	{
-		return (($o instanceof Pair && $this->equal(($o)::first(), $this->first())) && $this->equal(($o)::second(), $this->second()));
+		return (($o instanceof Pair && $this->equal($o::first(), $this->first())) && $this->equal($o::second(), $this->second()));
 	}
 	public function hashCode () 
 	{

@@ -148,11 +148,11 @@ class SessionBuilder {
 			}
 			if ((($preKey->getSignedPreKey() != null) && !Curve::verifySignature($preKey->getIdentityKey()->getPublicKey(), $preKey->getSignedPreKey()->serialize(), $preKey->getSignedPreKeySignature())))
 			{
-				throw InvalidKeyException::constructor__943a4c31("Invalid signature on device key!");
+				throw new InvalidKeyException("Invalid signature on device key!");
 			}
 			if ((($preKey->getSignedPreKey() == null) && ($preKey->getPreKey() == null)))
 			{
-				throw InvalidKeyException::constructor__943a4c31("Both signed and unsigned prekeys are absent!");
+				throw new InvalidKeyException("Both signed and unsigned prekeys are absent!");
 			}
 			$supportsV3 = ($preKey->getSignedPreKey() != null);
 			$sessionRecord = $this->sessionStore->loadSession($this->recipientId, $this->deviceId);
@@ -195,7 +195,7 @@ class SessionBuilder {
 		$sessionRecord = $this->sessionStore->loadSession($this->recipientId, $this->deviceId);
 		if ((($message->getVersion() >= 3) && !Curve::verifySignature($message->getIdentityKey()->getPublicKey(), $message->getBaseKey()->serialize(), $message->getBaseKeySignature())))
 		{
-			throw InvalidKeyException::constructor__943a4c31("Bad signature!");
+			throw new InvalidKeyException("Bad signature!");
 		}
 		$builder = SymmetricAxolotlParameters::newBuilder();
 		if (!$sessionRecord->getSessionState()->hasPendingKeyExchange())
@@ -238,7 +238,7 @@ class SessionBuilder {
 		RatchetingSession::initializeSession_c6a7d9a($sessionRecord->getSessionState(), $Math->min($message->getMaxVersion(), CiphertextMessage::$CURRENT_VERSION), $parameters->create());
 		if ((($sessionRecord->getSessionState()->getSessionVersion() >= 3) && !Curve::verifySignature($message->getIdentityKey()->getPublicKey(), $message->getBaseKey()->serialize(), $message->getBaseKeySignature())))
 		{
-			throw InvalidKeyException::constructor__943a4c31("Base key signature doesn't match!");
+			throw new InvalidKeyException("Base key signature doesn't match!");
 		}
 		$this->sessionStore->storeSession($this->recipientId, $this->deviceId, $sessionRecord);
 		$this->identityKeyStore->saveIdentity($this->recipientId, $message->getIdentityKey());

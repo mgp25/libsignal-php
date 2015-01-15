@@ -41,7 +41,7 @@ class IdentityKey {
 			return  FALSE ;
 		if (!($other instanceof IdentityKey))
 			return  FALSE ;
-		return $this->publicKey->equals(($other)::getPublicKey());
+		return $this->publicKey->equals(call_user_func(array($other,'getPublicKey')));
 	}
 	public function hashCode ()
 	{
