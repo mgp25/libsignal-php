@@ -22,4 +22,3 @@ class NoSessionException extends Exception {
     }
 }
 NoSessionException::__staticinit(); // initialize static vars for this class on load
-?>

@@ -11,4 +11,3 @@ interface PreKeyStore {
     abstract function removePreKey ($preKeyId); // [int preKeyId]
 }
 PreKeyStore::__staticinit(); // initialize static vars for this class on load
-?>

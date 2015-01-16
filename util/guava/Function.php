@@ -8,4 +8,3 @@ interface Function {
     abstract function equals ($object); // [Object object]
 }
 Function::__staticinit(); // initialize static vars for this class on load
-?>

@@ -88,4 +88,3 @@ class Log {
     }
 }
 Log::__staticinit(); // initialize static vars for this class on load
-?>

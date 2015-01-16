@@ -36,4 +36,3 @@ class InvalidKeyException extends Exception {
     }
 }
 InvalidKeyException::__staticinit(); // initialize static vars for this class on load
-?>

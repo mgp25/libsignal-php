@@ -10,4 +10,3 @@ interface ECPublicKey extends Comparable {
     abstract function getType ();
 }
 ECPublicKey::__staticinit(); // initialize static vars for this class on load
-?>

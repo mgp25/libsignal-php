@@ -22,4 +22,3 @@ class InvalidKeyIdException extends Exception {
     }
 }
 InvalidKeyIdException::__staticinit(); // initialize static vars for this class on load
-?>

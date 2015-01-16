@@ -50,4 +50,3 @@ class SenderKeyDistributionMessage implements CiphertextMessage {
     }
 }
 SenderKeyDistributionMessage::__staticinit(); // initialize static vars for this class on load
-?>

@@ -41,4 +41,3 @@ abstract class Optional implements Serializable {
     abstract function toString ();
 }
 Optional::__staticinit(); // initialize static vars for this class on load
-?>

@@ -47,4 +47,3 @@ class DjbECPublicKey implements ECPublicKey {
     }
 }
 DjbECPublicKey::__staticinit(); // initialize static vars for this class on load
-?>

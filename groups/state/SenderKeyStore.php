@@ -8,4 +8,3 @@ interface SenderKeyStore {
     abstract function loadSenderKey ($senderKeyId); // [String senderKeyId]
 }
 SenderKeyStore::__staticinit(); // initialize static vars for this class on load
-?>

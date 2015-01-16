@@ -22,4 +22,3 @@ interface CiphertextMessage {
     abstract function getType ();
 }
 CiphertextMessage::__staticinit(); // initialize static vars for this class on load
-?>

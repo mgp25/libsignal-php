@@ -13,4 +13,3 @@ interface SessionStore {
     abstract function deleteAllSessions ($recipientId); // [long recipientId]
 }
 SessionStore::__staticinit(); // initialize static vars for this class on load
-?>

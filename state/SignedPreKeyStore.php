@@ -13,4 +13,3 @@ interface SignedPreKeyStore {
     abstract function removeSignedPreKey ($signedPreKeyId); // [int signedPreKeyId]
 }
 SignedPreKeyStore::__staticinit(); // initialize static vars for this class on load
-?>

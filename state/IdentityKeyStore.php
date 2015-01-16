@@ -12,4 +12,3 @@ interface IdentityKeyStore {
     abstract function isTrustedIdentity ($recipientId, $identityKey); // [long recipientId, IdentityKey identityKey]
 }
 IdentityKeyStore::__staticinit(); // initialize static vars for this class on load
-?>

@@ -62,4 +62,3 @@ class PreKeyBundle {
     }
 }
 PreKeyBundle::__staticinit(); // initialize static vars for this class on load
-?>

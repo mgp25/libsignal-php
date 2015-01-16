@@ -7,4 +7,3 @@ interface Supplier {
     abstract function get ();
 }
 Supplier::__staticinit(); // initialize static vars for this class on load
-?>

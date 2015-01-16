@@ -71,4 +71,3 @@ class Present extends Optional {
     }
 }
 Present::__staticinit(); // initialize static vars for this class on load
-?>

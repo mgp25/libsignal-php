@@ -268,4 +268,3 @@ class SessionBuilder {
     }
 }
 SessionBuilder::__staticinit(); // initialize static vars for this class on load
-?>

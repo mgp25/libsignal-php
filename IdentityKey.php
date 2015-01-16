@@ -49,4 +49,3 @@ class IdentityKey {
     }
 }
 IdentityKey::__staticinit(); // initialize static vars for this class on load
-?>

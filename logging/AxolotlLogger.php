@@ -19,4 +19,3 @@ interface AxolotlLogger {
     abstract function log ($priority, $tag, $message); // [int priority, String tag, String message]
 }
 AxolotlLogger::__staticinit(); // initialize static vars for this class on load
-?>

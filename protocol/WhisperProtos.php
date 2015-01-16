@@ -28,4 +28,3 @@ class WhisperProtos {
     }
 }
 WhisperProtos::__staticinit(); // initialize static vars for this class on load
-?>

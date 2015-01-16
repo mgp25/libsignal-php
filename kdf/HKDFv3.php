@@ -10,4 +10,3 @@ class HKDFv3 extends HKDF {
     }
 }
 HKDFv3::__staticinit(); // initialize static vars for this class on load
-?>
