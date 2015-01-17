@@ -21,15 +21,15 @@ class Absent extends Optional {
     }
     public function or_8c658f5f ($defaultValue) // [Object defaultValue]
     {
-        return ???::checkNotNull($defaultValue, "use orNull() instead of or(null)")/* unable to resolve this call */;
+        return Helper::checkNotNull($defaultValue, "use orNull() instead of or(null)"); /* unable to resolve this call */;
     }
-    public function or_4e24099b ($secondChoice) // [Optional<?> secondChoice]
+    public function or_4e24099b ($secondChoice) // [Optional secondChoice]
     {
-        return ???::checkNotNull($secondChoice)/* unable to resolve this call */;
+        return Helper::checkNotNull($secondChoice); /* unable to resolve this call */;
     }
-    public function or_463cb3af ($supplier) // [Supplier<?> supplier]
+    public function or_463cb3af ($supplier) // [Supplier< supplier]
     {
-        return ???::checkNotNull($supplier->get(), "use orNull() instead of a Supplier that returns null")/* unable to resolve this call */;
+        return Helper::checkNotNull($supplier->get(), "use orNull() instead of a Supplier that returns null")/* unable to resolve this call */;
     }
     public function orNull ()
     {
@@ -41,7 +41,7 @@ class Absent extends Optional {
     }
     public function transform ($function) // [Function<? super Object, V> function]
     {
-        ???::checkNotNull($function)/* unable to resolve this call */;
+        Helper::checkNotNull($function)/* unable to resolve this call */;
         return Optional::absent();
     }
     public function equals ($object) // [Object object]

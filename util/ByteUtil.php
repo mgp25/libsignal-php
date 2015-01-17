@@ -188,11 +188,11 @@ class ByteUtil {
     }
     public static function byteArray4ToLong ($bytes, $offset) // [byte[] bytes, int offset]
     {
-        return ((((((($bytes[($offset + 0)] & 0xffL)) << 24)) | (((($bytes[($offset + 1)] & 0xffL)) << 16))) | (((($bytes[($offset + 2)] & 0xffL)) << 8))) | ((($bytes[($offset + 3)] & 0xffL))));
+        return ((((((($bytes[($offset + 0)] & 0xff)) << 24)) | (((($bytes[($offset + 1)] & 0xff)) << 16))) | (((($bytes[($offset + 2)] & 0xff)) << 8))) | ((($bytes[($offset + 3)] & 0xff))));
     }
     public static function byteArrayToLong_29e7cc9a ($bytes, $offset) // [byte[] bytes, int offset]
     {
-        return ((((((((((($bytes[$offset] & 0xffL)) << 56)) | (((($bytes[($offset + 1)] & 0xffL)) << 48))) | (((($bytes[($offset + 2)] & 0xffL)) << 40))) | (((($bytes[($offset + 3)] & 0xffL)) << 32))) | (((($bytes[($offset + 4)] & 0xffL)) << 24))) | (((($bytes[($offset + 5)] & 0xffL)) << 16))) | (((($bytes[($offset + 6)] & 0xffL)) << 8))) | ((($bytes[($offset + 7)] & 0xffL))));
+        return ((((((((((($bytes[$offset] & 0xff)) << 56)) | (((($bytes[($offset + 1)] & 0xff)) << 48))) | (((($bytes[($offset + 2)] & 0xff)) << 40))) | (((($bytes[($offset + 3)] & 0xff)) << 32))) | (((($bytes[($offset + 4)] & 0xff)) << 24))) | (((($bytes[($offset + 5)] & 0xff)) << 16))) | (((($bytes[($offset + 6)] & 0xff)) << 8))) | ((($bytes[($offset + 7)] & 0xff))));
     }
 }
 ByteUtil::__staticinit(); // initialize static vars for this class on load

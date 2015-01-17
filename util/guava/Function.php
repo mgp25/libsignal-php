@@ -1,5 +1,8 @@
 <?php
-interface Function {
+/***
+ * Should be removed, not required.
+ */
+interface mFunction {
     private function __init() { // default class members
     }
     public static function __staticinit() { // static class members
@@ -7,4 +10,4 @@ interface Function {
     abstract function apply ($input); // [F input]
     abstract function equals ($object); // [Object object]
 }
-Function::__staticinit(); // initialize static vars for this class on load
+mFunction::__staticinit(); // initialize static vars for this class on load
