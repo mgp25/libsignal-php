@@ -1,7 +1,5 @@
 <?php
 require_once("util/ByteUtil.php");
-require_once("java/math/BigInteger.php");
-require_once("java/util/Arrays.php");
 class DjbECPublicKey implements ECPublicKey {
     protected $publicKey;    // byte[]
     private function __init() { // default class members
@@ -38,9 +36,11 @@ class DjbECPublicKey implements ECPublicKey {
         return $Arrays->hashCode($this->publicKey);
     }
     public function compareTo ($another) // [ECPublicKey another]
-    {
-        return new BigInteger($this->publicKey)::compareTo(new BigInteger(($another)::$publicKey));
+    {    	
+        //return new BigInteger($this->publicKey)::compareTo(new BigInteger(($another)::$publicKey));
+        return (((int)$this->publicKey > (int)$another::$publicKey)?1: (((int)$this->publicKey = (int)$another::$publicKey)?0:-1));
     }
+    
     public function getPublicKey ()
     {
         return $this->publicKey;

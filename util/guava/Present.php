@@ -27,17 +27,17 @@ class Present extends Optional {
     }
     public function or_54 ($defaultValue) // [T defaultValue]
     {
-        ???::checkNotNull($defaultValue, "use orNull() instead of or(null)")/* unable to resolve this call */;
+        Helper::checkNotNull($defaultValue, "use orNull() instead of or(null)")/* unable to resolve this call */;
         return $this->reference;
     }
     public function or_426e7c8e ($secondChoice) // [Optional<? extends T> secondChoice]
     {
-        ???::checkNotNull($secondChoice)/* unable to resolve this call */;
+        Helper::checkNotNull($secondChoice)/* unable to resolve this call */;
         return $this;
     }
     public function or_7d189da2 ($supplier) // [Supplier<? extends T> supplier]
     {
-        ???::checkNotNull($supplier)/* unable to resolve this call */;
+        Helper::checkNotNull($supplier)/* unable to resolve this call */;
         return $this->reference;
     }
     public function orNull ()
@@ -50,7 +50,7 @@ class Present extends Optional {
     }
     public function transform ($function) // [Function<? super T, V> function]
     {
-        return Present::constructor__54(???::checkNotNull($function->apply($this->reference), "Transformation function cannot return null.")/* unable to resolve this call */);
+        return Present::constructor__54(Helper::checkNotNull($function->apply($this->reference), "Transformation function cannot return null.")/* unable to resolve this call */);
     }
     public function equals ($object) // [Object object]
     {

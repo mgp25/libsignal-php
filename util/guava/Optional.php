@@ -16,7 +16,7 @@ abstract class Optional implements Serializable {
     }
     public static function of ($reference) // [T reference]
     {
-        return Present::constructor__54(???::checkNotNull($reference)/* unable to resolve this call */);
+        return Present::constructor__54(Helper::checkNotNull($reference)/* unable to resolve this call */);
     }
     public static function fromNullable ($nullableReference) // [T nullableReference]
     {
