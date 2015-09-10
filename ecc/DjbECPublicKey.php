@@ -1,26 +1,19 @@
 <?php
-require_once("util/ByteUtil.php");
+
 class DjbECPublicKey implements ECPublicKey {
     protected $publicKey;    // byte[]
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__ae1a4a6a ($publicKey) // [byte[] publicKey]
+    const KEY_SIZE = 33;    // int
+    public function DjbECPublicKey ($publicKey) // [byte[] publicKey]
     {
-        $me = new self();
-        $me->__init();
-        $me->publicKey = $publicKey;
-        return $me;
+        $this->publicKey = $publicKey;
     }
     public function serialize ()
     {
-        $type = [Curve::$DJB_TYPE];
-        return ByteUtil::combine($type, $this->publicKey);
+        return Curve::DJB_TYPE.$this->publicKey;
     }
     public function getType ()
     {
-        return Curve::$DJB_TYPE;
+        return Curve::DJB_TYPE;
     }
     public function equals ($other) // [Object other]
     {
@@ -31,14 +24,15 @@ class DjbECPublicKey implements ECPublicKey {
         $that = $other;
         return $this->publicKey == $that->publicKey;
     }
-    public function hashCode ()
-    {
-        return $Arrays->hashCode($this->publicKey);
-    }
     public function compareTo ($another) // [ECPublicKey another]
     {    	
         //return new BigInteger($this->publicKey)::compareTo(new BigInteger(($another)::$publicKey));
-        return (((int)$this->publicKey > (int)$another::$publicKey)?1: (((int)$this->publicKey = (int)$another::$publicKey)?0:-1));
+        $current = unpack("H*",$this->publicKey);
+        $current = intval($current[1],16);
+        $other = unpack("H*",$another->publicKey);
+        $other = intval($other[1],16);
+
+        return (($current > $other)?1: (($current == $other)?0:-1));
     }
     
     public function getPublicKey ()
@@ -46,4 +40,3 @@ class DjbECPublicKey implements ECPublicKey {
         return $this->publicKey;
     }
 }
-DjbECPublicKey::__staticinit(); // initialize static vars for this class on load

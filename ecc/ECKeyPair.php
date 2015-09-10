@@ -2,17 +2,10 @@
 class ECKeyPair {
     protected $publicKey;    // ECPublicKey
     protected $privateKey;    // ECPrivateKey
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__43f151c1 ($publicKey, $privateKey) // [ECPublicKey publicKey, ECPrivateKey privateKey]
+    public function ECKeyPair ($publicKey, $privateKey) // [ECPublicKey publicKey, ECPrivateKey privateKey]
     {
-        $me = new self();
-        $me->__init();
-        $me->publicKey = $publicKey;
-        $me->privateKey = $privateKey;
-        return $me;
+        $this->publicKey = $publicKey;
+        $this->privateKey = $privateKey;
     }
     public function getPublicKey ()
     {
@@ -23,4 +16,3 @@ class ECKeyPair {
         return $this->privateKey;
     }
 }
-ECKeyPair::__staticinit(); // initialize static vars for this class on load

@@ -16,7 +16,7 @@ class GroupSessionBuilder {
         $me->senderKeyStore = $senderKeyStore;
         return $me;
     }
-    public function process_593b9207 ($sender, $senderKeyDistributionMessage) // [String sender, SenderKeyDistributionMessage senderKeyDistributionMessage]
+    public function processSender ($sender, $senderKeyDistributionMessage) // [String sender, SenderKeyDistributionMessage senderKeyDistributionMessage]
     {
         /* !!! synchronized block not supported !!!: ($GroupCipher->LOCK) */
         {
@@ -25,7 +25,7 @@ class GroupSessionBuilder {
             $this->senderKeyStore->storeSenderKey($sender, $senderKeyRecord);
         }
     }
-    public function process_777ccb4 ($groupId, $keyId, $iteration, $chainKey, $signatureKey) // [String groupId, int keyId, int iteration, byte[] chainKey, ECKeyPair signatureKey]
+    public function process ($groupId, $keyId, $iteration, $chainKey, $signatureKey) // [String groupId, int keyId, int iteration, byte[] chainKey, ECKeyPair signatureKey]
     {
         /* !!! synchronized block not supported !!!: ($GroupCipher->LOCK) */
         {
