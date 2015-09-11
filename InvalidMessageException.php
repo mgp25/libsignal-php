@@ -4,7 +4,7 @@ class InvalidMessageException extends Exception {
     {
         $this->message = $detailMessage;
         if($throw != null){
-        	$this->previous = $throw;
+            $this->previous = $throw;
         }
     }
 

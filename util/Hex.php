@@ -1,11 +1,10 @@
 <?php
-require_once("java/io/IOException.php");
 class Hex {
-    protected static $HEX_DIGITS;    // char[]
+    const HEX_DIGITS = ['0123456789abcdef'];   // char[]
     private function __init() { // default class members
     }
     public static function __staticinit() { // static class members
-        self::$HEX_DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+        self::$HEX_DIGITS = 
     }
     public static function toString_ae1a4a6a ($bytes) // [byte[] bytes]
     {
@@ -55,4 +54,3 @@ class Hex {
         $buf->append(self::$HEX_DIGITS[($b & 0xf)]);
     }
 }
-Hex::__staticinit(); // initialize static vars for this class on load

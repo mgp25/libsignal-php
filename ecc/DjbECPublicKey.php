@@ -25,7 +25,7 @@ class DjbECPublicKey implements ECPublicKey {
         return $this->publicKey == $that->publicKey;
     }
     public function compareTo ($another) // [ECPublicKey another]
-    {    	
+    {        
         //return new BigInteger($this->publicKey)::compareTo(new BigInteger(($another)::$publicKey));
         $current = unpack("H*",$this->publicKey);
         $current = intval($current[1],16);
