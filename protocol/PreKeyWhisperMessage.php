@@ -8,14 +8,14 @@
     require_once __DIR__. "/../LegacyMessageException.php";
     require_once __DIR__. "/../IdentityKey.php";
     class PreKeyWhisperMessage extends CiphertextMessage{
-        private $version;
-        private $registrationId;
-        private $preKeyId;
-        private $signedPreKeyId;
-        private $baseKey;
-        private $identityKey;
-        private $message;
-        private $serialized;
+        protected $version;
+        protected $registrationId;
+        protected $preKeyId;
+        protected $signedPreKeyId;
+        protected $baseKey;
+        protected $identityKey;
+        protected $message;
+        protected $serialized;
         public function PreKeyWhisperMessage($messageVersion = null, 
                                              $registrationId  = null, 
                                              $preKeyId = null, 

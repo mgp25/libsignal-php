@@ -7,11 +7,11 @@
     require_once __DIR__. "/../LegacyMessageException.php";
     class SenderKeyMessage extends CiphertextMessage{
         const SIGNATURE_LENGTH = 64;
-        private $serialized;
-        private $messageVersion;
-        private $keyId;
-        private $iteration;
-        private $ciphertext;
+        protected $serialized;
+        protected $messageVersion;
+        protected $keyId;
+        protected $iteration;
+        protected $ciphertext;
         public function SenderKeyMessage($keyId = null, $iteration = null, $ciphertext = null, $signatureKey = null, $serialized = null){
             if($serialized == null){
                 $version = ByteUtil::intsToByteHighAndLow(self::CURRENT_VERSION,self::CURRENT_VERSION);

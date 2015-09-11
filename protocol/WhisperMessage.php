@@ -7,12 +7,12 @@
     require_once __DIR__. "/../LegacyMessageException.php";
     class WhisperMessage extends CiphertextMessage{
         const MAC_LENGTH = 8;
-        private $messageVersion;
-        private $senderRatchetKey;
-        private $counter;
-        private $previousCounter;
-        private $cipherText;
-        private $serialized;
+        protected $messageVersion;
+        protected $senderRatchetKey;
+        protected $counter;
+        protected $previousCounter;
+        protected $cipherText;
+        protected $serialized;
         public function WhisperMessage($messageVersion = null, 
                                         $macKey = null, 
                                         $senderRatchetKey = null, 
