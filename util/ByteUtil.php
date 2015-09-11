@@ -1,57 +1,24 @@
 <?php
-require_once("java/io/ByteArrayOutputStream.php");
-require_once("java/io/IOException.php");
-require_once("java/text/ParseException.php");
 class ByteUtil {
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
     public static function combine ($elements) // [byte[]... elements]
     {
-        try
-        {
-            $baos = new ByteArrayOutputStream();
-            foreach ($elements as $element)             {
-                $baos->write($element);
-            }
-            return $baos->toByteArray();
+        $result = "";
+        foreach($elements as $e){
+            $result .= $e;
         }
-        catch (IOException $e)
-        {
-            throw new AssertionError($e);
-        }
+        return $result;
     }
-    public static function split_21c8b6ca ($input, $firstLength, $secondLength) // [byte[] input, int firstLength, int secondLength]
+    public static function split ($input, $firstLength, $secondLength, $thirdLength = null) // [byte[] input, int firstLength, int secondLength]
     {
         $parts = array();
-        $parts[0] = array();
-        foreach (range(0, ($firstLength + 0)) as $_upto) $parts[0][$_upto] = $input[$_upto - (0) + 0]; /* from: System.arraycopy(input, 0, parts[0], 0, firstLength) */;
-        $parts[1] = array();
-        foreach (range(0, ($secondLength + 0)) as $_upto) $parts[1][$_upto] = $input[$_upto - (0) + $firstLength]; /* from: System.arraycopy(input, firstLength, parts[1], 0, secondLength) */;
-        return $parts;
-    }
-    public static function split_dc908fa ($input, $firstLength, $secondLength, $thirdLength) // [byte[] input, int firstLength, int secondLength, int thirdLength]
-    {
-        if (((((($input == null) || ($firstLength < 0)) || ($secondLength < 0)) || ($thirdLength < 0)) || (count($input) /*from: input.length*/ < (($firstLength + $secondLength) + $thirdLength))))
-        {
-            /* match: ae1a4a6a */
-            throw new ParseException(("Input too small: " . (( (($input == null)) ? null : Hex::toString_ae1a4a6a($input) ))), 0);
-        }
-        $parts = array();
-        $parts[0] = array();
-        foreach (range(0, ($firstLength + 0)) as $_upto) $parts[0][$_upto] = $input[$_upto - (0) + 0]; /* from: System.arraycopy(input, 0, parts[0], 0, firstLength) */;
-        $parts[1] = array();
-        foreach (range(0, ($secondLength + 0)) as $_upto) $parts[1][$_upto] = $input[$_upto - (0) + $firstLength]; /* from: System.arraycopy(input, firstLength, parts[1], 0, secondLength) */;
-        $parts[2] = array();
-        foreach (range(0, ($thirdLength + 0)) as $_upto) $parts[2][$_upto] = $input[$_upto - (0) + ($firstLength + $secondLength)]; /* from: System.arraycopy(input, firstLength + secondLength, parts[2], 0, thirdLength) */;
+        $parts[] = substr($input,0,$firstLength);
+        $parts[] = substr($input,$firstLength,$secondLength);
+        if(is_int($thirdLength)) $parts[] = substr($input,$firstLength+$secondLength,$thirdLength);
         return $parts;
     }
     public static function trim ($input, $length) // [byte[] input, int length]
     {
-        $result = array();
-        foreach (range(0, (count($result) /*from: result.length*/ + 0)) as $_upto) $result[$_upto] = $input[$_upto - (0) + 0]; /* from: System.arraycopy(input, 0, result, 0, result.length) */;
-        return $result;
+        return substr($input,0,$length);
     }
     public static function copyFrom ($input) // [byte[] input]
     {
@@ -61,18 +28,23 @@ class ByteUtil {
     }
     public static function intsToByteHighAndLow ($highValue, $lowValue) // [int highValue, int lowValue]
     {
+        if(is_string($highValue)) $highValue = ord($highValue[0]);
+        if(is_string($lowValue)) $lowValue = ord($lowValue[0]);
         return ((((($highValue << 4) | $lowValue)) & 0xFF));
     }
     public static function highBitsToInt ($value) // [byte value]
     {
+        if(is_string($value)) $value = ord($value[0]);
         return ((($value & 0xFF)) >> 4);
     }
     public static function lowBitsToInt ($value) // [byte value]
     {
+        if(is_string($value)) $value = ord($value[0]);
         return (($value & 0xF));
     }
     public static function highBitsToMedium ($value) // [int value]
     {
+        if(is_string($value)) $value = ord($value[0]);
         return (($value >> 12));
     }
     public static function lowBitsToMedium ($value) // [int value]
@@ -195,4 +167,3 @@ class ByteUtil {
         return ((((((((((($bytes[$offset] & 0xff)) << 56)) | (((($bytes[($offset + 1)] & 0xff)) << 48))) | (((($bytes[($offset + 2)] & 0xff)) << 40))) | (((($bytes[($offset + 3)] & 0xff)) << 32))) | (((($bytes[($offset + 4)] & 0xff)) << 24))) | (((($bytes[($offset + 5)] & 0xff)) << 16))) | (((($bytes[($offset + 6)] & 0xff)) << 8))) | ((($bytes[($offset + 7)] & 0xff))));
     }
 }
-ByteUtil::__staticinit(); // initialize static vars for this class on load

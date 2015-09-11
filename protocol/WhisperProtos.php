@@ -1,5 +1,8 @@
 <?php
+
+require_once __DIR__."/pb_proto_WhisperTextProtocol.php"
 class WhisperProtos {
+
     protected static $internal_static_textsecure_WhisperMessage_descriptor;    // com.google.protobuf.Descriptors.Descriptor
     protected static $internal_static_textsecure_WhisperMessage_fieldAccessorTable;    // com.google.protobuf.GeneratedMessage.FieldAccessorTable
     protected static $internal_static_textsecure_PreKeyWhisperMessage_descriptor;    // com.google.protobuf.Descriptors.Descriptor
@@ -17,8 +20,7 @@ class WhisperProtos {
     }
     public static function constructor__ ()
     {
-        $me = new self();
-        $me->__init();
+        $me = new self         $me->__init();
         return $me;
     }
     abstract static function registerAllExtensions ($registry); // [com.google.protobuf.ExtensionRegistry registry]

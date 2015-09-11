@@ -1,27 +1,21 @@
 <?php
-require_once("kdf/HKDFv3.php");
-require_once("util/ByteUtil.php");
+require_once(__DIR__."/../../kdf/HKDFv3.php");
+require_once(__DIR__."/../../util/ByteUtil.php");
 class SenderMessageKey {
     protected $iteration;    // int
     protected $iv;    // byte[]
     protected $cipherKey;    // byte[]
     protected $seed;    // byte[]
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__4919b4ba ($iteration, $seed) // [int iteration, byte[] seed]
+    public function SenderMessageKey ($iteration, $seed) // [int iteration, byte[] seed]
     {
-        $me = new self();
-        $me->__init();
-        $derivative = HKDFv3::constructor__()->deriveSecrets($seed, "WhisperGroup" /* from: "WhisperGroup".getBytes() */, 48);
+        $hkdf = new HKDFv3();
+        $derivative = $hkdf->deriveSecrets($seed, "WhisperGroup" , 48);
             /* match: 21c8b6ca */
-        $parts = ByteUtil::split_21c8b6ca($derivative, 16, 32);
-        $me->iteration = $iteration;
-        $me->seed = $seed;
-        $me->iv = $parts[0];
-        $me->cipherKey = $parts[1];
-        return $me;
+        $parts = ByteUtil::split($derivative, 16, 32);
+        $this->iteration = $iteration;
+        $this->seed = $seed;
+        $this->iv = $parts[0];
+        $this->cipherKey = $parts[1];
     }
     public function getIteration ()
     {
@@ -40,4 +34,3 @@ class SenderMessageKey {
         return $this->seed;
     }
 }
-SenderMessageKey::__staticinit(); // initialize static vars for this class on load
