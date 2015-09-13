@@ -11,7 +11,7 @@
                 throw new Exception("Unknown version $version");
             }
             public function deriveSecrets($inputKey, $info, $outputLength, $salt = null){
-                $salt = ($salt != null?$salt:str_repeat(chr(0),self::HASH_OUTPUT_SIZE);
+                $salt = ($salt != null?$salt:str_repeat(chr(0),self::HASH_OUTPUT_SIZE));
                 $prk = $this->extract($salt,$inputKey);
                 return $this->expand($prk,$info,$outputLength);
             }
@@ -25,7 +25,8 @@
                 $remainingBytes =  $outputSize;
                 $mixin = "";
                 $result = "";
-                for($i = $this->getIterationStartOffset(); $i<$iterations+$this->getIterationStartOffset()){
+                for($i = $this->getIterationStartOffset(); $i<$iterations+$this->getIterationStartOffset();$i++)
+                {
                     $mac  = hash_init($prk,"sha256");
                     hash_update($mac, $mixin);
                     if($info != null){

@@ -1,8 +1,8 @@
 <?php
-require_once("org/whispersystems/libaxolotl/IdentityKey.php");
-require_once("org/whispersystems/libaxolotl/IdentityKeyPair.php");
-require_once("org/whispersystems/libaxolotl/ecc/ECKeyPair.php");
-require_once("org/whispersystems/libaxolotl/ecc/ECPublicKey.php");
+require_once(__DIR__."/../IdentityKey.php");
+require_once(__DIR__."/../IdentityKeyPair.php");
+require_once(__DIR__."/../ecc/ECKeyPair.php");
+require_once(__DIR__."/../ecc/ECPublicKey.php");
 class SymmetricAxolotlParameters {
     protected $ourBaseKey;    // ECKeyPair
     protected $ourRatchetKey;    // ECKeyPair
@@ -10,25 +10,20 @@ class SymmetricAxolotlParameters {
     protected $theirBaseKey;    // ECPublicKey
     protected $theirRatchetKey;    // ECPublicKey
     protected $theirIdentityKey;    // IdentityKey
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__869f1827 ($ourBaseKey, $ourRatchetKey, $ourIdentityKey, $theirBaseKey, $theirRatchetKey, $theirIdentityKey) // [ECKeyPair ourBaseKey, ECKeyPair ourRatchetKey, IdentityKeyPair ourIdentityKey, ECPublicKey theirBaseKey, ECPublicKey theirRatchetKey, IdentityKey theirIdentityKey]
+    public function SymmetricAxolotlParameters ($ourBaseKey, $ourRatchetKey, $ourIdentityKey, $theirBaseKey, $theirRatchetKey, $theirIdentityKey) // [ECKeyPair ourBaseKey, ECKeyPair ourRatchetKey, IdentityKeyPair ourIdentityKey, ECPublicKey theirBaseKey, ECPublicKey theirRatchetKey, IdentityKey theirIdentityKey]
     {
-        $me = new self();
-        $me->__init();
-        $me->ourBaseKey = $ourBaseKey;
-        $me->ourRatchetKey = $ourRatchetKey;
-        $me->ourIdentityKey = $ourIdentityKey;
-        $me->theirBaseKey = $theirBaseKey;
-        $me->theirRatchetKey = $theirRatchetKey;
-        $me->theirIdentityKey = $theirIdentityKey;
-        if ((((((($ourBaseKey == null) || ($ourRatchetKey == null)) || ($ourIdentityKey == null)) || ($theirBaseKey == null)) || ($theirRatchetKey == null)) || ($theirIdentityKey == null)))
+        $this->ourBaseKey = $ourBaseKey;
+        $this->ourRatchetKey = $ourRatchetKey;
+        $this->ourIdentityKey = $ourIdentityKey;
+        $this->theirBaseKey = $theirBaseKey;
+        $this->theirRatchetKey = $theirRatchetKey;
+        $this->theirIdentityKey = $theirIdentityKey;
+        if (($ourBaseKey == null) || ($ourRatchetKey == null) 
+            || ($ourIdentityKey == null) || ($theirBaseKey == null) 
+            || ($theirRatchetKey == null) || ($theirIdentityKey == null))
         {
-            throw new IllegalArgumentException("Null values!");
+            throw new Exception("Null values!");
         }
-        return $me;
     }
     public function getOurBaseKey ()
     {
@@ -56,7 +51,55 @@ class SymmetricAxolotlParameters {
     }
     public static function newBuilder ()
     {
-        return new Builder();
+        return new SymmetricBuilder();
     }
+
 }
-SymmetricAxolotlParameters::__staticinit(); // initialize static vars for this class on load
+class SymmetricBuilder{
+        protected $ourBaseKey;    // ECKeyPair
+        protected $ourRatchetKey;    // ECKeyPair
+        protected $ourIdentityKey;    // IdentityKeyPair
+        protected $theirBaseKey;    // ECPublicKey
+        protected $theirRatchetKey;    // ECPublicKey
+        protected $theirIdentityKey;    // IdentityKey
+        public function SymmetricBuilder():
+            $this->ourIdentityKey = null;
+            $this->ourBaseKey = null;
+            $this->ourRatchetKey = null;
+            $this->theirRatchetKey = null;
+            $this->theirIdentityKey = null;
+            $this->theirBaseKey = null;
+
+        public function setOurIdentityKey($ourIdentityKey){
+            $this->ourIdentityKey = $ourIdentityKey;
+            return $this;
+        }
+
+        public function setOurBaseKey($ourBaseKey){
+            $this->ourBaseKey = $ourBaseKey;
+            return $this;
+        }
+        public function setOurRatchetKey($ourRatchetKey){
+            $this->ourRatchetKey = $ourRatchetKey;
+            return $this;
+        }
+        public function setTheirRatchetKey($theirRatchetKey){
+            $this->theirRatchetKey = $theirRatchetKey;
+            return $this;
+        }
+
+
+        public function setTheirIdentityKey($theirIdentityKey){
+            $this->theirIdentityKey = $theirIdentityKey;
+            return $this;
+        }
+
+        public function setTheirBaseKey($theirBaseKey){
+            $this->theirBaseKey = $theirBaseKey;
+            return $this;
+        }
+        public function create(){
+            return new SymmetricAxolotlParameters($this->ourBaseKey, $this->ourRatchetKey, $this->ourIdentityKey,
+                                        $this->theirBaseKey, $this->theirRatchetKey, $this->theirIdentityKey);
+        }
+}

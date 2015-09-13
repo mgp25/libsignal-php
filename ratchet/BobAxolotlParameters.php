@@ -22,7 +22,8 @@ class BobAxolotlParameters {
         $this->theirIdentityKey = $theirIdentityKey;
         $this->theirBaseKey = $theirBaseKey;
         if (($ourIdentityKey == null) || ($ourSignedPreKey == null) 
-            || ($theirIdentityKey == null) || ($ourRatchetKey == null) || ($ourOneTimePreKey == null) || ($theirBaseKey == null))
+             || ($ourRatchetKey == null) 
+             || ($theirIdentityKey == null) ||  ($theirBaseKey == null))
         {
             throw new Exception("Null values!");
         }

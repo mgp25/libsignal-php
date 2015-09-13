@@ -1,13 +1,13 @@
 <?php
-require_once("../util/ByteUtil.php");
+require_once(__DIR__."/../util/ByteUtil.php");
 //require_once("java/text/ParseException.php");
 //require_once("javax/crypto/spec/IvParameterSpec.php");
 //require_once("javax/crypto/spec/SecretKeySpec.php");
 class DerivedMessageSecrets {
-    const SIZE              = 80
-    const CIPHER_KEY_LENGTH = 32
-    const MAC_KEY_LENGTH    = 32
-    const IV_LENGTH         = 16
+    const SIZE              = 80;
+    const CIPHER_KEY_LENGTH = 32;
+    const MAC_KEY_LENGTH    = 32;
+    const IV_LENGTH         = 16;
 
     protected $cipherKey;    // SecretKeySpec
     protected $macKey;    // SecretKeySpec
