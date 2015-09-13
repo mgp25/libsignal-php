@@ -1,82 +1,54 @@
 <?php
-require_once("java/io/PrintWriter.php");
-require_once("java/io/StringWriter.php");
-require_once("java/net/UnknownHostException.php");
-class Log {
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__ ()
+class Log extends AxolotlLogger {
+    public static function verbose($tag, $msg) // [String tag, String msg]
     {
-        $me = new self();
-        $me->__init();
-        return $me;
+        self::log(self::VERBOSE, $tag, $msg);
     }
-    public static function v_79c13ff ($tag, $msg) // [String tag, String msg]
+    public static function verboseException ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
     {
-        self::log(AxolotlLogger::$VERBOSE, $tag, $msg);
+        self::log(self::VERBOSE, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
     }
-    public static function v_5188d4e0 ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
+    public static function debug ($tag, $msg) // [String tag, String msg]
     {
-        self::log(AxolotlLogger::$VERBOSE, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
+        self::log(self::DEBUG, $tag, $msg);
     }
-    public static function d_79c13ff ($tag, $msg) // [String tag, String msg]
+    public static function debugException ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
     {
-        self::log(AxolotlLogger::$DEBUG, $tag, $msg);
+        self::log(self::DEBUG, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
     }
-    public static function d_5188d4e0 ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
+    public static function info ($tag, $msg) // [String tag, String msg]
     {
-        self::log(AxolotlLogger::$DEBUG, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
+        self::log(self::INFO, $tag, $msg);
     }
-    public static function i_79c13ff ($tag, $msg) // [String tag, String msg]
+    public static function infoException ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
     {
-        self::log(AxolotlLogger::$INFO, $tag, $msg);
+        self::log(self::INFO, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
     }
-    public static function i_5188d4e0 ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
+    public static function warning ($tag, $msg) // [String tag, String msg]
     {
-        self::log(AxolotlLogger::$INFO, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
+        self::log(self::WARN, $tag, $msg);
     }
-    public static function w_79c13ff ($tag, $msg) // [String tag, String msg]
+    public static function warningException ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
     {
-        self::log(AxolotlLogger::$WARN, $tag, $msg);
+        self::log(self::WARN, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
     }
-    public static function w_5188d4e0 ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
+    public static function warningShortException ($tag, $tr) // [String tag, Throwable tr]
     {
-        self::log(AxolotlLogger::$WARN, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
+        self::log(self::WARN, $tag, self::getStackTraceString($tr));
     }
-    public static function w_4c6bf692 ($tag, $tr) // [String tag, Throwable tr]
+    public static function error ($tag, $msg) // [String tag, String msg]
     {
-        self::log(AxolotlLogger::$WARN, $tag, self::getStackTraceString($tr));
+        self::log(self::ERROR, $tag, $msg);
     }
-    public static function e_79c13ff ($tag, $msg) // [String tag, String msg]
+    public static function errorException ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
     {
-        self::log(AxolotlLogger::$ERROR, $tag, $msg);
-    }
-    public static function e_5188d4e0 ($tag, $msg, $tr) // [String tag, String msg, Throwable tr]
-    {
-        self::log(AxolotlLogger::$ERROR, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
+        self::log(self::ERROR, $tag, (($msg . '\n') . self::getStackTraceString($tr)));
     }
     protected static function getStackTraceString ($tr) // [Throwable tr]
     {
-        if (($tr == null))
-        {
-            return "";
-        }
-        $t = $tr;
-        while (($t != null))
-        {
-            if ($t instanceof UnknownHostException)
-            {
-                return "";
-            }
-            $t = $t->getCause();
-        }
-        $sw = new StringWriter();
-        $pw = new PrintWriter($sw);
-        $tr->printStackTrace($pw);
-        $pw->flush();
-        return $sw->toString();
+        if($tr instanceof Exception)
+            return $tr->getTrace();
+        else return "";
     }
     protected static function log ($priority, $tag, $msg) // [int priority, String tag, String msg]
     {
@@ -87,4 +59,3 @@ class Log {
         }
     }
 }
-Log::__staticinit(); // initialize static vars for this class on load

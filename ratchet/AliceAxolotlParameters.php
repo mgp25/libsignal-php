@@ -1,9 +1,8 @@
 <?php
-require_once("org/whispersystems/libaxolotl/IdentityKey.php");
-require_once("org/whispersystems/libaxolotl/IdentityKeyPair.php");
-require_once("org/whispersystems/libaxolotl/ecc/ECKeyPair.php");
-require_once("org/whispersystems/libaxolotl/ecc/ECPublicKey.php");
-require_once("org/whispersystems/libaxolotl/util/guava/Optional.php");
+require_once(__DIR__."/../IdentityKey.php");
+require_once(__DIR__."/../IdentityKeyPair.php");
+require_once(__DIR__."/../ecc/ECKeyPair.php");
+require_once(__DIR__."/../ecc/ECPublicKey.php");
 class AliceAxolotlParameters {
     protected $ourIdentityKey;    // IdentityKeyPair
     protected $ourBaseKey;    // ECKeyPair
@@ -11,25 +10,20 @@ class AliceAxolotlParameters {
     protected $theirSignedPreKey;    // ECPublicKey
     protected $theirOneTimePreKey;    // Optional<ECPublicKey>
     protected $theirRatchetKey;    // ECPublicKey
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__3d94708e ($ourIdentityKey, $ourBaseKey, $theirIdentityKey, $theirSignedPreKey, $theirRatchetKey, $theirOneTimePreKey) // [IdentityKeyPair ourIdentityKey, ECKeyPair ourBaseKey, IdentityKey theirIdentityKey, ECPublicKey theirSignedPreKey, ECPublicKey theirRatchetKey, Optional<ECPublicKey> theirOneTimePreKey]
+
+    public function AliceAxolotlParameters ($ourIdentityKey, $ourBaseKey, $theirIdentityKey, $theirSignedPreKey, $theirRatchetKey, $theirOneTimePreKey) // [IdentityKeyPair ourIdentityKey, ECKeyPair ourBaseKey, IdentityKey theirIdentityKey, ECPublicKey theirSignedPreKey, ECPublicKey theirRatchetKey, Optional<ECPublicKey> theirOneTimePreKey]
     {
-        $me = new self();
-        $me->__init();
-        $me->ourIdentityKey = $ourIdentityKey;
-        $me->ourBaseKey = $ourBaseKey;
-        $me->theirIdentityKey = $theirIdentityKey;
-        $me->theirSignedPreKey = $theirSignedPreKey;
-        $me->theirRatchetKey = $theirRatchetKey;
-        $me->theirOneTimePreKey = $theirOneTimePreKey;
-        if ((((((($ourIdentityKey == null) || ($ourBaseKey == null)) || ($theirIdentityKey == null)) || ($theirSignedPreKey == null)) || ($theirRatchetKey == null)) || ($theirOneTimePreKey == null)))
+        $this->ourIdentityKey = $ourIdentityKey;
+        $this->ourBaseKey = $ourBaseKey;
+        $this->theirIdentityKey = $theirIdentityKey;
+        $this->theirSignedPreKey = $theirSignedPreKey;
+        $this->theirRatchetKey = $theirRatchetKey;
+        $this->theirOneTimePreKey = $theirOneTimePreKey;
+        if (($ourIdentityKey == null) || ($ourBaseKey == null) 
+            || ($theirIdentityKey == null) || ($theirSignedPreKey == null) || ($theirRatchetKey == null) || ($theirOneTimePreKey == null))
         {
-            throw new IllegalArgumentException("Null values!");
+            throw new Exception("Null values!");
         }
-        return $me;
     }
     public function getOurIdentityKey ()
     {
@@ -53,11 +47,57 @@ class AliceAxolotlParameters {
     }
     public static function newBuilder ()
     {
-        return new Builder();
+        return new AliceBuilder();
     }
     public function getTheirRatchetKey ()
     {
         return $this->theirRatchetKey;
     }
 }
-AliceAxolotlParameters::__staticinit(); // initialize static vars for this class on load
+class AliceBuilder(){
+    protected $ourIdentityKey;
+    protected $ourBaseKey;
+    protected $theirIdentityKey;
+    protected $theirSignedPreKey;
+    protected $theirRatchetKey;
+    protected $theirOneTimePreKey;
+    public function AliceBuilder(){
+        $this->ourIdentityKey = null;
+        $this->ourBaseKey = null;
+        $this->theirIdentityKey = null;
+        $this->theirSignedPreKey = null;
+        $this->theirRatchetKey = null;
+        $this->theirOneTimePreKey = null;
+    }
+    public function setOurIdentityKey($ourIdentityKey):
+        $this->ourIdentityKey = $ourIdentityKey
+        return $this;
+
+    public function setOurBaseKey($ourBaseKey){
+        $this->ourBaseKey = $ourBaseKey;
+        return $this;
+    }
+
+    public function setTheirRatchetKey($theirRatchetKey){
+        $this->theirRatchetKey = $theirRatchetKey
+        return $this;
+    }
+    public function setTheirIdentityKey($theirIdentityKey){
+        $this->theirIdentityKey = $theirIdentityKey;
+        return $this;
+    }
+    public function setTheirSignedPreKey($theirSignedPreKey){
+        $this->theirSignedPreKey = $theirSignedPreKey;
+        return $this;
+    }
+
+    public function setTheirOneTimePreKey($theirOneTimePreKey){
+        $this->theirOneTimePreKey = $theirOneTimePreKey;
+        return $this;
+    }
+
+    public function create(){
+        return new AliceAxolotlParameters($this->ourIdentityKey, $this->ourBaseKey, $this->theirIdentityKey,
+                                      $this->theirSignedPreKey, $this->theirRatchetKey, $this->theirOneTimePreKey);
+    }
+}

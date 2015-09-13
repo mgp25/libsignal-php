@@ -6,10 +6,6 @@ class MessageKeys {
     protected $macKey;    // SecretKeySpec
     protected $iv;    // IvParameterSpec
     protected $counter;    // int
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
     public static function constructor__9e0e673d ($cipherKey, $macKey, $iv, $counter) // [SecretKeySpec cipherKey, SecretKeySpec macKey, IvParameterSpec iv, int counter]
     {
         $me = new self();
