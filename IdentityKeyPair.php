@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__."/pb_proto_LocalStorageProtocol.php";
+require_once __DIR__."/state/pb_proto_LocalStorageProtocol.php";
 require_once __DIR__."/IdentityKey.php";
 class IdentityKeyPair {
     protected $publicKey;    // IdentityKey

@@ -1,31 +1,26 @@
 <?php
-require_once("com/google/protobuf/ByteString.php");
-require_once("InvalidKeyException.php");
-require_once("ecc/Curve.php");
-require_once("ecc/ECKeyPair.php");
-require_once("ecc/ECPrivateKey.php");
-require_once("ecc/ECPublicKey.php");
-require_once("java/io/IOException.php");
-require_once("state/StorageProtos/PreKeyRecordStructure.php");
+require_once(__DIR__."/../InvalidKeyException.php");
+require_once(__DIR__."/../ecc/Curve.php");
+require_once(__DIR__."/../ecc/ECKeyPair.php");
+require_once(__DIR__."/../ecc/ECPrivateKey.php");
+require_once(__DIR__."/../ecc/ECPublicKey.php");
+require_once(__DIR__."/pb_proto_LocalStorageProtocol.php");
 class PreKeyRecord {
     protected $structure;    // PreKeyRecordStructure
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__99f1230b ($id, $keyPair) // [int id, ECKeyPair keyPair]
+    public static function PreKeyRecord ($id = null, $keyPair = null,$serialized = null) // [int id, ECKeyPair keyPair]
     {
-        $me = new self();
-        $me->__init();
-        $me->structure = $PreKeyRecordStructure->newBuilder()->setId($id)->setPublicKey($ByteString->copyFrom($keyPair->getPublicKey()->serialize()))->setPrivateKey($ByteString->copyFrom($keyPair->getPrivateKey()->serialize()))->build();
-        return $me;
-    }
-    public static function constructor__ae1a4a6a ($serialized) // [byte[] serialized]
-    {
-        $me = new self();
-        $me->__init();
-        $me->structure = $PreKeyRecordStructure->parseFrom($serialized);
-        return $me;
+        $this->structure = new Textsecure_PreKeyRecordStructure();
+        if($serialized == null){
+
+            $this->structure->setId($id)->setPublicKey((string)$keyPair->getPublicKy()->serialize())->setPrivateKey((string)$keyPair->getPrivateKey()->serialize());
+        }
+        else{
+            try{
+                $this->structure->parseFromString($serialized);
+            }catch(Exception $ex){
+                throw new Exception("Cannot unserialize PreKEyRecordStructure");
+            }
+        }
     }
     public function getId ()
     {
@@ -33,20 +28,12 @@ class PreKeyRecord {
     }
     public function getKeyPair ()
     {
-        try
-        {
-            $publicKey = Curve::decodePoint($this->structure->getPublicKey()->toByteArray(), 0);
-            $privateKey = Curve::decodePrivatePoint($this->structure->getPrivateKey()->toByteArray());
-            return ECKeyPair::constructor__43f151c1($publicKey, $privateKey);
-        }
-        catch (InvalidKeyException $e)
-        {
-            throw new AssertionError($e);
-        }
+        $publicKey = Curve::decodePoint($this->structure->getPublicKey(), 0);
+        $privateKey = Curve::decodePrivatePoint($this->structure->getPrivateKey());
+        return new ECKeyPair($publicKey, $privateKey);
     }
     public function serialize ()
     {
-        return $this->structure->toByteArray();
+        return $this->structure->serializeToString();;
     }
 }
-PreKeyRecord::__staticinit(); // initialize static vars for this class on load

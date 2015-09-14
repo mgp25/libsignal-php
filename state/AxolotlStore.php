@@ -1,4 +1,4 @@
 <?php
-interface AxolotlStore extends IdentityKeyStore {
+require_once __DIR__."/IdentityKeyStore.php";
+abstact class AxolotlStore extends IdentityKeyStore {
 }
-AxolotlStore::__staticinit(); // initialize static vars for this class on load

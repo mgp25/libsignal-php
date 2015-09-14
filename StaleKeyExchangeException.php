@@ -1,4 +1,3 @@
 <?php
-class StaleKeyExchangeException extends Throwable {
+class StaleKeyExchangeException extends Exception {
 }
-StaleKeyExchangeException::__staticinit(); // initialize static vars for this class on load

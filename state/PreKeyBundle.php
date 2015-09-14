@@ -1,6 +1,6 @@
 <?php
-require_once("IdentityKey.php");
-require_once("ecc/ECPublicKey.php");
+require_once(__DIR__."/../IdentityKey.php");
+require_once(__DIR__."/../ecc/ECPublicKey.php");
 class PreKeyBundle {
     protected $registrationId;    // int
     protected $deviceId;    // int
@@ -10,23 +10,16 @@ class PreKeyBundle {
     protected $signedPreKeyPublic;    // ECPublicKey
     protected $signedPreKeySignature;    // byte[]
     protected $identityKey;    // IdentityKey
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__3a05205a ($registrationId, $deviceId, $preKeyId, $preKeyPublic, $signedPreKeyId, $signedPreKeyPublic, $signedPreKeySignature, $identityKey) // [int registrationId, int deviceId, int preKeyId, ECPublicKey preKeyPublic, int signedPreKeyId, ECPublicKey signedPreKeyPublic, byte[] signedPreKeySignature, IdentityKey identityKey]
+    public function PreKeyBundle ($registrationId, $deviceId, $preKeyId, $preKeyPublic, $signedPreKeyId, $signedPreKeyPublic, $signedPreKeySignature, $identityKey) // [int registrationId, int deviceId, int preKeyId, ECPublicKey preKeyPublic, int signedPreKeyId, ECPublicKey signedPreKeyPublic, byte[] signedPreKeySignature, IdentityKey identityKey]
     {
-        $me = new self();
-        $me->__init();
-        $me->registrationId = $registrationId;
-        $me->deviceId = $deviceId;
-        $me->preKeyId = $preKeyId;
-        $me->preKeyPublic = $preKeyPublic;
-        $me->signedPreKeyId = $signedPreKeyId;
-        $me->signedPreKeyPublic = $signedPreKeyPublic;
-        $me->signedPreKeySignature = $signedPreKeySignature;
-        $me->identityKey = $identityKey;
-        return $me;
+        $this->registrationId = $registrationId;
+        $this->deviceId = $deviceId;
+        $this->preKeyId = $preKeyId;
+        $this->preKeyPublic = $preKeyPublic;
+        $this->signedPreKeyId = $signedPreKeyId;
+        $this->signedPreKeyPublic = $signedPreKeyPublic;
+        $this->signedPreKeySignature = $signedPreKeySignature;
+        $this->identityKey = $identityKey;
     }
     public function getDeviceId ()
     {
@@ -61,4 +54,3 @@ class PreKeyBundle {
         return $this->registrationId;
     }
 }
-PreKeyBundle::__staticinit(); // initialize static vars for this class on load
