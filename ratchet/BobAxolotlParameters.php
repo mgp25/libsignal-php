@@ -57,7 +57,7 @@ class BobAxolotlParameters {
         return $this->ourOneTimePreKey;
     }
 }
-class BobBuilder(){
+class BobBuilder{
     protected $ourIdentityKey;
     protected $ourSignedPreKey;
     protected $ourRatchetKey;
@@ -72,17 +72,17 @@ class BobBuilder(){
         $this->theirIdentityKey = null;
         $this->theirBaseKey = null;
     }
-    public function setOurIdentityKey($ourIdentityKey):
-        $this->ourIdentityKey = $ourIdentityKey
+    public function setOurIdentityKey($ourIdentityKey){
+        $this->ourIdentityKey = $ourIdentityKey;
         return $this;
-
+    }
     public function setOurSignedPreKey($ourSignedPreKey){
         $this->ourSignedPreKey = $ourSignedPreKey;
         return $this;
     }
 
     public function setOurOneTimePreKey($ourOneTimePreKey){
-        $this->ourOneTimePreKey = $ourOneTimePreKey
+        $this->ourOneTimePreKey = $ourOneTimePreKey;
         return $this;
     }
     public function setTheirIdentityKey($theirIdentityKey){

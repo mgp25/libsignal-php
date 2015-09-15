@@ -7,5 +7,4 @@ class InvalidMessageException extends Exception {
             $this->previous = $throw;
         }
     }
-
 }

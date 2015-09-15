@@ -85,15 +85,17 @@ class ByteUtil {
     public static function intToByteArray_197ef ($value) // [int value]
     {
         $bytes = array();
-        self::intToByteArray($bytes, 0, $value);
+        self::intToByteArray_21c8b6ca($bytes, 0, $value);
         return $bytes;
     }
-    public static function intToByteArray_21c8b6ca ($bytes, $offset, $value) // [byte[] bytes, int offset, int value]
-    {
-        $bytes[($offset + 3)] = $value;
-        $bytes[($offset + 2)] = (($value >> 8));
-        $bytes[($offset + 1)] = (($value >> 16));
-        $bytes[$offset] = (($value >> 24));
+    public static function intToByteArray_21c8b6ca (&$bytes, $offset, $value) // [byte[] bytes, int offset, int value]
+    {   
+
+        $bytes = unpack("C*", pack("L", $value));
+        //$bytes[$offset + 3] = $value;
+        //$bytes[$offset + 2] = (($value >> 8));
+        //$bytes[$offset + 1] = (($value >> 16));
+        //$bytes[$offset] = (($value >> 24));
         return 4;
     }
     public static function intToLittleEndianByteArray ($bytes, $offset, $value) // [byte[] bytes, int offset, int value]

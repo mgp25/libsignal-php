@@ -62,14 +62,14 @@ class SymmetricBuilder{
         protected $theirBaseKey;    // ECPublicKey
         protected $theirRatchetKey;    // ECPublicKey
         protected $theirIdentityKey;    // IdentityKey
-        public function SymmetricBuilder():
+        public function SymmetricBuilder(){
             $this->ourIdentityKey = null;
             $this->ourBaseKey = null;
             $this->ourRatchetKey = null;
             $this->theirRatchetKey = null;
             $this->theirIdentityKey = null;
             $this->theirBaseKey = null;
-
+        }
         public function setOurIdentityKey($ourIdentityKey){
             $this->ourIdentityKey = $ourIdentityKey;
             return $this;

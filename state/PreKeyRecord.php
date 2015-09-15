@@ -7,7 +7,7 @@ require_once(__DIR__."/../ecc/ECPublicKey.php");
 require_once(__DIR__."/pb_proto_LocalStorageProtocol.php");
 class PreKeyRecord {
     protected $structure;    // PreKeyRecordStructure
-    public static function PreKeyRecord ($id = null, $keyPair = null,$serialized = null) // [int id, ECKeyPair keyPair]
+    public function PreKeyRecord ($id = null, $keyPair = null,$serialized = null) // [int id, ECKeyPair keyPair]
     {
         $this->structure = new Textsecure_PreKeyRecordStructure();
         if($serialized == null){

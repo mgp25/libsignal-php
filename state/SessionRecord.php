@@ -49,7 +49,12 @@ class SessionRecord{
     public function getPreviousSessionStates(){
         return $this->previousStates;
     }
-
+    public function removePreviousSessionStateAt($i){
+        if(isset($this->previousStates[$i])){
+            unset($this->previousStates[$i]);
+            $this->previousStates = array_values($this->previousStates);
+        }
+    }
     public function isFresh(){
         return $this->fresh;
     }
@@ -76,8 +81,15 @@ class SessionRecord{
         foreach($this->previousStates as $previousState){
             $previousStructures[] = $previousState->getStructure();
         }
+        /*
+            Python
+            record.currentSession.MergeFrom(self.sessionState.getStructure())
+            record.previousSessions.extend(previousStructures)
+
+            return record.SerializeToString()
+        */
         $record = new Textsecure_RecordStructure();
-        $record->currentSession->MergeFrom($this->sessionState.getStructure());
+        $record->setCurrentSession($this->sessionState->getStructure());
         $record->setPreviousSessions(array_merge($record->previousStructures,$previousStructures));
         return $record->serializeToString();
     }

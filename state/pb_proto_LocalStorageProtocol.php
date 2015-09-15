@@ -2050,17 +2050,17 @@ class Textsecure_SenderKeyStateStructure_SenderMessageKey extends \ProtobufMessa
 class Textsecure_SenderKeyStateStructure_SenderSigningKey extends \ProtobufMessage
 {
     /* Field index constants */
-    const PUBLIC = 1;
-    const PRIVATE = 2;
+    const _PUBLIC = 1;
+    const _PRIVATE = 2;
 
     /* @var array Field descriptors */
     protected static $fields = array(
-        self::PUBLIC => array(
+        self::_PUBLIC => array(
             'name' => 'public',
             'required' => false,
             'type' => 7,
         ),
-        self::PRIVATE => array(
+        self::_PRIVATE => array(
             'name' => 'private',
             'required' => false,
             'type' => 7,
@@ -2084,8 +2084,8 @@ class Textsecure_SenderKeyStateStructure_SenderSigningKey extends \ProtobufMessa
      */
     public function reset()
     {
-        $this->values[self::PUBLIC] = null;
-        $this->values[self::PRIVATE] = null;
+        $this->values[self::_PUBLIC] = null;
+        $this->values[self::_PRIVATE] = null;
     }
 
     /**
@@ -2107,7 +2107,7 @@ class Textsecure_SenderKeyStateStructure_SenderSigningKey extends \ProtobufMessa
      */
     public function setPublic($value)
     {
-        return $this->set(self::PUBLIC, $value);
+        return $this->set(self::_PUBLIC, $value);
     }
 
     /**
@@ -2117,7 +2117,7 @@ class Textsecure_SenderKeyStateStructure_SenderSigningKey extends \ProtobufMessa
      */
     public function getPublic()
     {
-        return $this->get(self::PUBLIC);
+        return $this->get(self::_PUBLIC);
     }
 
     /**
@@ -2129,7 +2129,7 @@ class Textsecure_SenderKeyStateStructure_SenderSigningKey extends \ProtobufMessa
      */
     public function setPrivate($value)
     {
-        return $this->set(self::PRIVATE, $value);
+        return $this->set(self::_PRIVATE, $value);
     }
 
     /**
@@ -2139,7 +2139,7 @@ class Textsecure_SenderKeyStateStructure_SenderSigningKey extends \ProtobufMessa
      */
     public function getPrivate()
     {
-        return $this->get(self::PRIVATE);
+        return $this->get(self::_PRIVATE);
     }
 }
 

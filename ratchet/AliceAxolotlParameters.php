@@ -54,7 +54,7 @@ class AliceAxolotlParameters {
         return $this->theirRatchetKey;
     }
 }
-class AliceBuilder(){
+class AliceBuilder{
     protected $ourIdentityKey;
     protected $ourBaseKey;
     protected $theirIdentityKey;
@@ -69,17 +69,17 @@ class AliceBuilder(){
         $this->theirRatchetKey = null;
         $this->theirOneTimePreKey = null;
     }
-    public function setOurIdentityKey($ourIdentityKey):
-        $this->ourIdentityKey = $ourIdentityKey
+    public function setOurIdentityKey($ourIdentityKey){
+        $this->ourIdentityKey = $ourIdentityKey;
         return $this;
-
+    }
     public function setOurBaseKey($ourBaseKey){
         $this->ourBaseKey = $ourBaseKey;
         return $this;
     }
 
     public function setTheirRatchetKey($theirRatchetKey){
-        $this->theirRatchetKey = $theirRatchetKey
+        $this->theirRatchetKey = $theirRatchetKey;
         return $this;
     }
     public function setTheirIdentityKey($theirIdentityKey){

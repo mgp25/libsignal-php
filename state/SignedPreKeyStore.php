@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__."/../InvalidKeyIdException.php");
-abstract cass SignedPreKeyStore {
+abstract class SignedPreKeyStore {
     abstract function loadSignedPreKey ($signedPreKeyId); // [int signedPreKeyId]
     abstract function loadSignedPreKeys ();
     abstract function storeSignedPreKey ($signedPreKeyId, $record); // [int signedPreKeyId, SignedPreKeyRecord record]

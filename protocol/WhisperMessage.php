@@ -64,8 +64,8 @@
                      if($proto_message->getCiphertext() == null || $proto_message->getCounter() == null || $proto_message->getRatchetKey() == null)
                          throw new InvalidMessageException("Incomplete message.");
                      $this->serialized = $serialized;
-                    $this->senderRatchetKey = Curve::decodePoint(bytearray(whisperMessage.ratchetKey), 0)
-                    $this->messageVersion = ByteUtil::highBitsToInt(version)
+                    $this->senderRatchetKey = Curve::decodePoint($whisperMessage->getRatchetKey(), 0);
+                    $this->messageVersion = ByteUtil::highBitsToInt($version);
                     $this->counter = $proto_message->getCounter();
                     $this->previousCounter = $proto_message->getPreviousCounter();
                     $this->ciphertext = $proto_message->getCiphertext();
@@ -81,7 +81,7 @@
         public function getRatchetKey(){
             return $this->ratchetKey;
         }
-        public getMessageVersion(){
+        public function getMessageVersion(){
             return $this->messageVersion;
         }
         public function getCounter(){
