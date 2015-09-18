@@ -27,7 +27,7 @@
                 $result = "";
                 for($i = $this->getIterationStartOffset(); $i<$iterations+$this->getIterationStartOffset();$i++)
                 {
-                    $mac  = hash_init($prk,"sha256");
+                    $mac  = hash_init("sha256",HASH_HMAC,$prk);
                     hash_update($mac, $mixin);
                     if($info != null){
                         hash_update($mac,$info);

@@ -25,12 +25,13 @@
                                              $whisperMessage = null, 
                                              $serialized = null)
         {
-            if($serialized == null){
+            if($serialized != null){
                 $this->version = ByteUtil::highBitsToInt($serialized[0]);
                 if($this->version  > self::CURRENT_VERSION){
                     throw new InvalidVersionException("Unknown version ".$this->version);
                 }
                 $preKeyWhisperMessage = new Textsecure_PreKeyWhisperMessage();
+                
                 $preKeyWhisperMessage->parseFromString(substr($serialized,1));
                 if (($this->version == 2 && $preKeyWhisperMessage->getPreKeyId() == null) ||
                     ($this->version == 3 && $preKeyWhisperMessage->getSignedPreKeyId() == null) ||
@@ -70,11 +71,11 @@
                     $this->message = $whisperMessage;
 
                     $builder = new Textsecure_PreKeyWhisperMessage();
-                    $builder->setSignedPreKeyId($signedPreKeyId);
-                    $builder->setBaseKey($baseKey);
-                    $builder->setIdentityKey($identityKey);
+                    $builder->setSignedPreKeyId($this->signedPreKeyId);
+                    $builder->setBaseKey($this->baseKey->serialize());
+                    $builder->setIdentityKey($this->identityKey->serialize());
                     $builder->setMessage($whisperMessage->serialize());
-                    $builder->setRegistrationId($registrationId);
+                    $builder->setRegistrationId($this->registrationId);
                     if($preKeyId != null){
                         $builder->setPreKeyId($preKeyId);
                     }
@@ -83,7 +84,7 @@
                     $this->serialized = ByteUtil::combine([$versionBytes,$messageBytes]);
                 }
                 catch(Exception $ex){
-                    throw new InvalidMessageException($ex->getMessage());
+                    throw new InvalidMessageException($ex->getMessage()." - ".$ex->getLine()." - ".$ex->getFile());
                 }
             }
         }

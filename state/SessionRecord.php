@@ -18,7 +18,7 @@ class SessionRecord{
         else if($serialized != null){
             $record = new Textsecure_RecordStructure();
             $record->parseFromString($serialized);
-            $this->sessionState = new SessionState($record->currentSession);
+            $this->sessionState = new SessionState($record->getCurrentSession());
             $this->fresh = false;
             foreach($record->getPreviousSessions() as $previousStructure)
                 $this->previousStates[] = new SessionState($previousStructure);
@@ -78,8 +78,10 @@ class SessionRecord{
     public function serialize(){
         $previousStructures = [];
         //previousState.getStructure() for previousState in self.previousStates
+        $record = new Textsecure_RecordStructure();
+        $record->setCurrentSession($this->sessionState->getStructure());
         foreach($this->previousStates as $previousState){
-            $previousStructures[] = $previousState->getStructure();
+            $record->appendPreviousSessions($previousState->getStructure());
         }
         /*
             Python
@@ -88,9 +90,6 @@ class SessionRecord{
 
             return record.SerializeToString()
         */
-        $record = new Textsecure_RecordStructure();
-        $record->setCurrentSession($this->sessionState->getStructure());
-        $record->setPreviousSessions(array_merge($record->previousStructures,$previousStructures));
         return $record->serializeToString();
     }
 }

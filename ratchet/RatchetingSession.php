@@ -111,8 +111,8 @@ class RatchetingSession {
         $kdf = HKDF::createFor($sessionVersion);
         $derivedSecretBytes = $kdf->deriveSecrets($masterSecret,  "WhisperText", 64);
         $derivedSecrets = ByteUtil::split($derivedSecretBytes, 32, 32);
-        return new DerivedKeys(RootKey($kdf, $derivedSecrets[0]),
-                                             ChainKey($kdf, $derivedSecrets[1], 0));
+        return new DerivedKeys(new RootKey($kdf, $derivedSecrets[0]),
+                                             new ChainKey($kdf, $derivedSecrets[1], 0));
     }
     public static function isAlice($ourKey, $theirKey){
         /*

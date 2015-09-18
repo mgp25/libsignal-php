@@ -5,7 +5,8 @@ class IdentityKey {
     protected $publicKey;    // ECPublicKey
     public function IdentityKey ($publicKeyOrBytes, $offset = null) // [ECPublicKey publicKey]
     {
-        if($offset == null){
+    
+        if($offset === null){
             $this->publicKey = $publicKeyOrBytes;
         } 
         else $this->publicKey = Curve::decodePoint($publicKeyOrBytes,$offset);

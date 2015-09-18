@@ -163,7 +163,7 @@ class SessionBuilder{
         if ($preKey->getSignedPreKey() == null && $preKey->getPreKey() == null)
             throw new InvalidKeyException("Both signed and unsigned prekeys are absent!");
 
-        $supportsV3           = $preKey.getSignedPreKey() != null;
+        $supportsV3           = $preKey->getSignedPreKey() != null;
         $sessionRecord        = $this->sessionStore->loadSession($this->recipientId, $this->deviceId);
         $ourBaseKey           = Curve::generateKeyPair();
         $theirSignedPreKey    = $supportsV3?$preKey->getSignedPreKey():$preKey->getPreKey();
@@ -173,14 +173,13 @@ class SessionBuilder{
         $parameters = new AliceBuilder();
 
         $parameters->setOurBaseKey($ourBaseKey)
-                ->setOurIdentityKey($identityKeyStore->getIdentityKeyPair())
+                ->setOurIdentityKey($this->identityKeyStore->getIdentityKeyPair())
                 ->setTheirIdentityKey($preKey->getIdentityKey())
                 ->setTheirSignedPreKey($theirSignedPreKey)
                 ->setTheirRatchetKey($theirSignedPreKey)
                 ->setTheirOneTimePreKey($supportsV3?$theirOneTimePreKey:null);
 
         if(!$sessionRecord->isFresh()) $sessionRecord->archiveCurrentState();
-
         RatchetingSession::initializeSessionAsAlice($sessionRecord->getSessionState(),
                                                    ($supportsV3?3:2),
                                                    $parameters->create());

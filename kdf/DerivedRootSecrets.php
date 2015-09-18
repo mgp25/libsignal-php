@@ -7,8 +7,8 @@ class DerivedRootSecrets {
     public function DerivedRootSecrets ($okm) // [byte[] okm]
     {
         $keys = ByteUtil::split($okm, 32, 32);
-        $me->rootKey = $keys[0];
-        $me->chainKey = $keys[1];
+        $this->rootKey = $keys[0];
+        $this->chainKey = $keys[1];
     }
     public function getRootKey ()
     {

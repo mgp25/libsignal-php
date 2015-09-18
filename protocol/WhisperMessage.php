@@ -29,7 +29,7 @@
                 $proto_message->setRatchetKey((string)$senderRatchetKey->serialize());
                 $proto_message->setCounter($counter);
                 $proto_message->setPreviousCounter($previousCounter);
-                $proto_message->setChipertext($cipherText);
+                $proto_message->setCiphertext($cipherText);
                 $message = $proto_message->serializeToString();
                 
                 $mac = $this->getMac($messageVersion,$senderIdentityKey,$receiverIdentityKey,$macKey,ByteUtil::combine([$version,$message]));
@@ -114,7 +114,7 @@
             } 
             hash_update($mac, $serialized);
             $result = hash_final($mac);
-            return ByteUtil::trim($mac, self::MAC_LENGTH);
+            return ByteUtil::trim($result, self::MAC_LENGTH);
         }
     }
 

@@ -20,7 +20,7 @@ class AliceAxolotlParameters {
         $this->theirRatchetKey = $theirRatchetKey;
         $this->theirOneTimePreKey = $theirOneTimePreKey;
         if (($ourIdentityKey == null) || ($ourBaseKey == null) 
-            || ($theirIdentityKey == null) || ($theirSignedPreKey == null) || ($theirRatchetKey == null) || ($theirOneTimePreKey == null))
+            || ($theirIdentityKey == null) || ($theirSignedPreKey == null) || ($theirRatchetKey == null))
         {
             throw new Exception("Null values!");
         }

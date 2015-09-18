@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__. "/AxolotlLogger.php";
 class Log extends AxolotlLogger {
     public static function verbose($tag, $msg) // [String tag, String msg]
     {
@@ -51,7 +52,7 @@ class Log extends AxolotlLogger {
         else return "";
     }
     //old function name log
-    protected static function writeLog ($priority, $tag, $msg) // [int priority, String tag, String msg]
+    public function writeLog ($priority, $tag, $msg) // [int priority, String tag, String msg]
     {
         $logger = AxolotlLoggerProvider::getProvider();
         if (($logger != null))

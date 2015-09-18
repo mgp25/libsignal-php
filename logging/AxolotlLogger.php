@@ -6,5 +6,5 @@ abstract class AxolotlLogger {
     const WARN = 5;
     const ERROR = 6;
     const ASSERT = 7;
-    abstract function log ($priority, $tag, $message); // [int priority, String tag, String message]
+    abstract function writeLog ($priority, $tag, $message); // [int priority, String tag, String message]
 }

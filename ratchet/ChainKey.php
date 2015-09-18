@@ -22,7 +22,7 @@
         }
         public function getNextChainKey(){
             $nextKey = $this->getBaseMaterial(self::CHAIN_KEY_SEED);
-            return new ChainKey($this->kdf, $this->nextKey, $this->index + 1);
+            return new ChainKey($this->kdf, $nextKey, $this->index + 1);
         }
         public function getMessageKeys(){
             $inputKeyMaterial = $this->getBaseMaterial(self::MESSAGE_KEY_SEED);

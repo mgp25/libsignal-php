@@ -19,27 +19,27 @@
 
 //namespace libaxolotl;
 
-require __DIR__."/ecc/Curve.php";
-require __DIR__."/ecc/ECKeyPair.php";
-require __DIR__."/ecc/ECPublicKey.php";
-require __DIR__."/protocol/CiphertextMessage.php";
-require __DIR__."/protocol/PreKeyWhisperMessage.php";
-require __DIR__."/protocol/WhisperMessage.php";
-require __DIR__."/ratchet/ChainKey.php";
-require __DIR__."/ratchet/MessageKeys.php";
-require __DIR__."/ratchet/RootKey.php";
-require __DIR__."/state/AxolotlStore.php";
-require __DIR__."/state/IdentityKeyStore.php";
-require __DIR__."/state/PreKeyStore.php";
-require __DIR__."/state/SessionRecord.php";
-require __DIR__."/state/SessionState.php";
-require __DIR__."/state/SessionStore.php";
-require __DIR__."/state/SignedPreKeyStore.php";
-require __DIR__."/util/ByteUtil.php";
-require __DIR__."/util/Pair.php";
-//require __DIR__."/util/guava/Optional.php";
+require_once __DIR__."/ecc/Curve.php";
+require_once __DIR__."/ecc/ECKeyPair.php";
+require_once __DIR__."/ecc/ECPublicKey.php";
+require_once __DIR__."/protocol/CiphertextMessage.php";
+require_once __DIR__."/protocol/PreKeyWhisperMessage.php";
+require_once __DIR__."/protocol/WhisperMessage.php";
+require_once __DIR__."/ratchet/ChainKey.php";
+require_once __DIR__."/ratchet/MessageKeys.php";
+require_once __DIR__."/ratchet/RootKey.php";
+require_once __DIR__."/state/AxolotlStore.php";
+require_once __DIR__."/state/IdentityKeyStore.php";
+require_once __DIR__."/state/PreKeyStore.php";
+require_once __DIR__."/state/SessionRecord.php";
+require_once __DIR__."/state/SessionState.php";
+require_once __DIR__."/state/SessionStore.php";
+require_once __DIR__."/state/SignedPreKeyStore.php";
+require_once __DIR__."/util/ByteUtil.php";
+require_once __DIR__."/util/Pair.php";
+//require_once __DIR__."/util/guava/Optional.php";
 
-//require "/state/SessionState/UnacknowledgedPreKeyMessageItems.php";
+//require_once "/state/SessionState/UnacknowledgedPreKeyMessageItems.php";
 class SessionCipher
 {
 
@@ -76,7 +76,7 @@ class SessionCipher
         $sessionVersion  = $sessionState->getSessionVersion();
 
         $ciphertextBody    = $this->getCiphertext($sessionVersion, $messageKeys, $paddedMessage);
-        $ciphertextMessage = WhisperMessage($sessionVersion, $messageKeys->getMacKey(),
+        $ciphertextMessage = new WhisperMessage($sessionVersion, $messageKeys->getMacKey(),
                                                                $senderEphemeral, $chainKey->getIndex(),
                                                                $previousCounter, $ciphertextBody,
                                                                $sessionState->getLocalIdentityKey(),
@@ -85,6 +85,8 @@ class SessionCipher
         if ($sessionState->hasUnacknowledgedPreKeyMessage()){
             $items = $sessionState->getUnacknowledgedPreKeyMessageItems();
             $localRegistrationid = $sessionState->getLocalRegistrationId();
+
+           
 
             $ciphertextMessage = new PreKeyWhisperMessage($sessionVersion, $localRegistrationid, $items->getPreKeyId(),
                                                      $items->getSignedPreKeyId(), $items->getBaseKey(),
@@ -336,7 +338,7 @@ class AESCipher{
             return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $rawPadded, MCRYPT_MODE_CBC, $this->iv);
         }
         else{
-            return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $raw, "ctr", $counter->Next());
+            return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $raw, "ctr", $this->counter->Next());
         }
     }
     public function decrypt($enc){
@@ -344,7 +346,7 @@ class AESCipher{
             return $this->unpad(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $enc, MCRYPT_MODE_CBC, $this->iv));
         } 
         else{
-            return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $raw, "ctr", $counter->Next());
+            return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $raw, "ctr", $this->counter->Next());
         }
     }
 }

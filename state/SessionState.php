@@ -105,8 +105,9 @@ class SessionState{
 
         $chain = new Textsecure_SessionStructure_Chain();
         $chain->setSenderRatchetKey($senderRatchetKey->serialize());
-        $chain->getChainKey->setKey($chainKey->getKey());
-        $chain->chainKey->setIndex($chainKey.getIndex());
+        $chain->setChainKey(new Textsecure_SessionStructure_Chain_ChainKey());
+        $chain->getChainKey()->setKey($chainKey->getKey());
+        $chain->getChainKey()->setIndex($chainKey->getIndex());
 
         $this->sessionStructure->appendReceiverChains($chain);
 
@@ -121,9 +122,10 @@ class SessionState{
         $senderRatchetKeyPair = $ECKeyPair_senderRatchetKeyPair;
 
         $senderChain = new Textsecure_SessionStructure_Chain();
-
+        $this->sessionStructure->setSenderChain($senderChain);
         $this->sessionStructure->getSenderChain()->setSenderRatchetKey($senderRatchetKeyPair->getPublicKey()->serialize());
-        $this->sessionStructure->senderChain->setSenderRatchetKeyPrivate($senderRatchetKeyPair->getPrivateKey()->serialize());
+        $this->sessionStructure->getSenderChain()->setSenderRatchetKeyPrivate($senderRatchetKeyPair->getPrivateKey()->serialize());
+        $this->sessionStructure->getSenderChain()->setChainKey(new Textsecure_SessionStructure_Chain_ChainKey());
         $this->sessionStructure->getSenderChain()->getChainKey()->setKey($chainKey->getKey());
         $this->sessionStructure->getSenderChain()->getChainKey()->setIndex($chainKey->getIndex());
     }
@@ -135,7 +137,7 @@ class SessionState{
     public function setSenderChainKey($ChainKey_nextChainKey){
         $nextChainKey = $ChainKey_nextChainKey;
 
-        $this->sessionStructure->getSenderChain()->getChainKey()->setKey($nextChainKey.getKey());
+        $this->sessionStructure->getSenderChain()->getChainKey()->setKey($nextChainKey->getKey());
         $this->sessionStructure->getSenderChain()->getChainKey()->setIndex($nextChainKey->getIndex());
 
     }
@@ -256,7 +258,8 @@ class SessionState{
         :type signedPreKeyId: int
         :type baseKey: ECPublicKey
         */
-
+        if(!$this->hasUnacknowledgedPreKeyMessage())
+            $this->sessionStructure->setPendingPreKey(new Textsecure_SessionStructure_PendingPreKey());
         $this->sessionStructure->getPendingPreKey()->setSignedPreKeyId($signedPreKeyId);
         $this->sessionStructure->getPendingPreKey()->setBaseKey($baseKey->serialize());
 
@@ -268,12 +271,12 @@ class SessionState{
     }
     public function getUnacknowledgedPreKeyMessageItems(){
         $preKeyId = null;
-        if($this->sessionStructure->getPendingPreKey->getPreKeyId() != null){
+        if($this->sessionStructure->getPendingPreKey()->getPreKeyId() != null){
             $preKeyId = $this->sessionStructure->getPendingPreKey()->getPreKeyId();
         }
 
         return new UnacknowledgedPreKeyMessageItems($preKeyId,
-                                     $this->sessionStructure->getPendingPreKey()->getSignedPreKeyId,
+                                     $this->sessionStructure->getPendingPreKey()->getSignedPreKeyId(),
                                      Curve::decodePoint($this->sessionStructure->getPendingPreKey()->getBaseKey(), 0));
     }
     public function clearUnacknowledgedPreKeyMessage(){

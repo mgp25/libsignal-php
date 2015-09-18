@@ -1,31 +1,26 @@
 <?php
-require_once("com/google/protobuf/ByteString.php");
-require_once("InvalidKeyException.php");
-require_once("ecc/Curve.php");
-require_once("ecc/ECKeyPair.php");
-require_once("ecc/ECPrivateKey.php");
-require_once("ecc/ECPublicKey.php");
-require_once("java/io/IOException.php");
-require_once("state/StorageProtos/SignedPreKeyRecordStructure.php");
+require_once(__DIR__."/../InvalidKeyException.php");
+require_once(__DIR__."/../ecc/Curve.php");
+require_once(__DIR__."/../ecc/ECKeyPair.php");
+require_once(__DIR__."/../ecc/ECPrivateKey.php");
+require_once(__DIR__."/../ecc/ECPublicKey.php");
+require_once(__DIR__."/../state/pb_proto_LocalStorageProtocol.php");
 class SignedPreKeyRecord {
-    protected $structure;    // SignedPreKeyRecordStructure
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__e1c77ae1 ($id, $timestamp, $keyPair, $signature) // [int id, long timestamp, ECKeyPair keyPair, byte[] signature]
+    protected $structure;
+    public function SignedPreKeyRecord ($id = null, $timestamp = null, $keyPair = null, $signature = null ,$serialized = null) // [int id, long timestamp, ECKeyPair keyPair, byte[] signature]
     {
-        $me = new self();
-        $me->__init();
-        $me->structure = $SignedPreKeyRecordStructure->newBuilder()->setId($id)->setPublicKey($ByteString->copyFrom($keyPair->getPublicKey()->serialize()))->setPrivateKey($ByteString->copyFrom($keyPair->getPrivateKey()->serialize()))->setSignature($ByteString->copyFrom($signature))->setTimestamp($timestamp)->build();
-        return $me;
-    }
-    public static function constructor__ae1a4a6a ($serialized) // [byte[] serialized]
-    {
-        $me = new self();
-        $me->__init();
-        $me->structure = $SignedPreKeyRecordStructure->parseFrom($serialized);
-        return $me;
+        $struct = new Textsecure_SignedPreKeyRecordStructure();
+        if($serialized == null){
+            $struct->setId($id);
+            $struct->setPublicKey((string)$keyPair->getPublicKey()->serialize());
+            $struct->setPrivateKey((string)$keyPiar->getPrivateKey()->serialize());
+            $struct->setSignature((string)$signature);
+            $struct->setTimestamp($timestamp);
+        }
+        else{
+            $struct->parseFromString($serialized);
+        }
+        $this->structure = $struct;//$SignedPreKeyRecordStructure->newBuilder()->setId($id)->setPublicKey($ByteString->copyFrom($keyPair->getPublicKey()->serialize()))->setPrivateKey($ByteString->copyFrom($keyPair->getPrivateKey()->serialize()))->setSignature($ByteString->copyFrom($signature))->setTimestamp($timestamp)->build();
     }
     public function getId ()
     {
@@ -39,22 +34,21 @@ class SignedPreKeyRecord {
     {
         try
         {
-            $publicKey = Curve::decodePoint($this->structure->getPublicKey()->toByteArray(), 0);
-            $privateKey = Curve::decodePrivatePoint($this->structure->getPrivateKey()->toByteArray());
-            return ECKeyPair::constructor__43f151c1($publicKey, $privateKey);
+            $publicKey = Curve::decodePoint($this->structure->getPublicKey(), 0);
+            $privateKey = Curve::decodePrivatePoint($this->structure->getPrivateKey());
+            return  new ECKeyPair($publicKey, $privateKey);
         }
         catch (InvalidKeyException $e)
         {
-            throw new AssertionError($e);
+            throw new Exception($e->getMessage());
         }
     }
     public function getSignature ()
     {
-        return $this->structure->getSignature()->toByteArray();
+        return $this->structure->getSignature();
     }
     public function serialize ()
     {
-        return $this->structure->toByteArray();
+        return $this->structure->serializeToString();
     }
 }
-SignedPreKeyRecord::__staticinit(); // initialize static vars for this class on load

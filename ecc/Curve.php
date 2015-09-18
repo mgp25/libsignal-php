@@ -5,6 +5,7 @@ require_once __DIR__."/ECPrivateKey.php";
 require_once __DIR__."/ECPublicKey.php";
 require_once __DIR__."/DjbECPublicKey.php";
 require_once __DIR__."/DjbECPrivateKey.php";
+if(!class_exists("Curve")){
 class Curve {
     const DJB_TYPE = 0x05;  // int
     public static function generateKeyPair ()
@@ -16,7 +17,7 @@ class Curve {
     }
     public static function decodePoint ($bytes, $offset) // [byte[] bytes, int offset] 
     {
-        $type = (ord($bytes[$offset]) & 0xFF);
+        $type = (((int)$bytes[$offset]) & 0xFF);
         switch ($type) {
             case Curve::DJB_TYPE:
                 $keyBytes = substr($bytes,$offset+1);/* from: System.arraycopy(bytes, offset + 1, keyBytes, 0, keyBytes.length) -> php string == java byte array*/;
@@ -75,4 +76,5 @@ class Curve {
         }
         else throw new Exception("Cannot generate secure random bytes");
     }
+}
 }
