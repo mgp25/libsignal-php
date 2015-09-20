@@ -9,7 +9,7 @@ class DjbECPublicKey implements ECPublicKey {
     }
     public function serialize ()
     {
-        return Curve::DJB_TYPE.$this->publicKey;
+        return chr(Curve::DJB_TYPE).$this->publicKey;
     }
     public function getType ()
     {
