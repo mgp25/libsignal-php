@@ -12,7 +12,7 @@ class PreKeyRecord {
         $this->structure = new Textsecure_PreKeyRecordStructure();
         if($serialized == null){
 
-            $this->structure->setId($id)->setPublicKey((string)$keyPair->getPublicKy()->serialize())->setPrivateKey((string)$keyPair->getPrivateKey()->serialize());
+            $this->structure->setId($id)->setPublicKey((string)$keyPair->getPublicKey()->serialize())->setPrivateKey((string)$keyPair->getPrivateKey()->serialize());
         }
         else{
             try{

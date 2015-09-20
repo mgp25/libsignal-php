@@ -1,17 +1,24 @@
 <?php
 
+require __DIR__.'/../ecc/Curve.php';
+require __DIR__.'/../IdentityKey.php';
+require __DIR__.'/../util/Medium.php';
+require __DIR__.'/../IdentityKeyPair.php';
+require __DIR__.'/../state/PreKeyRecord.php';
+require __DIR__.'/../state/SignedPreKeyRecord.php';
+
 class KeyHelper{
 
 
 
-    /*    
+    /*
     Generate an identity key pair.  Clients should only do this once,
     at install time.
     @return the generated IdentityKeyPair.
     */
     public static function  generateIdentityKeyPair(){
         $keyPair   = Curve::generateKeyPair();
-        $publicKey = IdentityKey($keyPair->getPublicKey());
+        $publicKey = new IdentityKey($keyPair->getPublicKey());
         $serialized = '0a21056e8936e8367f768a7bba008ade7cf58407bdc7a6aae293e2cb7c06668dcd7d5e12205011524f0c15467100dd6'.
                      '03e0d6020f4d293edfbcd82129b14a88791ac81365c';
         $serialized = pack('H*', $serialized);
