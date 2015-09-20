@@ -13,7 +13,7 @@ class SignedPreKeyRecord {
         if($serialized == null){
             $struct->setId($id);
             $struct->setPublicKey((string)$keyPair->getPublicKey()->serialize());
-            $struct->setPrivateKey((string)$keyPiar->getPrivateKey()->serialize());
+            $struct->setPrivateKey((string)$keyPair->getPrivateKey()->serialize());
             $struct->setSignature((string)$signature);
             $struct->setTimestamp($timestamp);
         }
