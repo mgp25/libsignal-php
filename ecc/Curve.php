@@ -17,7 +17,7 @@ class Curve {
     }
     public static function decodePoint ($bytes, $offset) // [byte[] bytes, int offset] 
     {
-        $type = (((int)$bytes[$offset]) & 0xFF);
+        $type = ((ord($bytes[$offset]) & 0xFF));
         switch ($type) {
             case Curve::DJB_TYPE:
                 $keyBytes = substr($bytes,$offset+1);/* from: System.arraycopy(bytes, offset + 1, keyBytes, 0, keyBytes.length) -> php string == java byte array*/;
