@@ -1,15 +1,13 @@
 <?php
 
-require __DIR__.'/../ecc/Curve.php';
-require __DIR__.'/../IdentityKey.php';
-require __DIR__.'/../util/Medium.php';
-require __DIR__.'/../IdentityKeyPair.php';
-require __DIR__.'/../state/PreKeyRecord.php';
-require __DIR__.'/../state/SignedPreKeyRecord.php';
+require_once __DIR__ . "/Medium.php";
+require_once __DIR__ . "/../ecc/Curve.php";
+require_once __DIR__ . "/../IdentityKey.php";
+require_once __DIR__ . "/../IdentityKeyPair.php";
+require_once __DIR__ . "/../state/PreKeyRecord.php";
+require_once __DIR__ . "/../state/SignedPreKeyRecord.php";
 
 class KeyHelper{
-
-
 
     /*
     Generate an identity key pair.  Clients should only do this once,
