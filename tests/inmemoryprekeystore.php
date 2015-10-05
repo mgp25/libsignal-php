@@ -24,7 +24,7 @@ class InMemoryPreKeyStore extends PreKeyStore{
     }
 
     public function containsPreKey($preKeyId){
-        return in_array($preKeyId , $this->store);
+        return isset($this->store[$preKeyId]);
     }
 
     public function removePreKey($preKeyId){

@@ -1,39 +1,33 @@
 <?php
-require_once("ecc/ECKeyPair.php");
-require_once("groups/state/SenderKeyRecord.php");
-require_once("groups/state/SenderKeyStore.php");
-require_once("protocol/SenderKeyDistributionMessage.php");
+require_once __DIR__."/../ecc/ECKeyPair.php";
+require_once __DIR__."/state/SenderKeyRecord.php";
+require_once __DIR__."/state/SenderKeyStore.php";
+require_once __DIR__."/../protocol/SenderKeyDistributionMessage.php";
 class GroupSessionBuilder {
-    protected $senderKeyStore;    // SenderKeyStore
-    private function __init() { // default class members
-    }
-    public static function __staticinit() { // static class members
-    }
-    public static function constructor__54c7d337 ($senderKeyStore) // [SenderKeyStore senderKeyStore]
+    protected $senderKeyStore;
+    public function GroupSessionBuilder ($senderKeyStore)
     {
-        $me = new self();
-        $me->__init();
-        $me->senderKeyStore = $senderKeyStore;
-        return $me;
+        $this->senderKeyStore = $senderKeyStore;
     }
-    public function processSender ($sender, $senderKeyDistributionMessage) // [String sender, SenderKeyDistributionMessage senderKeyDistributionMessage]
+    public function processSender ($sender, $senderKeyDistributionMessage)
     {
-        /* !!! synchronized block not supported !!!: ($GroupCipher->LOCK) */
-        {
-            $senderKeyRecord = $this->senderKeyStore->loadSenderKey($sender);
-            $senderKeyRecord->addSenderKeyState($senderKeyDistributionMessage->getId(), $senderKeyDistributionMessage->getIteration(), $senderKeyDistributionMessage->getChainKey(), $senderKeyDistributionMessage->getSignatureKey());
-            $this->senderKeyStore->storeSenderKey($sender, $senderKeyRecord);
-        }
+        $senderKeyRecord = $this->senderKeyStore->loadSenderKey($sender);
+
+        $senderKeyRecord->addSenderKeyState($senderKeyDistributionMessage->getId(),
+                                            $senderKeyDistributionMessage->getIteration(),
+                                            $senderKeyDistributionMessage->getChainKey(),
+                                            $senderKeyDistributionMessage->getSignatureKey());
+        $this->senderKeyStore->storeSenderKey($sender, $senderKeyRecord);
     }
-    public function process ($groupId, $keyId, $iteration, $chainKey, $signatureKey) // [String groupId, int keyId, int iteration, byte[] chainKey, ECKeyPair signatureKey]
+
+    public function process ($groupId, $keyId, $iteration, $chainKey, $signatureKey)
     {
-        /* !!! synchronized block not supported !!!: ($GroupCipher->LOCK) */
-        {
-            $senderKeyRecord = $this->senderKeyStore->loadSenderKey($groupId);
-            $senderKeyRecord->setSenderKeyState($keyId, $iteration, $chainKey, $signatureKey);
-            $this->senderKeyStore->storeSenderKey($groupId, $senderKeyRecord);
-            return SenderKeyDistributionMessage::constructor__d8d86e83($keyId, $iteration, $chainKey, $signatureKey->getPublicKey());
-        }
+        $senderKeyRecord = $this->senderKeyStore->loadSenderKey($groupId);
+
+        $senderKeyRecord->setSenderKeyState($keyId, $iteration, $chainKey, $signatureKey);
+
+        $this->senderKeyStore->storeSenderKey($groupId, $senderKeyRecord);
+
+        return new SenderKeyDistributionMessage($keyId, $iteration, $chainKey, $signatureKey->getPublicKey());
     }
 }
-GroupSessionBuilder::__staticinit(); // initialize static vars for this class on load

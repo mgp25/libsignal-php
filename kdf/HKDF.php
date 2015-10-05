@@ -18,7 +18,7 @@
             public function extract($salt,$inputKey){
                 $mac = hash_init("sha256",HASH_HMAC,$salt);
                 hash_update($mac, $inputKey);
-                return hash_final($mac);
+                return hash_final($mac,true);
             }
             public function expand($prk,$info,$outputSize){
                 $iterations = (int)ceil(floatval($outputSize)/floatval(self::HASH_OUTPUT_SIZE));
@@ -34,7 +34,7 @@
                     }
                     $updateChr = chr($i % 256);
                     hash_update($mac, $updateChr);
-                    $stepResult = hash_final($mac);
+                    $stepResult = hash_final($mac,true);
                     $stepSize = min($remainingBytes,strlen($stepResult));
                     $result .= substr($stepResult,0,$stepSize);
                     $mixin = $stepResult;

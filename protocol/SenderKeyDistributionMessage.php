@@ -12,7 +12,7 @@ class SenderKeyDistributionMessage extends CiphertextMessage {
     protected $chainKey;    // byte[]
     protected $signatureKey;    // ECPublicKey
     protected $serialized;    // byte[]
-    public function SenderKeyDistributionMessage($id, $iteration, $chainKey, $signatureKey,$serialized = null) // [int id, int iteration, byte[] chainKey, ECPublicKey signatureKey]
+    public function SenderKeyDistributionMessage($id= null, $iteration = null, $chainKey= null, $signatureKey = null,$serialized = null) // [int id, int iteration, byte[] chainKey, ECPublicKey signatureKey]
     {
         if($serialized == null){
             $version = ByteUtil::intsToByteHighAndLow(self::CURRENT_VERSION, self::CURRENT_VERSION);
@@ -25,8 +25,8 @@ class SenderKeyDistributionMessage extends CiphertextMessage {
             $proto_skdm->setId($id);
             $proto_skdm->setIteration($iteration);
             $proto_skdm->setChainKey((string)$chainKey);
-            $proto_skdm->setSigningKey((string)$signatureKey->serialize());
-            $this->serialized  = $version.$proto_skdm->serializeToString();
+            $proto_skdm->setSigningKey((string)($signatureKey->serialize()));
+            $this->serialized  = chr($version).$proto_skdm->serializeToString();
         }
         else{
             $parts = ByteUtil::split($serialized,1,strlen($serialized)-1);
@@ -35,7 +35,7 @@ class SenderKeyDistributionMessage extends CiphertextMessage {
             if (ByteUtil::highBitsToInt($version) < self::CURRENT_VERSION) {
                 throw new LegacyMessageException("Legacy message: " + ByteUtil::highBitsToInt($version));
             }
-            if (ByteUtil::highBitsToInt($version) > CURRENT_VERSION) {
+            if (ByteUtil::highBitsToInt($version) > self::CURRENT_VERSION) {
                 throw new InvalidMessageException("Unknown version: " + ByteUtil::highBitsToInt($version));
             }
             $proto_skdm = new Textsecure_SenderKeyDistributionMessage();
@@ -45,10 +45,10 @@ class SenderKeyDistributionMessage extends CiphertextMessage {
             catch(Exception $ex){
                 throw new InvalidMessageException("Incomplete message.");
             }
-            if($proto_skdm->getId() == null 
-                || $proto_skdm->getIteration() == null 
-                || $proto_skdm->getChainKey() == null 
-                || $proto_skdm->getSignatureKey() == null)
+            if($proto_skdm->getId() === null
+                || $proto_skdm->getIteration() === null
+                || $proto_skdm->getChainKey() === null
+                || $proto_skdm->getSigningKey() === null)
             {
                 throw new InvalidMessageException("Incomplete message.");
             }
@@ -56,7 +56,7 @@ class SenderKeyDistributionMessage extends CiphertextMessage {
             $this->id         = $proto_skdm->getId();
             $this->iteration  = $proto_skdm->getIteration();
             $this->chainKey   =  $proto_skdm->getChainKey();
-            $this->signatureKey = Curve::decodePoint($proto_skdm->getSignatureKey(),0);
+            $this->signatureKey = Curve::decodePoint($proto_skdm->getSigningKey(),0);
         }
     }
     public function serialize ()

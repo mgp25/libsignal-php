@@ -1,5 +1,6 @@
 <?php
 class SessionState{
+    protected $sessionStructure;
     public function SessionState($session = null){
 
         if ($session == null){
@@ -114,7 +115,10 @@ class SessionState{
         if (count($this->sessionStructure->getReceiverChains()) > 5){
             $chains = $this->sessionStructure->getReceiverChains();
             $chains = array_slice($chains, 1);
-            $this->sessionStructure->setReceiverChains($chains);
+            $this->sessionStructure->clearReceiverChains();
+            foreach($chains as $chain)
+                $this->sessionStructure->appendReceiverChains($chain);
+            //$this->sessionStructure->setReceiverChains($chains);
         }
 
     }
@@ -176,8 +180,12 @@ class SessionState{
                 break;
             }
         }
+        $chain->clearMessageKeys();
+        foreach($messageKeyList as $msgKey){
+          $chain->appendMessageKeys($msgKey);
+        }
         $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->parseFromString($chain->serializeToString());
-        $chain->setMessageKeys(array_values($messageKeyList)); // reset the MessageKeys with the key in point 1 deleted
+
         return $result;
     }
     public function setMessageKeys($ECPublicKey_senderEphemeral, $messageKeys){
@@ -189,8 +197,7 @@ class SessionState{
         $messageKeyStructure->setMacKey($messageKeys->getMacKey());
         $messageKeyStructure->setIndex($messageKeys->getCounter());
         $messageKeyStructure->setIv($messageKeys->getIv());
-
-        $chain->messageKeys->append($messageKeyStructure); //$chain->messageKeys.add()
+        $chain->appendMessageKeys($messageKeyStructure); //$chain->messageKeys.add()
 
 
         #chain.messageKeys.append(messageKeyStructure)
@@ -201,8 +208,8 @@ class SessionState{
         $senderEphemeral = $ECPublicKey_senderEphemeral;
         $chainAndIndex = $this->getReceiverChain($senderEphemeral);
         $chain = $chainAndIndex[0];
-        $chain->chainKey->setKey($chainKey->getKey());
-        $chain->getChainKey->setIndex($chainKey->getIndex());
+        $chain->getChainKey()->setKey($chainKey->getKey());
+        $chain->getChainKey()->setIndex($chainKey->getIndex());
 
         #$this->sessionStructure.receiverChains[chainAndIndex[1]].ClearField()
         $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->parseFromString($chain->serializeToString());
@@ -217,6 +224,7 @@ class SessionState{
         */
 
         $structure = $this->sessionStructure->getPendingKeyExchange();
+        if($structure == null) $structure = new Textsecure_SessionStructure_PendingKeyExchange();
         $structure->setSequence($sequence);
         $structure->setLocalBaseKey($ourBaseKey->getPublicKey()->serialize());
         $structure->setLocalBaseKeyPrivate($ourBaseKey->getPrivateKey()->serialize());
@@ -245,7 +253,7 @@ class SessionState{
     public function getPendingKeyExchangeIdentityKey(){
         $publicKey = new IdentityKey($this->sessionStructure->getPendingKeyExchange()->getLocalIdentityKey(), 0);
 
-        $privateKey = Curve::decodePrivatePoint($this->sessionStructure->getPendingKeyExchange->getLocalIdentityKeyPrivate);
+        $privateKey = Curve::decodePrivatePoint($this->sessionStructure->getPendingKeyExchange()->getLocalIdentityKeyPrivate());
         return new IdentityKeyPair($publicKey, $privateKey);
     }
     public function hasPendingKeyExchange(){
@@ -280,7 +288,7 @@ class SessionState{
                                      Curve::decodePoint($this->sessionStructure->getPendingPreKey()->getBaseKey(), 0));
     }
     public function clearUnacknowledgedPreKeyMessage(){
-        $this->sessionStructure->setPendingPreKey(null);
+        $this->sessionStructure->clearPendingPreKey();
     }
     public function setRemoteRegistrationId($registrationId){
         $this->sessionStructure->setRemoteRegistrationId($registrationId);

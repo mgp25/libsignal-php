@@ -18,8 +18,9 @@ class SymmetricAxolotlParameters {
         $this->theirBaseKey = $theirBaseKey;
         $this->theirRatchetKey = $theirRatchetKey;
         $this->theirIdentityKey = $theirIdentityKey;
-        if (($ourBaseKey == null) || ($ourRatchetKey == null) 
-            || ($ourIdentityKey == null) || ($theirBaseKey == null) 
+
+        if (($ourBaseKey == null) || ($ourRatchetKey == null)
+            || ($ourIdentityKey == null) || ($theirBaseKey == null)
             || ($theirRatchetKey == null) || ($theirIdentityKey == null))
         {
             throw new Exception("Null values!");

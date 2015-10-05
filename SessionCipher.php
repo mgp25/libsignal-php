@@ -62,15 +62,17 @@ class SessionCipher
         /*
         :type paddedMessage: str
         */
-  
+
 
     /*paddedMessage = bytearray(paddedMessage.encode()
                                   if (sys.version_info >= (3,0) and not type(paddedMessage) in (bytes, bytearray))
                                      or type(paddedMessage) is unicode else paddedMessage)*/
         $sessionRecord   = $this->sessionStore->loadSession($this->recipientId, $this->deviceId);
         $sessionState    = $sessionRecord->getSessionState();
+
         $chainKey        = $sessionState->getSenderChainKey();
         $messageKeys     = $chainKey->getMessageKeys();
+
         $senderEphemeral = $sessionState->getSenderRatchetKey();
         $previousCounter = $sessionState->getPreviousCounter();
         $sessionVersion  = $sessionState->getSessionVersion();
@@ -86,7 +88,7 @@ class SessionCipher
             $items = $sessionState->getUnacknowledgedPreKeyMessageItems();
             $localRegistrationid = $sessionState->getLocalRegistrationId();
 
-           
+
 
             $ciphertextMessage = new PreKeyWhisperMessage($sessionVersion, $localRegistrationid, $items->getPreKeyId(),
                                                      $items->getSignedPreKeyId(), $items->getBaseKey(),
@@ -123,6 +125,7 @@ class SessionCipher
         */
         $sessionRecord = $this->sessionStore->loadSession($this->recipientId, $this->deviceId);
         $unsignedPreKeyId = $this->sessionBuilder->process($sessionRecord, $ciphertext);
+
         $plaintext = $this->decryptWithSessionRecord($sessionRecord, $ciphertext->getWhisperMessage());
 
         #callback.handlePlaintext(plaintext);
@@ -144,16 +147,19 @@ class SessionCipher
         :type sessionRecord: SessionRecord
         :type cipherText: WhisperMessage
         */
+
         $previousStates = $sessionRecord->getPreviousSessionStates();
         $exceptions = [];
         try{
             $sessionState = new SessionState($sessionRecord->getSessionState());
             $plaintext = $this->decryptWithSessionState($sessionState, $cipherText);
-            $sessionRecord.setState($sessionState);
+            $sessionRecord->setState($sessionState);
             return $plaintext;
         }
         catch(InvalidMessageException $e){
+
             $exceptions[] = $e;
+
         }
 
         for ($i = 0;$i<count($previousStates);$i++){
@@ -163,11 +169,12 @@ class SessionCipher
               $promotedState = new SessionState($previousState);
               $plaintext = $this->decryptWithSessionState($promotedState, $cipherText);
               $sessionRecord->removePreviousSessionStateAt($i); // del $previousStates[$i]
-              $sessionRecord.promoteState($promotedState);
+              $sessionRecord->promoteState($promotedState);
               return $plaintext;
             }
             catch(InvalidMessageException $e){
                 $exceptions[]  = $e;
+
             }
 
         }
@@ -182,11 +189,16 @@ class SessionCipher
         if($ciphertextMessage->getMessageVersion() != $sessionState->getSessionVersion())
             throw new InvalidMessageException("Message version ".$ciphertextMessage->getMessageVersion().", but session version ". $sessionState->getSessionVersion());
 
-        $messageVersion    = $ciphertextMessage->getMessageVersion();
-        $counter           = $ciphertextMessage->getCounter();
-        $chainKey           = $this->getOrCreateChainKey($sessionState, $theirEphemeral);
-        $messageKeys        = $this->getOrCreateMessageKeys($sessionState, $theirEphemeral,
+        $messageVersion   = $ciphertextMessage->getMessageVersion();
+        $theirEphemeral   = $ciphertextMessage->getSenderRatchetKey();
+        $counter          = $ciphertextMessage->getCounter();
+        $chainKey         = $this->getOrCreateChainKey($sessionState, $theirEphemeral);
+        $messageKeys      = $this->getOrCreateMessageKeys($sessionState, $theirEphemeral,
                                                               $chainKey, $counter);
+
+
+
+
 
         $ciphertextMessage->verifyMac($messageVersion,
                                     $sessionState->getRemoteIdentityKey(),
@@ -199,13 +211,14 @@ class SessionCipher
         return $plaintext;
     }
 
-    public function getOrCreateChainKey($sessionState, $ECPublickKey_theirEphemeral){
-        $theirEphemeral = $ECPublickKey_theirEphemeral;
+    public function getOrCreateChainKey($sessionState, $ECPublicKey_theirEphemeral){
+        $theirEphemeral = $ECPublicKey_theirEphemeral;
         if($sessionState->hasReceiverChain($theirEphemeral)){
             return $sessionState->getReceiverChainKey($theirEphemeral);
         }
         else{
             $rootKey = $sessionState->getRootKey();
+
             $ourEphemeral = $sessionState->getSenderRatchetKeyPair();
             $receiverChain = $rootKey->createChain($theirEphemeral, $ourEphemeral);
             $ourNewEphemeral = Curve::generateKeyPair();
@@ -217,7 +230,7 @@ class SessionCipher
             $sessionState->setSenderChain($ourNewEphemeral, $senderChain[1]);
             return $receiverChain[1];
         }
-    } 
+    }
     public function getOrCreateMessageKeys($sessionState, $ECPublicKey_theirEphemeral, $chainKey, $counter){
         $theirEphemeral = $ECPublicKey_theirEphemeral;
         if($chainKey->getIndex() > $counter){
@@ -326,9 +339,9 @@ class AESCipher{
       $BS = 16;
       return $s.str_repeat(chr($BS - (strlen($s) % $BS)), ($BS - (strlen($s) % $BS)));
     }
-    private function unpad($s){
-      return substr($s,0,-1*ord($s[strlen($s)-1]));
-    } 
+    private function unpad($s,$diff = 0){
+      return substr($s,0,-1*(ord($s[strlen($s)-1])-$diff));
+    }
     public function encrypt($raw ){
         # if sys.version_info >= (3,0):
         #     rawPadded = pad(raw.decode()).encode()
@@ -342,11 +355,27 @@ class AESCipher{
         }
     }
     public function decrypt($enc){
+
         if($this->version >= 3){
-            return $this->unpad(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $enc, MCRYPT_MODE_CBC, $this->iv));
-        } 
+            $result = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $enc, MCRYPT_MODE_CBC, $this->iv);
+            $unpaded = $this->unpad($result);
+            $last_unpadded = $unpaded[strlen($unpaded)-1];
+            $double_padding = substr($unpaded,-1*(ord($last_unpadded)-1));
+            $has_dp = true;
+            for($x=0;$x<strlen($double_padding);$x++)
+            {
+              if($double_padding[$x]!=$last_unpadded)
+              {
+                $has_dp = false;
+                break;
+              }
+            }
+            if($has_dp)
+              $unpaded = $this->unpad($unpaded,1);
+            return $unpaded;
+        }
         else{
-            return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $raw, "ctr", $this->counter->Next());
+            return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $enc, "ctr", $this->counter->Next());
         }
     }
 }

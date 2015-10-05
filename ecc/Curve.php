@@ -12,10 +12,10 @@ class Curve {
     {
         $secureRandom = self::getSecureRandom();
         $private = curve25519_private($secureRandom);
-        $public = curve25519_public($private);        
+        $public = curve25519_public($private);
         return new ECKeyPair(new DjbECPublicKey($public),new DjbECPrivateKey($private));
     }
-    public static function decodePoint ($bytes, $offset) // [byte[] bytes, int offset] 
+    public static function decodePoint ($bytes, $offset) // [byte[] bytes, int offset]
     {
         $type = ((ord($bytes[$offset]) & 0xFF));
         switch ($type) {
@@ -33,6 +33,7 @@ class Curve {
     }
     public static function calculateAgreement ($publicKey, $privateKey) // [ECPublicKey publicKey, ECPrivateKey privateKey]
     {
+
         if (($publicKey->getType() != $privateKey->getType()))
         {
             throw new InvalidKeyException("Public and private keys must be of the same type!");
@@ -50,7 +51,7 @@ class Curve {
     {
         if (($signingKey->getType() == self::DJB_TYPE))
         {
-            return curve25519_verify($signingKey::getPublicKey(), $message, $signature);
+            return curve25519_verify($signingKey->getPublicKey(), $message, $signature) == 0;
         }
         else
         {

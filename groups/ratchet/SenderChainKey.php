@@ -24,7 +24,7 @@
         public function getDerivative($seed,$key){
             $mac = hash_init("sha256",HASH_HMAC,$key);
             hash_update($mac, $seed);
-            return hash_final($mac);
+            return hash_final($mac,true);
         }
 
     }

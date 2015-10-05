@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__. "/AxolotlLogger.php";
+require_once __DIR__. "/AxolotlLoggerProvider.php";
 class Log extends AxolotlLogger {
     public static function verbose($tag, $msg) // [String tag, String msg]
     {

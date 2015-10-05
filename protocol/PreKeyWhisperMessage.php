@@ -7,6 +7,7 @@
     require_once __DIR__."/../InvalidVersionException.php";
     require_once __DIR__. "/../LegacyMessageException.php";
     require_once __DIR__. "/../IdentityKey.php";
+    require_once(__DIR__."/../protocol/WhisperMessage.php");
     class PreKeyWhisperMessage extends CiphertextMessage{
         protected $version;
         protected $registrationId;
@@ -16,13 +17,13 @@
         protected $identityKey;
         protected $message;
         protected $serialized;
-        public function PreKeyWhisperMessage($messageVersion = null, 
-                                             $registrationId  = null, 
-                                             $preKeyId = null, 
-                                             $signedPreKeyId = null, 
-                                             $ecPublicBaseKey = null, 
-                                             $identityKey = null, 
-                                             $whisperMessage = null, 
+        public function PreKeyWhisperMessage($messageVersion = null,
+                                             $registrationId  = null,
+                                             $preKeyId = null,
+                                             $signedPreKeyId = null,
+                                             $ecPublicBaseKey = null,
+                                             $identityKey = null,
+                                             $whisperMessage = null,
                                              $serialized = null)
         {
             if($serialized != null){
@@ -31,7 +32,7 @@
                     throw new InvalidVersionException("Unknown version ".$this->version);
                 }
                 $preKeyWhisperMessage = new Textsecure_PreKeyWhisperMessage();
-                
+
                 $preKeyWhisperMessage->parseFromString(substr($serialized,1));
                 if (($this->version == 2 && $preKeyWhisperMessage->getPreKeyId() == null) ||
                     ($this->version == 3 && $preKeyWhisperMessage->getSignedPreKeyId() == null) ||
@@ -42,23 +43,23 @@
                     throw new InvalidMessageException("Incomplete message");
 
                 }
-
+               
                 $this->serialized = $serialized;
                 $this->registrationId = $preKeyWhisperMessage->getRegistrationId();
                 $this->preKeyId = $preKeyWhisperMessage->getPreKeyId();
                 $this->signedPreKeyId = $preKeyWhisperMessage->getSignedPreKeyId();
                 $this->baseKey = Curve::decodePoint((string)$preKeyWhisperMessage->getBaseKey(),0);
                 $this->identityKey = new IdentityKey(Curve::decodePoint((string)$preKeyWhisperMessage->getIdentityKey(),0));
-                $this->message = new WhisperMessage(null, 
-                                        null, 
-                                        null, 
-                                        null, 
-                                        null, 
-                                        null, 
-                                        null, 
+                $this->message = new WhisperMessage(null,
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null,
                                         null,
                                         $preKeyWhisperMessage->getMessage());
-                
+
             }
             else{
                 try{
@@ -81,7 +82,7 @@
                     }
                     $versionBytes = ByteUtil::intsToByteHighAndLow($this->version,self::CURRENT_VERSION);
                     $messageBytes = $builder->serializeToString();
-                    $this->serialized = ByteUtil::combine([$versionBytes,$messageBytes]);
+                    $this->serialized = ByteUtil::combine([chr($versionBytes),$messageBytes]);
                 }
                 catch(Exception $ex){
                     throw new InvalidMessageException($ex->getMessage()." - ".$ex->getLine()." - ".$ex->getFile());
@@ -125,5 +126,3 @@
         }
 
     }
-
-    

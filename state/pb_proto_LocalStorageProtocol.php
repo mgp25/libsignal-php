@@ -1202,7 +1202,9 @@ class Textsecure_SessionStructure extends \ProtobufMessage
     {
         return $this->get(self::PENDINGPREKEY);
     }
-
+    public function clearPendingPreKey(){
+      $this->values[self::PENDINGPREKEY] = null;
+    }
     /**
      * Sets value of 'remoteRegistrationId' property
      *

@@ -29,12 +29,12 @@ class SessionRecord{
         }
     }
     public function hasSessionState($version, $aliceBaseKey){
-        if ($this->sessionState.getSessionVersion() == $version && $aliceBaseKey == $this->sessionState->getAliceBaseKey()){
+        if ($this->sessionState->getSessionVersion() == $version && $aliceBaseKey == $this->sessionState->getAliceBaseKey()){
             return true;
         }
 
         foreach ($this->previousStates as $state){
-            if($state->getSessionVersion() == $version && $aliceBaseKey == $state.getAliceBaseKey()){
+            if($state->getSessionVersion() == $version && $aliceBaseKey == $state->getAliceBaseKey()){
                 return true;
             }
         }

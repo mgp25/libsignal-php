@@ -33,7 +33,8 @@
         public function getBaseMaterial($seedBytes){
             $mac =  hash_init("sha256",HASH_HMAC,$this->key);
             hash_update($mac,$seedBytes);
-            return hash_final($mac);
+            $data = hash_final($mac,true);
+            return $data;
         }
 
 

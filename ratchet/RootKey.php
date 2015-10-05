@@ -13,6 +13,7 @@ class RootKey{
 
     public function createChain($ECPublicKey_theirRatchetKey, $ECKeyPair_ourRatchetKey){
         $sharedSecret = Curve::calculateAgreement($ECPublicKey_theirRatchetKey, $ECKeyPair_ourRatchetKey->getPrivateKey());
+
         $derivedSecretBytes = $this->kdf->deriveSecrets($sharedSecret, "WhisperRatchet", DerivedRootSecrets::SIZE,$this->key);
         $derivedSecrets = new DerivedRootSecrets($derivedSecretBytes);
         $newRootKey = new RootKey($this->kdf, $derivedSecrets->getRootKey());

@@ -13,13 +13,13 @@
         protected $previousCounter;
         protected $cipherText;
         protected $serialized;
-        public function WhisperMessage($messageVersion = null, 
-                                        $macKey = null, 
-                                        $senderRatchetKey = null, 
-                                        $counter = null, 
-                                        $previousCounter = null, 
-                                        $cipherText = null, 
-                                        $senderIdentityKey = null, 
+        public function WhisperMessage($messageVersion = null,
+                                        $macKey = null,
+                                        $senderRatchetKey = null,
+                                        $counter = null,
+                                        $previousCounter = null,
+                                        $cipherText = null,
+                                        $senderIdentityKey = null,
                                         $receiverIdentityKey = null,
                                         $serialized = null)
         {
@@ -31,19 +31,20 @@
                 $proto_message->setPreviousCounter($previousCounter);
                 $proto_message->setCiphertext($cipherText);
                 $message = $proto_message->serializeToString();
-                
-                $mac = $this->getMac($messageVersion,$senderIdentityKey,$receiverIdentityKey,$macKey,ByteUtil::combine([$version,$message]));
 
-                $this->serialized = ByteUtil::combine([$version,$message,$mac]);
+                $mac = $this->getMac($messageVersion,$senderIdentityKey,$receiverIdentityKey,$macKey,ByteUtil::combine([chr((int)$version),$message]));
+
+                $this->serialized = ByteUtil::combine([chr((int)$version),$message,$mac]);
                 $this->senderRatchetKey = $senderRatchetKey;
                 $this->counter = $counter;
                 $this->previousCounter = $previousCounter;
                 $this->cipherText = $cipherText;
                 $this->messageVersion = $messageVersion;
+
             }
             else{
                 try{
-                     $messageParts = ByteUtil.split($serialized, 1, strlen($serialized) - 1 - self::MAC_LENGTH,
+                    $messageParts = ByteUtil::split($serialized, 1, strlen($serialized) - 1 - self::MAC_LENGTH,
                                                   self::MAC_LENGTH);
 
                     $version = ord($messageParts[0][0]);
@@ -61,14 +62,14 @@
                     catch(Exception $ex){
                         throw new InvalidMessageException("Incomplete message.");
                     }
-                     if($proto_message->getCiphertext() == null || $proto_message->getCounter() == null || $proto_message->getRatchetKey() == null)
+                     if($proto_message->getCiphertext() === null || $proto_message->getCounter() === null || $proto_message->getRatchetKey() == null)
                          throw new InvalidMessageException("Incomplete message.");
-                     $this->serialized = $serialized;
-                    $this->senderRatchetKey = Curve::decodePoint($whisperMessage->getRatchetKey(), 0);
+                    $this->serialized = $serialized;
+                    $this->senderRatchetKey = Curve::decodePoint($proto_message->getRatchetKey(), 0);
                     $this->messageVersion = ByteUtil::highBitsToInt($version);
                     $this->counter = $proto_message->getCounter();
                     $this->previousCounter = $proto_message->getPreviousCounter();
-                    $this->ciphertext = $proto_message->getCiphertext();
+                    $this->cipherText = $proto_message->getCiphertext();
                 }
                 catch(Exception $ex){
                     throw new InvalidMessageException($ex->getMessage());
@@ -78,8 +79,8 @@
 
 
         }
-        public function getRatchetKey(){
-            return $this->ratchetKey;
+        public function getSenderRatchetKey(){
+            return $this->senderRatchetKey;
         }
         public function getMessageVersion(){
             return $this->messageVersion;
@@ -88,7 +89,7 @@
             return $this->counter;
         }
         public function getBody(){
-            return $this->ciphertext;
+            return $this->cipherText;
         }
         public function serialize(){
             return $this->serialized;
@@ -111,12 +112,9 @@
             if($messageVersion >= 3){
                 hash_update($mac, $senderIdentityKey->getPublicKey()->serialize());
                 hash_update($mac, $receiverIdentityKey->getPublicKey()->serialize());
-            } 
+            }
             hash_update($mac, $serialized);
-            $result = hash_final($mac);
+            $result = hash_final($mac,true);
             return ByteUtil::trim($result, self::MAC_LENGTH);
         }
     }
-
-
-    

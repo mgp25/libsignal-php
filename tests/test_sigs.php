@@ -1,115 +1,67 @@
-import unittest
-from axolotl.ecc.curve import Curve
-from axolotl.util.keyhelper import KeyHelper
-class Curve25519Test(unittest.TestCase):
-    def test_agreement(self):
-        alicePublic  =  bytearray([0x05, 0x1b,  0xb7,  0x59,  0x66,
-                        0xf2,  0xe9,  0x3a,  0x36,  0x91,
-                        0xdf,  0xff,  0x94,  0x2b,  0xb2,
-                        0xa4,  0x66,  0xa1,  0xc0,  0x8b,
-                        0x8d,  0x78,  0xca,  0x3f,  0x4d,
-                        0x6d,  0xf8,  0xb8,  0xbf,  0xa2,
-                        0xe4,  0xee,  0x28])
-        alicePrivate = bytearray([0xc8, 0x06, 0x43, 0x9d, 0xc9,
-                           0xd2, 0xc4, 0x76, 0xff, 0xed,
-                           0x8f, 0x25, 0x80, 0xc0, 0x88,
-                           0x8d, 0x58, 0xab, 0x40, 0x6b,
-                           0xf7, 0xae, 0x36, 0x98, 0x87,
-                           0x90, 0x21, 0xb9, 0x6b, 0xb4,
-                           0xbf, 0x59])
+<?php
 
-        bobPublic    = bytearray([0x05, 0x65, 0x36, 0x14, 0x99,
-                           0x3d, 0x2b, 0x15, 0xee, 0x9e,
-                           0x5f, 0xd3, 0xd8, 0x6c, 0xe7,
-                           0x19, 0xef, 0x4e, 0xc1, 0xda,
-                           0xae, 0x18, 0x86, 0xa8, 0x7b,
-                           0x3f, 0x5f, 0xa9, 0x56, 0x5a,
-                           0x27, 0xa2, 0x2f])
+require_once __DIR__."/../ecc/Curve.php";
+require_once __DIR__."/../util/KeyHelper.php";
 
-        bobPrivate   = bytearray([0xb0, 0x3b, 0x34, 0xc3, 0x3a,
-                           0x1c, 0x44, 0xf2, 0x25, 0xb6,
-                           0x62, 0xd2, 0xbf, 0x48, 0x59,
-                           0xb8, 0x13, 0x54, 0x11, 0xfa,
-                           0x7b, 0x03, 0x86, 0xd4, 0x5f,
-                           0xb7, 0x5d, 0xc5, 0xb9, 0x1b,
-                           0x44, 0x66])
+class Curve25519Test extends PHPUnit_Framework_TestCase{
+    public function test_agreement(){
+        $alicePublic  =  "\x05\x1b\xb7\x59\x66\xf2\xe9\x3a\x36\x91\xdf\xff\x94\x2b\xb2\xa4\x66\xa1\xc0\x8b\x8d\x78\xca\x3f\x4d\x6d\xf8\xb8\xbf\xa2\xe4\xee\x28";
 
-        shared       = bytearray([0x32, 0x5f, 0x23, 0x93, 0x28,
-                           0x94, 0x1c, 0xed, 0x6e, 0x67,
-                           0x3b, 0x86, 0xba, 0x41, 0x01,
-                           0x74, 0x48, 0xe9, 0x9b, 0x64,
-                           0x9a, 0x9c, 0x38, 0x06, 0xc1,
-                           0xdd, 0x7c, 0xa4, 0xc4, 0x77,
-                           0xe6, 0x29])
+        $alicePrivate =  "\xc8\x06\x43\x9d\xc9\xd2\xc4\x76\xff\xed\x8f\x25\x80\xc0\x88\x8d\x58\xab\x40\x6b\xf7\xae\x36\x98\x87\x90\x21\xb9\x6b\xb4\xbf\x59";
 
-        alicePublicKey = Curve.decodePoint(alicePublic, 0)
-        alicePrivateKey = Curve.decodePrivatePoint(alicePrivate)
+        $bobPublic    =  "\x05\x65\x36\x14\x99\x3d\x2b\x15\xee\x9e\x5f\xd3\xd8\x6c\xe7\x19\xef\x4e\xc1\xda\xae\x18\x86\xa8\x7b\x3f\x5f\xa9\x56\x5a\x27\xa2\x2f";
 
-        bobPublicKey = Curve.decodePoint(bobPublic, 0)
-        bobPrivateKey = Curve.decodePrivatePoint(bobPrivate)
+        $bobPrivate   =  "\xb0\x3b\x34\xc3\x3a\x1c\x44\xf2\x25\xb6\x62\xd2\xbf\x48\x59\xb8\x13\x54\x11\xfa\x7b\x03\x86\xd4\x5f\xb7\x5d\xc5\xb9\x1b\x44\x66";
 
-        sharedOne = Curve.calculateAgreement(alicePublicKey, bobPrivateKey)
-        sharedTwo = Curve.calculateAgreement(bobPublicKey, alicePrivateKey)
+        $shared       =  "\x32\x5f\x23\x93\x28\x94\x1c\xed\x6e\x67\x3b\x86\xba\x41\x01\x74\x48\xe9\x9b\x64\x9a\x9c\x38\x06\xc1\xdd\x7c\xa4\xc4\x77\xe6\x29";
 
-        self.assertEqual(sharedOne, shared)
-        self.assertEqual(sharedTwo, shared)
+        $alicePublicKey = Curve::decodePoint($alicePublic, 0);
+        $alicePrivateKey = Curve::decodePrivatePoint($alicePrivate);
 
-    def test_randomAgreements(self):
+        $bobPublicKey = Curve::decodePoint($bobPublic, 0);
+        $bobPrivateKey = Curve::decodePrivatePoint($bobPrivate);
 
-        for i in range(0, 50):
-            alice   = Curve.generateKeyPair()
-            bob     = Curve.generateKeyPair()
-            sharedAlice = Curve.calculateAgreement(bob.getPublicKey(), alice.getPrivateKey())
-            sharedBob   = Curve.calculateAgreement(alice.getPublicKey(), bob.getPrivateKey())
-            self.assertEqual(sharedAlice, sharedBob)
+        $sharedOne = Curve::calculateAgreement($alicePublicKey, $bobPrivateKey);
+        $sharedTwo = Curve::calculateAgreement($bobPublicKey, $alicePrivateKey);
 
-    def test_gensig(self):
-        identityKeyPair = KeyHelper.generateIdentityKeyPair()
-        KeyHelper.generateSignedPreKey(identityKeyPair, 0)
+        $this->assertEquals($sharedOne, $shared);
+        $this->assertEquals($sharedTwo, $shared);
+    }
+
+    public function test_randomAgreements()
+    {
+        for ($i = 0; $i<50; $i++)
+        {
+            $alice   = Curve::generateKeyPair();
+            $bob     = Curve::generateKeyPair();
+            $sharedAlice = Curve::calculateAgreement($bob->getPublicKey(), $alice->getPrivateKey());
+            $sharedBob   = Curve::calculateAgreement($alice->getPublicKey(), $bob->getPrivateKey());
+            $this->assertEquals($sharedAlice, $sharedBob);
+        }
+    }
+
+    public function test_gensig()
+    {
+        $identityKeyPair = KeyHelper::generateIdentityKeyPair();
+        KeyHelper::generateSignedPreKey($identityKeyPair, 0);
+    }
 
 
-    def test_signature(self):
-        aliceIdentityPrivate = bytearray([0xc0, 0x97, 0x24, 0x84, 0x12,
-                                   0xe5, 0x8b, 0xf0, 0x5d, 0xf4,
-                                   0x87, 0x96, 0x82, 0x05, 0x13,
-                                   0x27, 0x94, 0x17, 0x8e, 0x36,
-                                   0x76, 0x37, 0xf5, 0x81, 0x8f,
-                                   0x81, 0xe0, 0xe6, 0xce, 0x73,
-                                   0xe8, 0x65])
+    public function test_signature()
+    {
+        $aliceIdentityPrivate = "\xc0\x97\x24\x84\x12\xe5\x8b\xf0\x5d\xf4\x87\x96\x82\x05\x13\x27\x94\x17\x8e\x36\x76\x37\xf5\x81\x8f\x81\xe0\xe6\xce\x73\xe8\x65";
 
-        aliceIdentityPublic  = bytearray([0x05, 0xab, 0x7e, 0x71, 0x7d,
-                                   0x4a, 0x16, 0x3b, 0x7d, 0x9a,
-                                   0x1d, 0x80, 0x71, 0xdf, 0xe9,
-                                   0xdc, 0xf8, 0xcd, 0xcd, 0x1c,
-                                   0xea, 0x33, 0x39, 0xb6, 0x35,
-                                   0x6b, 0xe8, 0x4d, 0x88, 0x7e,
-                                   0x32, 0x2c, 0x64])
+        $aliceIdentityPublic  = "\x05\xab\x7e\x71\x7d\x4a\x16\x3b\x7d\x9a\x1d\x80\x71\xdf\xe9\xdc\xf8\xcd\xcd\x1c\xea\x33\x39\xb6\x35\x6b\xe8\x4d\x88\x7e\x32\x2c\x64";
 
-        aliceEphemeralPublic = bytearray([0x05, 0xed, 0xce, 0x9d, 0x9c,
-                                   0x41, 0x5c, 0xa7, 0x8c, 0xb7,
-                                   0x25, 0x2e, 0x72, 0xc2, 0xc4,
-                                   0xa5, 0x54, 0xd3, 0xeb, 0x29,
-                                   0x48, 0x5a, 0x0e, 0x1d, 0x50,
-                                   0x31, 0x18, 0xd1, 0xa8, 0x2d,
-                                   0x99, 0xfb, 0x4a])
+        $aliceEphemeralPublic = "\x05\xed\xce\x9d\x9c\x41\x5c\xa7\x8c\xb7\x25\x2e\x72\xc2\xc4\xa5\x54\xd3\xeb\x29\x48\x5a\x0e\x1d\x50\x31\x18\xd1\xa8\x2d\x99\xfb\x4a";
 
-        aliceSignature       = bytearray([0x5d, 0xe8, 0x8c, 0xa9, 0xa8,
-                                   0x9b, 0x4a, 0x11, 0x5d, 0xa7,
-                                   0x91, 0x09, 0xc6, 0x7c, 0x9c,
-                                   0x74, 0x64, 0xa3, 0xe4, 0x18,
-                                   0x02, 0x74, 0xf1, 0xcb, 0x8c,
-                                   0x63, 0xc2, 0x98, 0x4e, 0x28,
-                                   0x6d, 0xfb, 0xed, 0xe8, 0x2d,
-                                   0xeb, 0x9d, 0xcd, 0x9f, 0xae,
-                                   0x0b, 0xfb, 0xb8, 0x21, 0x56,
-                                   0x9b, 0x3d, 0x90, 0x01, 0xbd,
-                                   0x81, 0x30, 0xcd, 0x11, 0xd4,
-                                   0x86, 0xce, 0xf0, 0x47, 0xbd,
-                                   0x60, 0xb8, 0x6e, 0x88])
+        $aliceSignature       = "\x5d\xe8\x8c\xa9\xa8\x9b\x4a\x11\x5d\xa7\x91\x09\xc6\x7c\x9c\x74\x64\xa3\xe4\x18\x02\x74\xf1\xcb\x8c\x63\xc2\x98\x4e\x28\x6d\xfb\xed\xe8\x2d\xeb\x9d\xcd\x9f\xae\x0b\xfb\xb8\x21\x56\x9b\x3d\x90\x01\xbd\x81\x30\xcd\x11\xd4\x86\xce\xf0\x47\xbd\x60\xb8\x6e\x88";
 
-        alicePrivateKey = Curve.decodePrivatePoint(aliceIdentityPrivate)
-        alicePublicKey  = Curve.decodePoint(aliceIdentityPublic, 0)
-        aliceEphemeral  = Curve.decodePoint(aliceEphemeralPublic, 0)
+        $alicePrivateKey = Curve::decodePrivatePoint($aliceIdentityPrivate);
+        $alicePublicKey  = Curve::decodePoint($aliceIdentityPublic, 0);
+        $aliceEphemeral  = Curve::decodePoint($aliceEphemeralPublic, 0);
 
-        res = Curve.verifySignature(alicePublicKey, aliceEphemeral.serialize(), bytes(aliceSignature))
-        self.assertTrue(res)
+        $res = Curve::verifySignature($alicePublicKey, $aliceEphemeral->serialize(), $aliceSignature);
+        $this->assertTrue($res);
+    }
+}

@@ -16,14 +16,15 @@
             if($serialized == null){
                 $version = ByteUtil::intsToByteHighAndLow(self::CURRENT_VERSION,self::CURRENT_VERSION);
                 $proto_message = new Textsecure_SenderKeyMessage();
-                $proto_message->setId($ketId);
+                $proto_message->setId($keyId);
                 $proto_message->setIteration($iteration);
                 $proto_message->setCiphertext($ciphertext);
-                $message = $proto_message->serializeToString(); 
 
-                $signature =  $this->getSignature($signatureKey,ByteUtil::combine($version,$message));
+                $message = $proto_message->serializeToString();
 
-                $this->serialized = ByteUtil::combine($version,$message,$signature);
+                $signature =  $this->getSignature($signatureKey,ByteUtil::combine([chr((int)$version),$message]));
+
+                $this->serialized = ByteUtil::combine([chr((int)$version),$message,$signature]);
                 $this->messageVersion = self::CURRENT_VERSION;
                 $this->keyId = $keyId;
                 $this->iteration = $iteration;
@@ -46,19 +47,21 @@
                         $proto_message = new Textsecure_SenderKeyMessage();
                         try{
                             $proto_message->parseFromString($message);
+
                         }
                         catch(Exception $ex){
+
                             throw new InvalidMessageException("Incomplete message");
                         }
 
-                        if($proto_message->getId() == null || $proto_message->getIteration() == null || $proto_message.getCiphertext() == null)
+                        if($proto_message->getId() === null || $proto_message->getIteration() === null || $proto_message->getCiphertext() == null)
                             throw new InvalidMessageException("Incomplete message");
 
                         $this->serialized = $serialized;
                         $this->messageVersion = ByteUtil::highBitsToInt($version);
                         $this->keyId          = $proto_message->getId();
-                          $this->iteration      = $proto_message->getIteration();
-                          $this->ciphertext     = $proto_message->getCiphertext();
+                        $this->iteration      = $proto_message->getIteration();
+                        $this->ciphertext     = $proto_message->getCiphertext();
 
                 }
                 catch(Exception $ex){
@@ -71,7 +74,7 @@
             return $this->keyId;
         }
         public function getIteration(){
-            return $this->getIteration();
+            return $this->iteration;
         }
         public function getCiphertext(){
             return $this->ciphertext;
@@ -79,7 +82,7 @@
         public function verifySignature($signatureKey){
             try{
                 $parts = ByteUtil::split($this->serialized,strlen($this->serialized) - self::SIGNATURE_LENGTH, self::SIGNATURE_LENGTH);
-                if(!Curve::verifySignature($signatureKey,$parts[0],$part1s[1]))
+                if(!Curve::verifySignature($signatureKey,$parts[0],$parts[1]))
                     throw new InvalidMessageException("Invalid signature!");
             }
             catch(InvalidKeyException $ex){
@@ -103,5 +106,3 @@
         }
 
     }
-
-    

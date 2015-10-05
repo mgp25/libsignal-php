@@ -6,6 +6,8 @@ require_once(__DIR__."/../ecc/ECPublicKey.php");
 require_once(__DIR__."/../kdf/HKDF.php");
 //require_once(__DIR__."/../state/SessionState.php");
 require_once __DIR__ ."/../util/ByteUtil.php";
+require_once __DIR__ ."/ChainKey.php";
+require_once __DIR__ ."/RootKey.php";
 class RatchetingSession {
     public static function initializeSession($sessionState, $sessionVersion, $parameters){
         /*
@@ -42,8 +44,6 @@ class RatchetingSession {
         :type sessionVersion: int
         :type parameters: AliceAxolotlParameters
         */
-
-
         $sessionState->setSessionVersion($sessionVersion);
         $sessionState->setRemoteIdentityKey($parameters->getTheirIdentityKey());
         $sessionState->setLocalIdentityKey($parameters->getOurIdentityKey()->getPublicKey());
@@ -60,6 +60,7 @@ class RatchetingSession {
                                              $parameters->getOurBaseKey()->getPrivateKey());
         $secrets .= Curve::calculateAgreement($parameters->getTheirSignedPreKey(),
                                              $parameters->getOurBaseKey()->getPrivateKey());
+
 
         if ($sessionVersion >= 3 && $parameters->getTheirOneTimePreKey() != null)
             $secrets .= Curve::calculateAgreement($parameters->getTheirOneTimePreKey(), $parameters->getOurBaseKey()->getPrivateKey());
@@ -89,9 +90,9 @@ class RatchetingSession {
 
         $secrets .= Curve::calculateAgreement($parameters->getTheirIdentityKey()->getPublicKey(),
                                                 $parameters->getOurSignedPreKey()->getPrivateKey());
-
         $secrets .= Curve::calculateAgreement($parameters->getTheirBaseKey(),
                                                 $parameters->getOurIdentityKey()->getPrivateKey());
+
         $secrets .= Curve::calculateAgreement($parameters->getTheirBaseKey(),
                                                $parameters->getOurSignedPreKey()->getPrivateKey());
 

@@ -56,7 +56,8 @@
                 if ($messageVersion >= 3)
                     $keyExchangeMessage->setBaseKeySignature($baseKeySignature);
 
-                $this->serialized = ByteUtil::combine([$version, $keyExchangeMessage.serializeToString()]);
+                $this->serialized = ByteUtil::combine([chr((int)$version), $keyExchangeMessage->serializeToString()]);
+
             }
             else{
                 try{
@@ -85,6 +86,7 @@
                     $this->baseKey = Curve::decodePoint($message->getBaseKey(), 0);
                     $this->baseKeySignature = $message->getBaseKeySignature();
                     $this->ratchetKey = Curve::decodePoint($message->getRatchetKey(), 0);
+                    $this->identityKey = new IdentityKey($message->getIdentityKey(), 0);
                 }
                 catch(InvalidKeyException $ex){
                     throw new InvalidMessageException($ex->getMessage());
@@ -128,7 +130,7 @@
         }
 
         public function isResponseForSimultaneousInitiate(){
-            return ($this->flags & self::SIMULTAENOUS_INITIATE_FLAG) != 0;
+            return ($this->flags & self::SIMULTANEOUS_INITIATE_FLAG) != 0;
         }
 
         public function getFlags(){
