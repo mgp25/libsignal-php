@@ -2,6 +2,8 @@
 
 This is a php port of [libaxolotl-android](https://github.com/WhisperSystems/libaxolotl-android) originally written by [Moxie Marlinspike](https://github.com/moxie0)
 
+This is used in [Chat API](https://github.com/WHAnonymous/Chat-API).
+
 Overview from original author's:
 
  > This is a ratcheting forward secrecy protocol that works in synchronous and asynchronous messaging environments. The protocol overview is available [here](https://github.com/trevp/axolotl/wiki), and the details of the wire format are available [here](https://github.com/trevp/axolotl/wiki).
@@ -49,6 +51,49 @@ State is kept in the following places:
 1. Signed PreKey States. Clients will need to maintain the state of their signed PreKeys.
 1. Session State.  Clients will need to maintain the state of the sessions they have established.
 
+
+## Install time
+
+At install time, a libaxolotl client needs to generate its identity keys, registration id, and
+prekeys.
+```php
+    $axolotl = new KeyHelper();
+    $identityKeyPair = $axolotl->generateIdentityKeyPair();
+    $registrationId  = $axolotl->generateRegistrationId();
+    $preKeys         = $axolotl->generatePreKeys(startId, 100);
+    $lastResortKey   = $axolotl->generateLastResortKey();
+    $signedPreKey    = $axolotl->generateSignedPreKey(identityKeyPair, 5);
+
+    // Store $identityKeyPair somewhere durable and safe.
+    // Store $registrationId somewhere durable and safe.
+
+    // Store preKeys in PreKeyStore.
+    // Store signed prekey in SignedPreKeyStore.
+```
+
+## Building a session
+
+A libaxolotl client needs to implement four interfaces: IdentityKeyStore, PreKeyStore, 
+SignedPreKeyStore, and SessionStore.  These will manage loading and storing of identity, 
+prekeys, signed prekeys, and session state.
+
+Once those are implemented, building a session is fairly straightforward:
+```php
+    $sessionStore      = new MySessionStore();
+    $preKeyStore       = new MyPreKeyStore();
+    $signedPreKeyStore = new MySignedPreKeyStore();
+    $identityStore     = new MyIdentityKeyStore();
+
+    // Instantiate a SessionBuilder for a remote recipientId + deviceId tuple.
+    $sessionBuilder = new SessionBuilder($sessionStore, $preKeyStore, $signedPreKeyStore,
+                                                       $identityStore, $recipientId, $deviceId);
+
+    // Build a session with a PreKey retrieved from the server.
+    $sessionBuilder->process($retrievedPreKey);
+
+    $essionCipher = new SessionCipher($sessionStore, $recipientId, $deviceId);
+    $message      = $sessionCipher->encrypt("Hello world!");
+```
 
 # Legal things
 ## Cryptography Notice
