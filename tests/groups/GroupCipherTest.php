@@ -1,92 +1,22 @@
 <?php
+namespace Libaxolotl\Tests\groups;
 
-require_once __DIR__.'/inmemorysenderkeystore.php';
-require_once __DIR__.'/../../groups/GroupSessionBuilder.php';
-require_once __DIR__.'/../../groups/GroupCipher.php';
-require_once __DIR__.'/../../util/KeyHelper.php';
-require_once __DIR__.'/../../DuplicateMessageException.php';
-require_once __DIR__.'/../../NoSessionException.php';
+use Libaxolotl\Tests\TestCase;
+use Libaxolotl\Tests\groups\InMemorySenderKeyStore;
+use Libaxolotl\groups\GroupSessionBuilder;
+use Libaxolotl\groups\GroupCipher;
+use Libaxolotl\util\KeyHelper;
 
-function parseText($txt)
+//require_once __DIR__.'/../../src/DuplicateMessageException.php';
+//require_once __DIR__.'/../../src/NoSessionException.php';
+
+class GroupCipherTest extends TestCase
 {
-    for ($x = 0; $x < strlen($txt); $x++) {
-        if (ord($txt[$x]) < 20 || ord($txt[$x]) > 230) {
-            $txt = 'HEX:'.bin2hex($txt);
-
-            return $txt;
-        }
-    }
-
-    return $txt;
-}
-function niceVarDump($obj, $ident = 0)
-{
-    $data = '';
-    $data .= str_repeat(' ', $ident);
-    $original_ident = $ident;
-    $toClose = false;
-    switch (gettype($obj)) {
-        case 'object':
-            $vars = (array) $obj;
-            $data .= gettype($obj).' ('.get_class($obj).') ('.count($vars).") {\n";
-            $ident += 2;
-            foreach ($vars as $key => $var) {
-                $type = '';
-                $k = bin2hex($key);
-                if (strpos($k, '002a00') === 0) {
-                    $k = str_replace('002a00', '', $k);
-                    $type = ':protected';
-                } elseif (strpos($k, bin2hex("\x00".get_class($obj)."\x00")) === 0) {
-                    $k = str_replace(bin2hex("\x00".get_class($obj)."\x00"), '', $k);
-                    $type = ':private';
-                }
-                $k = hex2bin($k);
-                if (is_subclass_of($obj, 'ProtobufMessage') && $k == 'values') {
-                    $r = new ReflectionClass($obj);
-                    $constants = $r->getConstants();
-                    $newVar = [];
-                    foreach ($constants as $ckey => $cval) {
-                        if (substr($ckey, 0, 3) != 'PB_') {
-                            $newVar[$ckey] = $var[$cval];
-                        }
-                    }
-                    $var = $newVar;
-                }
-                $data .= str_repeat(' ', $ident)."[$k$type]=>\n".niceVarDump($var, $ident)."\n";
-            }
-            $toClose = true;
-        break;
-        case 'array':
-            $data .= 'array ('.count($obj).") {\n";
-            $ident += 2;
-            foreach ($obj as $key => $val) {
-                $data .= str_repeat(' ', $ident).'['.(is_int($key) ? $key : "\"$key\"")."]=>\n".niceVarDump($val, $ident)."\n";
-            }
-            $toClose = true;
-        break;
-        case 'string':
-            $data .= 'string "'.parseText($obj)."\"\n";
-        break;
-        case 'NULL':
-            $data .= gettype($obj);
-        break;
-        default:
-            $data .= gettype($obj).'('.strval($obj).")\n";
-        break;
-    }
-    if ($toClose) {
-        $data .= str_repeat(' ', $original_ident)."}\n";
-    }
-
-    return $data;
-}
-class GroupCipherTest extends PHPUnit_Framework_TestCase
-{
-    public function test_basicEncryptDecrypt()
+    public function testBasicEncryptDecrypt()
     {
-        $aliceStore = new InMemorySenderKeyStore();
-        $bobStore = new InMemorySenderKeyStore();
-        $charlieStore = new InMemorySenderKeyStore();
+        $aliceStore = new InMemorySenderKeyStore;
+        $bobStore = new InMemorySenderKeyStore;
+        $charlieStore = new InMemorySenderKeyStore;
 
         $aliceSessionBuilder = new GroupSessionBuilder($aliceStore);
         $bobSessionBuilder = new GroupSessionBuilder($bobStore);
@@ -102,8 +32,8 @@ class GroupCipherTest extends PHPUnit_Framework_TestCase
 
         $aliceDistributionMessage = $aliceSessionBuilder->process('groupWithBobInIt', $aliceSenderKeyId, 0,
                                 $aliceSenderKey, $aliceSenderSigningKey);
-        echo niceVarDump($aliceDistributionMessage);
-        echo niceVarDump($aliceDistributionMessage->serialize());
+        echo $this->niceVarDump($aliceDistributionMessage);
+        echo $this->niceVarDump($aliceDistributionMessage->serialize());
         echo $aliceDistributionMessage->serialize();
         $bobSessionBuilder->processSender('groupWithBobInIt::aliceUserName', $aliceDistributionMessage);
 

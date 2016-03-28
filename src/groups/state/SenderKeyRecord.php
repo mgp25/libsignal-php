@@ -1,14 +1,18 @@
 <?php
+namespace Libaxolotl\groups\state;
 
-require_once __DIR__.'/../../state/pb_proto_LocalStorageProtocol.php';
-require_once __DIR__.'/SenderKeyState.php';
+use Libaxolotl\state\TextSecure_SenderKeyRecordStructure;
+use Libaxolotl\groups\state\SenderKeyState;
+
+//require_once __DIR__.'/../../state/pb_proto_LocalStorageProtocol.php';
+//include_once __DIR__.'/SenderKeyState.php';
 require_once __DIR__.'/../../InvalidKeyIdException.php';
 
 class SenderKeyRecord
 {
     protected $senderKeyStates;
 
-    public function SenderKeyRecord($serialized = null)
+    public function __construct($serialized = null)
     {
         $this->senderKeyStates = [];
 

@@ -1,12 +1,15 @@
 <?php
+namespace Libaxolotl\protocol;
+
+use Libaxolotl\util\ByteUtil;
+use Libaxolotl\protocol\CiphertextMessage;
+use Libaxolotl\ecc\ECPublicKey;
+use Libaxolotl\protocol\Textsecure_SenderKeyDistributionMessage;
 
 //require_once("com/google/protobuf/ByteString.php");
-require_once __DIR__.'/../ecc/ECPublicKey.php';
-require_once __DIR__.'/../util/ByteUtil.php';
-require_once __DIR__.'/pb_proto_WhisperTextProtocol.php';
-require_once __DIR__.'/CiphertextMessage.php';
 require_once __DIR__.'/../InvalidMessageException.php';
 require_once __DIR__.'/../LegacyMessageException.php';
+
 class SenderKeyDistributionMessage extends CiphertextMessage
 {
     protected $id;    // int
@@ -15,7 +18,7 @@ class SenderKeyDistributionMessage extends CiphertextMessage
     protected $signatureKey;    // ECPublicKey
     protected $serialized;    // byte[]
 
-    public function SenderKeyDistributionMessage($id = null, $iteration = null, $chainKey = null, $signatureKey = null, $serialized = null) // [int id, int iteration, byte[] chainKey, ECPublicKey signatureKey]
+    public function __construct($id = null, $iteration = null, $chainKey = null, $signatureKey = null, $serialized = null) // [int id, int iteration, byte[] chainKey, ECPublicKey signatureKey]
     {
         if ($serialized == null) {
             $version = ByteUtil::intsToByteHighAndLow(self::CURRENT_VERSION, self::CURRENT_VERSION);

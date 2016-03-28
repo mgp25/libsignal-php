@@ -1,4 +1,5 @@
 <?php
+namespace Libaxolotl\groups;
 
 require_once __DIR__.'/../InvalidKeyException.php';
 require_once __DIR__.'/../InvalidKeyException.php';
@@ -14,7 +15,7 @@ class GroupCipher
     protected $senderKeyStore;
     protected $senderKeyId;
 
-    public function GroupCipher($senderKeyStore, $senderKeyId)
+    public function __construct($senderKeyStore, $senderKeyId)
     {
         $this->senderKeyStore = $senderKeyStore;
         $this->senderKeyId = $senderKeyId;

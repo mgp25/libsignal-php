@@ -1,13 +1,14 @@
 <?php
+namespace Libaxolotl\Tests\groups;
 
-require_once __DIR__.'/../../groups/state/SenderKeyStore.php';
-require_once __DIR__.'/../../groups/state/SenderKeyRecord.php';
+use Libaxolotl\groups\state\SenderKeyStore;
+use Libaxolotl\groups\state\SenderKeyRecord;
 
-class inmemorysenderkeystore extends SenderKeyStore
+class InMemorySenderKeyStore extends SenderKeyStore
 {
     protected $store;
 
-    public function InMemorySenderKeyStore()
+    public function __construct()
     {
         $this->store = [];
     }
@@ -23,6 +24,6 @@ class inmemorysenderkeystore extends SenderKeyStore
             return new SenderKeyRecord($this->store[$senderKeyId]->serialize());
         }
 
-        return new SenderKeyRecord();
+        return new SenderKeyRecord;
     }
 }

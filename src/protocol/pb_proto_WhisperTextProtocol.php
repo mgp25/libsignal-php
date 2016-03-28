@@ -1,4 +1,5 @@
 <?php
+namespace Libaxolotl\protocol;
 /**
  * Auto generated from WhisperTextProtocol.proto at 2015-09-10 23:24:53.
  *

@@ -1,4 +1,5 @@
 <?php
+namespace Libaxolotl\protocol;
 
 abstract class CiphertextMessage
 {

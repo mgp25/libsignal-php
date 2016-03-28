@@ -1,4 +1,5 @@
 <?php
+namespace Libaxolotl\state;
 /**
  * Auto generated from LocalStorageProtocol.proto at 2015-09-10 23:19:03.
  *

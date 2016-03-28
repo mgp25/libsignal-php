@@ -1,7 +1,10 @@
 <?php
+namespace Libaxolotl\Tests;
 
-require_once __DIR__.'/../ecc/Curve.php';
-class Curve25519Test extends PHPUnit_Framework_TestCase
+use Libaxolotl\ecc\Curve;
+use Libaxolotl\Tests\TestCase;
+
+class Curve25519Test extends TestCase
 {
     public function testAgreement()
     {

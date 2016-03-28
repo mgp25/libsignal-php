@@ -1,7 +1,9 @@
 <?php
+namespace Libaxolotl\util;
+
+use Libaxolotl\ecc\Curve;
 
 require_once __DIR__.'/Medium.php';
-require_once __DIR__.'/../ecc/Curve.php';
 require_once __DIR__.'/../IdentityKey.php';
 require_once __DIR__.'/../IdentityKeyPair.php';
 require_once __DIR__.'/../state/PreKeyRecord.php';
