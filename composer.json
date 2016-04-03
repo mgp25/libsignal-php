@@ -3,7 +3,7 @@
     "type": "library",
     "description": "This is a php port of libaxolotl-android originally written by Moxie Marlinspike",
     "require": {
-        "php": ">= 5.6",
+        "php": ">= 5.4",
         "ext-curve25519": "*",
         "ext-protobuf": "*",
         "ext-crypto": "*"
@@ -13,7 +13,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Libaxolotl\\": "src/"
+            "Libaxolotl\\": "src/",
+            "Whispertext\\": "src/Whispertext/",
+            "Localstorage\\": "src/Localstorage/"
         }
     },
     "autoload-dev": {

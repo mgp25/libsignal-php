@@ -1,12 +1,8 @@
 <?php
 namespace Libaxolotl\groups\state;
 
-use Libaxolotl\state\TextSecure_SenderKeyRecordStructure;
-use Libaxolotl\groups\state\SenderKeyState;
-
-//require_once __DIR__.'/../../state/pb_proto_LocalStorageProtocol.php';
-//include_once __DIR__.'/SenderKeyState.php';
-require_once __DIR__.'/../../InvalidKeyIdException.php';
+use Localstorage\SenderKeyRecordStructure as TextSecure_SenderKeyRecordStructure;
+use Libaxolotl\exceptions\InvalidKeyIdException;
 
 class SenderKeyRecord
 {

@@ -58,7 +58,7 @@ class Curve25519Test extends TestCase
         $aliceEphemeral = Curve::decodePoint($aliceEphemeralPublic, 0);
 
         if (!Curve::verifySignature($alicePublicKey, $aliceEphemeral->serialize(), $aliceSignature)) {
-            throw new Exception('Sig verification failed!');
+            throw new \Exception('Sig verification failed!');
         }
 
         for ($i = 0; $i < strlen($aliceSignature); $i++) {
@@ -66,7 +66,7 @@ class Curve25519Test extends TestCase
 
             $modifiedSignature[$i] = chr(ord($modifiedSignature[$i]) ^ 0x01);
             if (Curve::verifySignature($alicePublicKey, $aliceEphemeral->serialize(), $modifiedSignature)) {
-                throw new Exception('Sig verification succeeded!');
+                throw new \Exception('Sig verification succeeded!');
             }
         }
     }

@@ -1,4 +1,5 @@
 <?php
+namespace Libaxolotl\state;
 
 abstract class SessionStore
 {

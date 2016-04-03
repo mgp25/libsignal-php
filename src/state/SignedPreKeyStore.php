@@ -1,6 +1,8 @@
 <?php
+namespace Libaxolotl\state;
 
-require_once __DIR__.'/../InvalidKeyIdException.php';
+use Libaxolotl\exceptions\InvalidKeyIdException;
+
 abstract class SignedPreKeyStore
 {
     abstract public function loadSignedPreKey($signedPreKeyId);

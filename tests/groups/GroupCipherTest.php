@@ -2,7 +2,6 @@
 namespace Libaxolotl\Tests\groups;
 
 use Libaxolotl\Tests\TestCase;
-use Libaxolotl\Tests\groups\InMemorySenderKeyStore;
 use Libaxolotl\groups\GroupSessionBuilder;
 use Libaxolotl\groups\GroupCipher;
 use Libaxolotl\util\KeyHelper;
@@ -40,7 +39,7 @@ class GroupCipherTest extends TestCase
         $ciphertextFromAlice = $aliceGroupCipher->encrypt('smert ze smert');
         $plaintextFromAlice_Bob = $bobGroupCipher->decrypt($ciphertextFromAlice);
         $ciphertextFromAlice_2 = $aliceGroupCipher->encrypt('smert ze smert');
-        echo niceVarDump($aliceDistributionMessage);
+        echo $this->niceVarDump($aliceDistributionMessage);
         $charlieSessionBuilder->processSender('groupWithBobInIt::aliceUserName', $aliceDistributionMessage);
         $plaintextFromAlice_Charlie = $charlieGroupCipher->decrypt($ciphertextFromAlice_2);
 

@@ -1,14 +1,14 @@
 <?php
 namespace Libaxolotl\groups;
 
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/../InvalidMessageException.php';
-require_once __DIR__.'/../DuplicateMessageException.php';
-require_once __DIR__.'/../NoSessionException.php';
-require_once __DIR__.'/state/SenderKeyStore.php';
-require_once __DIR__.'/../protocol/SenderKeyMessage.php';
-require_once __DIR__.'/../SessionCipher.php';
+use Libaxolotl\exceptions\InvalidKeyException;
+use Libaxolotl\exceptions\InvalidMessageException;
+use Libaxolotl\exceptions\DuplicateMessageException;
+use Libaxolotl\exceptions\NoSessionException;
+use Libaxolotl\state\SenderKeyStore;
+use Libaxolotl\protocol\SenderKeyMessage;
+use Libaxolotl\SessionCipher;
+use Libaxolotl\AESCipher;
 
 class GroupCipher
 {

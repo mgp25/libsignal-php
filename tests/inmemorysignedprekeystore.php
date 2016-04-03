@@ -1,15 +1,18 @@
 <?php
-
+namespace Libaxolotl\Tests;
 
 //from axolotl.state.signedprekeystore import SignedPreKeyStore
 //from axolotl.state.signedprekeyrecord import SignedPreKeyRecord
 //from axolotl.invalidkeyidexception import InvalidKeyIdException
+use Libaxolotl\state\SignedPreKeyStore;
+use Libaxolotl\state\SignedPreKeyRecord;
+use Libaxolotl\exceptions\InvalidKeyIdException;
 
-class inmemorysignedprekeystore extends SignedPreKeyStore
+class InMemorySignedPreKeyStore extends SignedPreKeyStore
 {
     protected $store;
 
-    public function InMemorySignedPreKeyStore()
+    public function __construct()
     {
         $this->store = [];
     }

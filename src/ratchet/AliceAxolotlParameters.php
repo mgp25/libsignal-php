@@ -1,9 +1,11 @@
 <?php
+namespace Libaxolotl\ratchet;
 
-require_once __DIR__.'/../IdentityKey.php';
-require_once __DIR__.'/../IdentityKeyPair.php';
-require_once __DIR__.'/../ecc/ECKeyPair.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
+use Libaxolotl\IdentityKey;
+use Libaxolotl\IdentityKeyPair;
+use Libaxolotl\ecc\ECKeyPair;
+use Libaxolotl\ecc\ECPublicKey;
+
 class AliceAxolotlParameters
 {
     protected $ourIdentityKey;    // IdentityKeyPair
@@ -13,7 +15,7 @@ class AliceAxolotlParameters
     protected $theirOneTimePreKey;    // Optional<ECPublicKey>
     protected $theirRatchetKey;    // ECPublicKey
 
-    public function AliceAxolotlParameters($ourIdentityKey, $ourBaseKey, $theirIdentityKey, $theirSignedPreKey, $theirRatchetKey, $theirOneTimePreKey) // [IdentityKeyPair ourIdentityKey, ECKeyPair ourBaseKey, IdentityKey theirIdentityKey, ECPublicKey theirSignedPreKey, ECPublicKey theirRatchetKey, Optional<ECPublicKey> theirOneTimePreKey]
+    public function __construct($ourIdentityKey, $ourBaseKey, $theirIdentityKey, $theirSignedPreKey, $theirRatchetKey, $theirOneTimePreKey) // [IdentityKeyPair ourIdentityKey, ECKeyPair ourBaseKey, IdentityKey theirIdentityKey, ECPublicKey theirSignedPreKey, ECPublicKey theirRatchetKey, Optional<ECPublicKey> theirOneTimePreKey]
     {
         $this->ourIdentityKey = $ourIdentityKey;
         $this->ourBaseKey = $ourBaseKey;
@@ -62,6 +64,7 @@ class AliceAxolotlParameters
         return $this->theirRatchetKey;
     }
 }
+
 class AliceBuilder
 {
     protected $ourIdentityKey;

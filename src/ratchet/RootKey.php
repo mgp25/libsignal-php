@@ -1,12 +1,15 @@
 <?php
+namespace Libaxolotl\ratchet;
 
-require_once __DIR__.'/../kdf/DerivedRootSecrets.php';
+use Libaxolotl\kdf\DerivedRootSecrets;
+use Libaxolotl\ecc\Curve;
+
 class RootKey
 {
     protected $kdf;
     protected $key;
 
-    public function RootKey($kdf, $key)
+    public function __construct($kdf, $key)
     {
         $this->kdf = $kdf;
         $this->key = $key;

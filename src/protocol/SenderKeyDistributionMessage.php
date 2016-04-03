@@ -2,13 +2,11 @@
 namespace Libaxolotl\protocol;
 
 use Libaxolotl\util\ByteUtil;
-use Libaxolotl\protocol\CiphertextMessage;
 use Libaxolotl\ecc\ECPublicKey;
-use Libaxolotl\protocol\Textsecure_SenderKeyDistributionMessage;
-
+use Libaxolotl\exceptions\InvalidMessageException;
+use Libaxolotl\exceptions\LegacyMessageException;
+use Whispertext\SenderKeyDistributionMessage as Textsecure_SenderKeyDistributionMessage;
 //require_once("com/google/protobuf/ByteString.php");
-require_once __DIR__.'/../InvalidMessageException.php';
-require_once __DIR__.'/../LegacyMessageException.php';
 
 class SenderKeyDistributionMessage extends CiphertextMessage
 {

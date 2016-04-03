@@ -16,6 +16,12 @@ This is a ratcheting forward secrecy protocol that works in synchronous and asyn
 environments.  The protocol overview is available [here](https://github.com/trevp/axolotl/wiki),
 and the details of the wire format are available [here](https://github.com/WhisperSystems/TextSecure/wiki/ProtocolV2).
 
+## Dependencies
+
+* [Protobuf](https://github.com/allegro/php-protobuf)
+* [Curve25519](https://github.com/mgp25/curve25519-php)
+* [Crypto](https://github.com/bukka/php-crypto)
+
 ## PreKeys
 
 This protocol uses a concept called 'PreKeys'.  A PreKey is an ECPublicKey and an associated unique 
@@ -57,7 +63,8 @@ State is kept in the following places:
 At install time, a libaxolotl client needs to generate its identity keys, registration id, and
 prekeys.
 ```php
-    $axolotl = new KeyHelper();
+
+    $axolotl = new \Libaxolotl\state\KeyHelper();
     $identityKeyPair = $axolotl->generateIdentityKeyPair();
     $registrationId  = $axolotl->generateRegistrationId();
     $preKeys         = $axolotl->generatePreKeys(startId, 100);
@@ -94,6 +101,27 @@ Once those are implemented, building a session is fairly straightforward:
     $essionCipher = new SessionCipher($sessionStore, $recipientId, $deviceId);
     $message      = $sessionCipher->encrypt("Hello world!");
 ```
+
+# Development
+## Re-genarete Protobuf files
+
+```sh
+$ php ../php-protobuf/protoc-php.php --use-namespaces --psr -t src/ protobuf/WhisperTextProtocol.proto
+```
+```sh
+$ php ../php-protobuf/protoc-php.php --use-namespaces --psr -t src/ protobuf/LocalStorageProtocol.proto 
+```
+
+## Update Localstorage Protobuf files
+1. Update `PUBLIC` and `PRIVATE` to `_PUBLIC` and `_PRIVATE` respectively in `Localstorage/SenderKeyStateStructure/SenderSigningKey.php`
+2. Add following function to `Localstorage/SessionStructure.php`
+```php
+    public function clearPendingPreKey()
+    {
+        $this->values[self::PENDINGPREKEY] = null;
+    }
+```
+
 
 # Legal things
 ## Cryptography Notice

@@ -1,7 +1,9 @@
 <?php
+namespace Libaxolotl\groups\ratchet;
 
-require_once __DIR__.'/../../kdf/HKDFv3.php';
-require_once __DIR__.'/../../util/ByteUtil.php';
+use Libaxolotl\kdf\HKDFv3;
+use Libaxolotl\util\ByteUtil;
+
 class SenderMessageKey
 {
     protected $iteration;    // int
@@ -9,7 +11,7 @@ class SenderMessageKey
     protected $cipherKey;    // byte[]
     protected $seed;    // byte[]
 
-    public function SenderMessageKey($iteration, $seed) // [int iteration, byte[] seed]
+    public function __construct($iteration, $seed) // [int iteration, byte[] seed]
     {
         $hkdf = new HKDFv3();
         $derivative = $hkdf->deriveSecrets($seed, 'WhisperGroup', 48);

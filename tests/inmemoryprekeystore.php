@@ -1,17 +1,17 @@
 <?php
-
-
+namespace Libaxolotl\Tests;
 //from axolotl.state.prekeystore import PreKeyStore
 //from axolotl.state.prekeyrecord import PreKeyRecord
 //from axolotl.invalidkeyidexception import InvalidKeyIdException
-require_once __DIR__.'/../state/PreKeyStore.php';
-require_once __DIR__.'/../state/PreKeyRecord.php';
-require_once __DIR__.'/../InvalidKeyIdException.php';
-class inmemoryprekeystore extends PreKeyStore
+use Libaxolotl\state\PreKeyStore;
+use Libaxolotl\state\PreKeyRecord;
+use Libaxolotl\exceptions\InvalidKeyIdException;
+
+class InMemoryPreKeyStore extends PreKeyStore
 {
     protected $store;
 
-    public function InMemoryPreKeyStore()
+    public function __construct()
     {
         $this->store = [];
     }

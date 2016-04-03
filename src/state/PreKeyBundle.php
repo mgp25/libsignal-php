@@ -1,7 +1,9 @@
 <?php
+namespace Libaxolotl\state;
 
-require_once __DIR__.'/../IdentityKey.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
+use Libaxolotl\IdentityKey;
+use Libaxolotl\ecc\ECPublicKey;
+
 class PreKeyBundle
 {
     protected $registrationId;    // int
@@ -13,7 +15,7 @@ class PreKeyBundle
     protected $signedPreKeySignature;    // byte[]
     protected $identityKey;    // IdentityKey
 
-    public function PreKeyBundle($registrationId, $deviceId, $preKeyId, $preKeyPublic, $signedPreKeyId, $signedPreKeyPublic, $signedPreKeySignature, $identityKey) // [int registrationId, int deviceId, int preKeyId, ECPublicKey preKeyPublic, int signedPreKeyId, ECPublicKey signedPreKeyPublic, byte[] signedPreKeySignature, IdentityKey identityKey]
+    public function __construct($registrationId, $deviceId, $preKeyId, $preKeyPublic, $signedPreKeyId, $signedPreKeyPublic, $signedPreKeySignature, $identityKey) // [int registrationId, int deviceId, int preKeyId, ECPublicKey preKeyPublic, int signedPreKeyId, ECPublicKey signedPreKeyPublic, byte[] signedPreKeySignature, IdentityKey identityKey]
     {
         $this->registrationId = $registrationId;
         $this->deviceId = $deviceId;

@@ -1,4 +1,5 @@
 <?php
+namespace Libaxolotl\util;
 
 class Medium
 {

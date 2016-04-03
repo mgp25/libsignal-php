@@ -1,22 +1,23 @@
 <?php
-
-
+namespace Libaxolotl\Tests;
 //from axolotl.state.identitykeystore import IdentityKeyStore
 //from axolotl.ecc.curve import Curve
 //from axolotl.identitykey import IdentityKey
 //from axolotl.util.keyhelper import KeyHelper
 //from axolotl.identitykeypair import IdentityKeyPair
-require_once __DIR__.'/../state/IdentityKeyStore.php';
-require_once __DIR__.'/../ecc/Curve.php';
-require_once __DIR__.'/../util/KeyHelper.php';
-require_once __DIR__.'/../IdentityKeyPair.php';
-class inmemoryidentitykeystore extends IdentityKeyStore
+use Libaxolotl\state\IdentityKeyStore;
+use Libaxolotl\ecc\Curve;
+use Libaxolotl\util\KeyHelper;
+use Libaxolotl\IdentityKeyPair;
+use Libaxolotl\IdentityKey;
+
+class InMemoryIdentityKeyStore extends IdentityKeyStore
 {
     protected $trustedKeys;
     protected $identityKeyPair;
     protected $localRegistrationId;
 
-    public function InMemoryIdentityKeyStore()
+    public function __construct()
     {
         $this->trustedKeys = [];
         $identityKeyPairKeys = Curve::generateKeyPair();

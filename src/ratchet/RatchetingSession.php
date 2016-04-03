@@ -1,17 +1,17 @@
 <?php
+namespace Libaxolotl\ratchet;
 
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/../ecc/Curve.php';
-require_once __DIR__.'/../ecc/ECKeyPair.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
-require_once __DIR__.'/../kdf/HKDF.php';
-//require_once(__DIR__."/../state/SessionState.php");
-require_once __DIR__.'/../util/ByteUtil.php';
-require_once __DIR__.'/ChainKey.php';
-require_once __DIR__.'/RootKey.php';
+use Libaxolotl\ecc\Curve;
+use Libaxolotl\ecc\ECKeyPair;
+use Libaxolotl\ecc\ECPublicKey;
+use Libaxolotl\util\ByteUtil;
+use Libaxolotl\kdf\HKDF;
+use Libaxolotl\exceptions\InvalidKeyException;
+use Libaxolotl\state\SessionState;
+
 class RatchetingSession
 {
-    public static function initializeSession($sessionState, $sessionVersion, $parameters)
+    public static function initializeSession(SessionState $sessionState, $sessionVersion, $parameters)
     {
         /*
         :type sessionState: SessionState
@@ -137,12 +137,13 @@ class RatchetingSession
         return $ourKey->compareTo($theirKey)  == -1;
     }
 }
+
 class DerivedKeys
 {
     protected $rootKey;
     protected $chainKey;
 
-    public function DerivedKeys($rootKey, $chainKey)
+    public function __construct($rootKey, $chainKey)
     {
         /*
         :type rootKey: RootKey

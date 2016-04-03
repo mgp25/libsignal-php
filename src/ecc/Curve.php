@@ -1,13 +1,7 @@
 <?php
 namespace Libaxolotl\ecc;
 
-use Libaxolotl\ecc\ECKeyPair;
-use Libaxolotl\ecc\DjbECPublicKey;
-use Libaxolotl\ecc\ECPublicKey;
-use Libaxolotl\ecc\ECPrivateKey;
-use Libaxolotl\ecc\DjbECPrivateKey;
-
-require_once __DIR__.'/../InvalidKeyException.php';
+use Libaxolotl\exceptions\InvalidKeyException;
 
 class Curve
 {

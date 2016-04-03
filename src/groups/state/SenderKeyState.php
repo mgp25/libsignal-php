@@ -2,14 +2,12 @@
 namespace Libaxolotl\groups\state;
 
 use Libaxolotl\ecc\Curve;
-use Libaxolotl\state\Textsecure_SenderKeyStateStructure;
-use Libaxolotl\state\Textsecure_SenderKeyStateStructure_SenderChainKey;
-use Libaxolotl\state\Textsecure_SenderKeyStateStructure_SenderSigningKey;
-use Libaxolotl\state\Textsecure_SenderKeyStateStructure_SenderMessageKey;
-
-//require_once __DIR__.'/../../state/pb_proto_LocalStorageProtocol.php';
-require_once __DIR__.'/../ratchet/SenderChainKey.php';
-require_once __DIR__.'/../ratchet/SenderMessageKey.php';
+use Localstorage\SenderKeyStateStructure as Textsecure_SenderKeyStateStructure;
+use Localstorage\SenderKeyStateStructure\SenderChainKey as Textsecure_SenderKeyStateStructure_SenderChainKey;
+use Localstorage\SenderKeyStateStructure\SenderSigningKey as Textsecure_SenderKeyStateStructure_SenderSigningKey;
+use Localstorage\SenderKeyStateStructure\SenderMessageKey as Textsecure_SenderKeyStateStructure_SenderMessageKey;
+use Libaxolotl\groups\ratchet\SenderChainKey;
+use Libaxolotl\groups\ratchet\SenderMessageKey;
 
 class SenderKeyState
 {

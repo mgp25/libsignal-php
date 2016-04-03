@@ -1,23 +1,21 @@
 <?php
+namespace Libaxolotl\Tests;
 
-require_once __DIR__.'/../state/AxolotlStore.php';
-require_once __DIR__.'/inmemoryidentitykeystore.php';
-require_once __DIR__.'/inmemoryprekeystore.php';
-require_once __DIR__.'/inmemorysessionstore.php';
-require_once __DIR__.'/inmemorysignedprekeystore.php';
-class inmemoryaxolotlstore extends AxolotlStore
+use Libaxolotl\state\AxolotlStore;
+
+class InMemoryAxolotlStore extends AxolotlStore
 {
     protected $identityKeyStore;
     protected $preKeyStore;
     protected $signedPreKeyStore;
     protected $sessionStore;
 
-    public function InMemoryAxolotlStore()
+    public function __construct()
     {
-        $this->identityKeyStore = new InMemoryIdentityKeyStore();
-        $this->preKeyStore = new InMemoryPreKeyStore();
-        $this->signedPreKeyStore = new InMemorySignedPreKeyStore();
-        $this->sessionStore = new InMemorySessionStore();
+        $this->identityKeyStore = new InMemoryIdentityKeyStore;
+        $this->preKeyStore = new InMemoryPreKeyStore;
+        $this->signedPreKeyStore = new InMemorySignedPreKeyStore;
+        $this->sessionStore = new InMemorySessionStore;
     }
 
     public function getIdentityKeyPair()

@@ -1,13 +1,15 @@
 <?php
+namespace Libaxolotl\kdf;
 
-require_once __DIR__.'/../util/ByteUtil.php';
+use Libaxolotl\util\ByteUtil;
+
 class DerivedRootSecrets
 {
     const SIZE = 64;    // int
     protected $rootKey;    // byte[]
     protected $chainKey;    // byte[]
 
-    public function DerivedRootSecrets($okm) // [byte[] okm]
+    public function __construct($okm) // [byte[] okm]
     {
         $keys = ByteUtil::split($okm, 32, 32);
         $this->rootKey = $keys[0];

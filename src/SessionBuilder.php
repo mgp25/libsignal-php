@@ -1,28 +1,32 @@
 <?php
+namespace Libaxolotl;
 
-require_once __DIR__.'/ecc/Curve.php';
-require_once __DIR__.'/ecc/ECKeyPair.php';
-require_once __DIR__.'/ecc/ECPublicKey.php';
-require_once __DIR__.'/logging/Log.php';
-require_once __DIR__.'/protocol/CiphertextMessage.php';
-require_once __DIR__.'/protocol/KeyExchangeMessage.php';
-require_once __DIR__.'/protocol/PreKeyWhisperMessage.php';
-require_once __DIR__.'/ratchet/AliceAxolotlParameters.php';
-require_once __DIR__.'/ratchet/BobAxolotlParameters.php';
-require_once __DIR__.'/ratchet/RatchetingSession.php';
-require_once __DIR__.'/ratchet/SymmetricAxolotlParameters.php';
-require_once __DIR__.'/state/AxolotlStore.php';
-require_once __DIR__.'/state/IdentityKeyStore.php';
-require_once __DIR__.'/state/PreKeyBundle.php';
-require_once __DIR__.'/state/PreKeyStore.php';
-require_once __DIR__.'/state/SessionRecord.php';
-require_once __DIR__.'/state/SessionState.php';
-require_once __DIR__.'/state/SessionStore.php';
-require_once __DIR__.'/state/SignedPreKeyStore.php';
-require_once __DIR__.'/util/KeyHelper.php';
-require_once __DIR__.'/util/Medium.php';
-require_once __DIR__.'/StaleKeyExchangeException.php';
-require_once __DIR__.'/UntrustedIdentityException.php';
+use Libaxolotl\ecc\Curve;
+use Libaxolotl\ecc\ECKeyPair;
+use Libaxolotl\ecc\ECPublicKey;
+use Libaxolotl\protocol\CiphertextMessage;
+use Libaxolotl\protocol\KeyExchangeMessage;
+use Libaxolotl\protocol\PreKeyWhisperMessage;
+use Libaxolotl\state\AxolotlStore;
+use Libaxolotl\state\IdentityKeyStore;
+use Libaxolotl\state\PreKeyBundle;
+use Libaxolotl\state\PreKeyStore;
+use Libaxolotl\state\SessionRecord;
+use Libaxolotl\state\SessionState;
+use Libaxolotl\state\SessionStore;
+use Libaxolotl\state\SignedPreKeyStore;
+use Libaxolotl\util\KeyHelper;
+use Libaxolotl\exceptions\InvalidKeyException, Exception;
+use Libaxolotl\ratchet\SymmetricBuilder;
+use Libaxolotl\ratchet\RatchetingSession;
+use Libaxolotl\ratchet\BobAxolotlParameters;
+use Libaxolotl\exceptions\StaleKeyExchangeException;
+use Libaxolotl\exceptions\UntrustedIdentityException;
+use Libaxolotl\ratchet\AliceAxolotlParameters;
+use Libaxolotl\ratchet\SymmetricAxolotlParameters;
+use Libaxolotl\util\Medium;
+use Libaxolotl\logging\Log;
+
 class SessionBuilder
 {
     protected $sessionStore;
@@ -32,7 +36,7 @@ class SessionBuilder
     protected $recipientId;
     protected $deviceId;
 
-    public function SessionBuilder($sessionStore, $preKeyStore, $signedPreKeyStore, $identityKeyStore, $recepientId, $deviceId)
+    public function __construct($sessionStore, $preKeyStore, $signedPreKeyStore, $identityKeyStore, $recepientId, $deviceId)
     {
         $this->sessionStore = $sessionStore;
         $this->preKeyStore = $preKeyStore;

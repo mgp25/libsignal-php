@@ -1,13 +1,15 @@
 <?php
+namespace Libaxolotl;
 
-require_once __DIR__.'/state/pb_proto_LocalStorageProtocol.php';
-require_once __DIR__.'/IdentityKey.php';
+use Localstorage\IdentityKeyPairStructure as Textsecure_IdentityKeyPairStructure;
+use Libaxolotl\ecc\Curve;
+
 class IdentityKeyPair
 {
     protected $publicKey;    // IdentityKey
     protected $privateKey;    // ECPrivateKey
 
-    public function IdentityKeyPair($publicKey = null, $privateKey = null, $serialized = null) // [IdentityKey publicKey, ECPrivateKey privateKey]
+    public function __construct($publicKey = null, $privateKey = null, $serialized = null) // [IdentityKey publicKey, ECPrivateKey privateKey]
     {
         if ($serialized == null) {
             $this->publicKey = $publicKey;
