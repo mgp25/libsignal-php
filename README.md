@@ -102,8 +102,8 @@ Once those are implemented, building a session is fairly straightforward:
     $message      = $sessionCipher->encrypt("Hello world!");
 ```
 
-# Development
-## Re-genarete Protobuf files
+## Development
+### Re-genarete Protobuf files
 
 ```sh
 $ php ../php-protobuf/protoc-php.php --use-namespaces --psr -t src/ protobuf/WhisperTextProtocol.proto
@@ -112,7 +112,7 @@ $ php ../php-protobuf/protoc-php.php --use-namespaces --psr -t src/ protobuf/Whi
 $ php ../php-protobuf/protoc-php.php --use-namespaces --psr -t src/ protobuf/LocalStorageProtocol.proto 
 ```
 
-## Update Localstorage Protobuf files
+### Update Localstorage Protobuf files
 1. Update `PUBLIC` and `PRIVATE` to `_PUBLIC` and `_PRIVATE` respectively in `Localstorage/SenderKeyStateStructure/SenderSigningKey.php`
 2. Add following function to `Localstorage/SessionStructure.php`
 ```php
