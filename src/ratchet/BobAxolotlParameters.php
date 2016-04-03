@@ -1,9 +1,11 @@
 <?php
+namespace Libaxolotl\ratchet;
 
-require_once __DIR__.'/../IdentityKey.php';
-require_once __DIR__.'/../IdentityKeyPair.php';
-require_once __DIR__.'/../ecc/ECKeyPair.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
+use Libaxolotl\IdentityKey;
+use Libaxolotl\IdentityKeyPair;
+use Libaxolotl\ecc\ECKeyPair;
+use Libaxolotl\ecc\ECPublicKey;
+
 class BobAxolotlParameters
 {
     protected $ourIdentityKey;
@@ -13,7 +15,7 @@ class BobAxolotlParameters
     protected $theirIdentityKey;
     protected $theirBaseKey;
 
-    public function BobAxolotlParameters($ourIdentityKey, $ourSignedPreKey,
+    public function __construct($ourIdentityKey, $ourSignedPreKey,
                  $ourRatchetKey, $ourOneTimePreKey,
                  $theirIdentityKey, $theirBaseKey) // [IdentityKeyPair ourIdentityKey, ECKeyPair ourSignedPreKey, IdentityKey theirIdentityKey, ECPublicKey ourRatchetKey, ECPublicKey ourOneTimePreKey, Optional<ECPublicKey> theirBaseKey]
     {
@@ -65,6 +67,7 @@ class BobAxolotlParameters
         return $this->ourOneTimePreKey;
     }
 }
+
 class BobBuilder
 {
     protected $ourIdentityKey;
@@ -74,7 +77,7 @@ class BobBuilder
     protected $theirIdentityKey;
     protected $theirBaseKey;
 
-    public function BobBuilder()
+    public function __construct()
     {
         $this->ourIdentityKey = null;
         $this->ourSignedPreKey = null;

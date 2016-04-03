@@ -1,4 +1,5 @@
 <?php
+namespace Libaxolotl\util;
 
 class Helper
 {
@@ -9,7 +10,7 @@ class Helper
         }
 
         if ($reference === null) {
-            throw new Exception($message);
+            throw new \Exception($message);
         }
 
         return $reference;

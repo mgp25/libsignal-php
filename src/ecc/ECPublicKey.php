@@ -1,4 +1,5 @@
 <?php
+namespace Libaxolotl\ecc;
 
 interface ECPublicKey
 {

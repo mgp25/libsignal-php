@@ -1,14 +1,18 @@
 <?php
+namespace Libaxolotl\groups;
+
+use Libaxolotl\groups\state\SenderKeyStore;
+use Libaxolotl\protocol\SenderKeyDistributionMessage;
 
 require_once __DIR__.'/../ecc/ECKeyPair.php';
 require_once __DIR__.'/state/SenderKeyRecord.php';
-require_once __DIR__.'/state/SenderKeyStore.php';
-require_once __DIR__.'/../protocol/SenderKeyDistributionMessage.php';
+//require_once __DIR__.'/../protocol/SenderKeyDistributionMessage.php';
+
 class GroupSessionBuilder
 {
     protected $senderKeyStore;
 
-    public function GroupSessionBuilder($senderKeyStore)
+    public function __construct(SenderKeyStore $senderKeyStore)
     {
         $this->senderKeyStore = $senderKeyStore;
     }

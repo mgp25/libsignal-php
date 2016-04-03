@@ -1,12 +1,14 @@
 <?php
+namespace Libaxolotl;
 
-require_once __DIR__.'/ecc/Curve.php';
-require_once __DIR__.'/ecc/ECPublicKey.php';
+use Libaxolotl\ecc\Curve;
+use Libaxolotl\ecc\ECPublicKey;
+
 class IdentityKey
 {
     protected $publicKey;    // ECPublicKey
 
-    public function IdentityKey($publicKeyOrBytes, $offset = null) // [ECPublicKey publicKey]
+    public function __construct($publicKeyOrBytes, $offset = null) // [ECPublicKey publicKey]
     {
         if ($offset === null) {
             $this->publicKey = $publicKeyOrBytes;

@@ -1,7 +1,9 @@
 <?php
+namespace Libaxolotl\state;
 
-require_once __DIR__.'/../IdentityKey.php';
-require_once __DIR__.'/../IdentityKeyPair.php';
+use Libaxolotl\IdentityKey;
+use Libaxolotl\IdentityKeyPair;
+
 abstract class IdentityKeyStore
 {
     abstract public function getIdentityKeyPair();

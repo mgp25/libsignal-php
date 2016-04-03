@@ -1,15 +1,30 @@
 <?php
+namespace Libaxolotl\state;
+
+use Libaxolotl\IdentityKey;
+use Localstorage\SessionStructure as Textsecure_SessionStructure;
+use Localstorage\SessionStructure\Chain as Textsecure_SessionStructure_Chain;
+use Localstorage\SessionStructure\Chain\ChainKey as Textsecure_SessionStructure_Chain_ChainKey;
+use Localstorage\SessionStructure\Chain\MessageKey as Textsecure_SessionStructure_Chain_MessageKey;
+use Localstorage\SessionStructure\PendingPreKey as Textsecure_SessionStructure_PendingPreKey;
+use Localstorage\SessionStructure\PendingKeyExchange as Textsecure_SessionStructure_PendingKeyExchange;
+use Libaxolotl\ecc\Curve;
+use Libaxolotl\ecc\ECKeyPair;
+use Libaxolotl\IdentityKeyPair;
+use Libaxolotl\ratchet\ChainKey;
+use Libaxolotl\kdf\HKDF;
+use Libaxolotl\ratchet\RootKey;
 
 class SessionState
 {
     protected $sessionStructure;
 
-    public function SessionState($session = null)
+    public function __construct($session = null)
     {
         if ($session == null) {
-            $this->sessionStructure = new Textsecure_SessionStructure();
+            $this->sessionStructure = new Textsecure_SessionStructure;
         } elseif ($session instanceof self) {
-            $this->sessionStructure = new Textsecure_SessionStructure();
+            $this->sessionStructure = new Textsecure_SessionStructure;
             $this->sessionStructure->parseFromString($session->getStructure()->serializeToString());
         } else {
             $this->sessionStructure = $session;

@@ -1,11 +1,11 @@
 <?php
+namespace Libaxolotl\util;
 
-require_once __DIR__.'/Medium.php';
-require_once __DIR__.'/../ecc/Curve.php';
-require_once __DIR__.'/../IdentityKey.php';
-require_once __DIR__.'/../IdentityKeyPair.php';
-require_once __DIR__.'/../state/PreKeyRecord.php';
-require_once __DIR__.'/../state/SignedPreKeyRecord.php';
+use Libaxolotl\ecc\Curve;
+use Libaxolotl\IdentityKey;
+use Libaxolotl\IdentityKeyPair;
+use Libaxolotl\state\PreKeyRecord;
+use Libaxolotl\state\SignedPreKeyRecord;
 
 class KeyHelper
 {

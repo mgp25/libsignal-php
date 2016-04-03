@@ -1,4 +1,5 @@
 <?php
+namespace Libaxolotl\groups\state;
 
 abstract class SenderKeyStore
 {

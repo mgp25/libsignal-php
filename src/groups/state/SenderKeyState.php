@@ -1,16 +1,20 @@
 <?php
+namespace Libaxolotl\groups\state;
 
-require_once __DIR__.'/../../state/pb_proto_LocalStorageProtocol.php';
-require_once __DIR__.'/../ratchet/SenderChainKey.php';
-require_once __DIR__.'/../ratchet/SenderMessageKey.php';
-require_once __DIR__.'/../../ecc/Curve.php';
+use Libaxolotl\ecc\Curve;
+use Localstorage\SenderKeyStateStructure as Textsecure_SenderKeyStateStructure;
+use Localstorage\SenderKeyStateStructure\SenderChainKey as Textsecure_SenderKeyStateStructure_SenderChainKey;
+use Localstorage\SenderKeyStateStructure\SenderSigningKey as Textsecure_SenderKeyStateStructure_SenderSigningKey;
+use Localstorage\SenderKeyStateStructure\SenderMessageKey as Textsecure_SenderKeyStateStructure_SenderMessageKey;
+use Libaxolotl\groups\ratchet\SenderChainKey;
+use Libaxolotl\groups\ratchet\SenderMessageKey;
 
 class SenderKeyState
 {
     protected $senderKeyStateStructure;
     protected $senderChainKey;
 
-    public function SenderKeyState($id = null, $iteration = null, $chainKey = null,
+    public function __construct($id = null, $iteration = null, $chainKey = null,
                  $signatureKeyPublic = null, $signatureKeyPrivate = null,
                  $signatureKeyPair = null, $senderKeyStateStructure = null)
     {

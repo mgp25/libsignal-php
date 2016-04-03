@@ -1,16 +1,18 @@
 <?php
+namespace Libaxolotl\state;
 
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/../ecc/Curve.php';
-require_once __DIR__.'/../ecc/ECKeyPair.php';
-require_once __DIR__.'/../ecc/ECPrivateKey.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
-require_once __DIR__.'/../state/pb_proto_LocalStorageProtocol.php';
+use Libaxolotl\ecc\Curve;
+use Libaxolotl\ecc\ECKeyPair;
+use Libaxolotl\ecc\ECPrivateKey;
+use Libaxolotl\ecc\ECPublicKey;
+use Libaxolotl\exceptions\InvalidKeyException;
+use Localstorage\SignedPreKeyRecordStructure as Textsecure_SignedPreKeyRecordStructure;
+
 class SignedPreKeyRecord
 {
     protected $structure;
 
-    public function SignedPreKeyRecord($id = null, $timestamp = null, $keyPair = null, $signature = null, $serialized = null) // [int id, long timestamp, ECKeyPair keyPair, byte[] signature]
+    public function __construct($id = null, $timestamp = null, $keyPair = null, $signature = null, $serialized = null) // [int id, long timestamp, ECKeyPair keyPair, byte[] signature]
     {
         $struct = new Textsecure_SignedPreKeyRecordStructure();
         if ($serialized == null) {
@@ -43,7 +45,7 @@ class SignedPreKeyRecord
 
             return  new ECKeyPair($publicKey, $privateKey);
         } catch (InvalidKeyException $e) {
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 

@@ -1,11 +1,8 @@
 <?php
+namespace Libaxolotl\ecc;
 
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/ECKeyPair.php';
-require_once __DIR__.'/ECPrivateKey.php';
-require_once __DIR__.'/ECPublicKey.php';
-require_once __DIR__.'/DjbECPublicKey.php';
-require_once __DIR__.'/DjbECPrivateKey.php';
+use Libaxolotl\exceptions\InvalidKeyException;
+
 class Curve
 {
     const DJB_TYPE = 0x05;  // int
