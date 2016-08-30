@@ -7,7 +7,7 @@ class MessageKeys
     protected $iv;    // IvParameterSpec
     protected $counter;    // int
 
-    public function MessageKeys($cipherKey, $macKey, $iv, $counter) // [SecretKeySpec cipherKey, SecretKeySpec macKey, IvParameterSpec iv, int counter]
+    public function __construct($cipherKey, $macKey, $iv, $counter) // [SecretKeySpec cipherKey, SecretKeySpec macKey, IvParameterSpec iv, int counter]
     {
         $this->cipherKey = $cipherKey;
         $this->macKey = $macKey;

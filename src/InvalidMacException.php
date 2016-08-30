@@ -2,7 +2,7 @@
 
 class InvalidMacException extends Exception
 {
-    public function InvalidMacException($detailMessage) // [String detailMessage]
+    public function __construct($detailMessage) // [String detailMessage]
     {
         $this->message = $detailMessage;
     }

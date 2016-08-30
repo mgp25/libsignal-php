@@ -1,14 +1,15 @@
 <?php
 
-require_once __DIR__.'/../../state/pb_proto_LocalStorageProtocol.php';
+require_once __DIR__.'/../../protobuf/pb_proto_LocalStorageProtocol.php';
 require_once __DIR__.'/SenderKeyState.php';
 require_once __DIR__.'/../../InvalidKeyIdException.php';
 
 class SenderKeyRecord
 {
     protected $senderKeyStates;
+    const MAX_STATES = 3;
 
-    public function SenderKeyRecord($serialized = null)
+    public function __construct($serialized = null)
     {
         $this->senderKeyStates = [];
 
@@ -43,7 +44,10 @@ class SenderKeyRecord
 
     public function addSenderKeyState($id, $iteration, $chainKey, $signatureKey)
     {
-        $this->senderKeyStates[] = new SenderKeyState($id, $iteration, $chainKey, $signatureKey);
+        array_unshift($this->senderKeyStates, new SenderKeyState($id, $iteration, $chainKey, $signatureKey));
+        if (count($this->senderKeyStates > self::MAX_STATES)) {
+            //$this->senderKeyStates->removeLast();
+        }
     }
 
     public function setSenderKeyState($id, $iteration, $chainKey, $signatureKey)
@@ -62,5 +66,10 @@ class SenderKeyRecord
         }
 
         return $recordStructure->serializeToString();
+    }
+
+    public function isEmpty()
+    {
+        return empty($this->senderKeyStates);
     }
 }

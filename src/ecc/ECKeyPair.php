@@ -5,7 +5,7 @@ class ECKeyPair
     protected $publicKey;    // ECPublicKey
     protected $privateKey;    // ECPrivateKey
 
-    public function ECKeyPair($publicKey, $privateKey) // [ECPublicKey publicKey, ECPrivateKey privateKey]
+    public function __construct($publicKey, $privateKey) // [ECPublicKey publicKey, ECPrivateKey privateKey]
     {
         $this->publicKey = $publicKey;
         $this->privateKey = $privateKey;

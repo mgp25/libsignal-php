@@ -2,7 +2,7 @@
 
 class InvalidMessageException extends Exception
 {
-    public function InvalidMessageException($detailMessage, $throw = null) // [String detailMessage]
+    public function __construct($detailMessage, $throw = null) // [String detailMessage]
     {
         $this->message = $detailMessage;
         if ($throw != null) {

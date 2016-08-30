@@ -37,6 +37,7 @@ require_once __DIR__.'/state/SessionStore.php';
 require_once __DIR__.'/state/SignedPreKeyStore.php';
 require_once __DIR__.'/util/ByteUtil.php';
 require_once __DIR__.'/util/Pair.php';
+require_once __DIR__.'/NoSessionException.php';
 
 //require_once "/state/SessionState/UnacknowledgedPreKeyMessageItems.php";
 class SessionCipher
@@ -47,7 +48,7 @@ class SessionCipher
     protected $deviceId;
     protected $sessionBuilder;
 
-    public function SessionCipher($sessionStore, $preKeyStore, $signedPreKeyStore, $identityKeyStore, $recepientId, $deviceId)
+    public function __construct($sessionStore, $preKeyStore, $signedPreKeyStore, $identityKeyStore, $recepientId, $deviceId)
     {
         $this->sessionStore = $sessionStore;
         $this->preKeyStore = $preKeyStore;
@@ -137,6 +138,7 @@ class SessionCipher
         if sys.version_info >= (3, 0):
             return plaintext.decode()
         */
+
         return $plaintext;
     }
 
@@ -148,6 +150,7 @@ class SessionCipher
         */
 
         $previousStates = $sessionRecord->getPreviousSessionStates();
+
         $exceptions = [];
         try {
             $sessionState = new SessionState($sessionRecord->getSessionState());
@@ -159,7 +162,6 @@ class SessionCipher
             echo $e->getMessage()."\n";
             $exceptions[] = $e;
         }
-
         for ($i = 0; $i < count($previousStates); $i++) {
             $previousState = $previousStates[$i];
             try {
@@ -174,7 +176,6 @@ class SessionCipher
                 $exceptions[] = $e;
             }
         }
-
         throw new InvalidMessageException('No valid sessions', $exceptions);
     }
 

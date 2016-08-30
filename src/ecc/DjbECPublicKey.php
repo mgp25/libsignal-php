@@ -5,7 +5,7 @@ class DjbECPublicKey implements ECPublicKey
     protected $publicKey;    // byte[]
     const KEY_SIZE = 33;    // int
 
-    public function DjbECPublicKey($publicKey) // [byte[] publicKey]
+    public function __construct($publicKey) // [byte[] publicKey]
     {
         $this->publicKey = $publicKey;
     }

@@ -2,9 +2,11 @@
 
 class SessionState
 {
+    const MAX_MESSAGE_KEYS = 2000;
+
     protected $sessionStructure;
 
-    public function SessionState($session = null)
+    public function __construct($session = null)
     {
         if ($session == null) {
             $this->sessionStructure = new Textsecure_SessionStructure();
@@ -250,7 +252,10 @@ class SessionState
         $chain->appendMessageKeys($messageKeyStructure); //$chain->messageKeys.add()
 
         //chain.messageKeys.append(messageKeyStructure)
-
+/*
+        if ($this->chain->getSenderMessageKeysCount() > self::MAX_MESSAGE_KEYS)
+          $this->chain->clearSenderMessageKeys();
+*/
         $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->parseFromString($chain->serializeToString());
     }
 

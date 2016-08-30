@@ -1,7 +1,7 @@
 <?php
     require_once __DIR__.'/../ecc/ECPublicKey.php';
     require_once __DIR__.'/../util/ByteUtil.php';
-    require_once __DIR__.'/pb_proto_WhisperTextProtocol.php';
+    require_once __DIR__.'/../protobuf/pb_proto_WhisperTextProtocol.php';
     require_once __DIR__.'/CiphertextMessage.php';
     require_once __DIR__.'/../InvalidMessageException.php';
     require_once __DIR__.'/../LegacyMessageException.php';
@@ -14,7 +14,7 @@
         protected $iteration;
         protected $ciphertext;
 
-        public function SenderKeyMessage($keyId = null, $iteration = null, $ciphertext = null, $signatureKey = null, $serialized = null)
+        public function __construct($keyId = null, $iteration = null, $ciphertext = null, $signatureKey = null, $serialized = null)
         {
             if ($serialized == null) {
                 $version = ByteUtil::intsToByteHighAndLow(self::CURRENT_VERSION, self::CURRENT_VERSION);

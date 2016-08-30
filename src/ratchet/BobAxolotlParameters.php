@@ -13,7 +13,7 @@ class BobAxolotlParameters
     protected $theirIdentityKey;
     protected $theirBaseKey;
 
-    public function BobAxolotlParameters($ourIdentityKey, $ourSignedPreKey,
+    public function __construct($ourIdentityKey, $ourSignedPreKey,
                  $ourRatchetKey, $ourOneTimePreKey,
                  $theirIdentityKey, $theirBaseKey) // [IdentityKeyPair ourIdentityKey, ECKeyPair ourSignedPreKey, IdentityKey theirIdentityKey, ECPublicKey ourRatchetKey, ECPublicKey ourOneTimePreKey, Optional<ECPublicKey> theirBaseKey]
     {

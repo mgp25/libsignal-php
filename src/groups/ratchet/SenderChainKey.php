@@ -7,7 +7,7 @@
         protected $iteration;
         protected $chainKey;
 
-        public function SenderChainKey($iteration, $chainKey)
+        public function __construct($iteration, $chainKey)
         {
             $this->iteration = $iteration;
             $this->chainKey = $chainKey;

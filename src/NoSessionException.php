@@ -2,7 +2,7 @@
 
 class NoSessionException extends Exception
 {
-    public function NoSessionException($s) // [String s]
+    public function __construct($s) // [String s]
     {
         $this->message = $s;
     }

@@ -7,7 +7,7 @@ class SessionRecord
     protected $sessionState;
     protected $fresh;
 
-    public function SessionRecord($sessionState = null, $serialized = null)
+    public function __construct($sessionState = null, $serialized = null)
     {
         /*
         :type sessionState: SessionState

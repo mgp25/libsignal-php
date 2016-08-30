@@ -2,7 +2,7 @@
 
 class LegacyMessageException extends Exception
 {
-    public function LegacyMessageException($detailMesssage) // [String s]
+    public function __construct($detailMesssage) // [String s]
     {
         $this->message = $detailMesssage;
     }

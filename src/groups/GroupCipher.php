@@ -14,7 +14,7 @@ class GroupCipher
     protected $senderKeyStore;
     protected $senderKeyId;
 
-    public function GroupCipher($senderKeyStore, $senderKeyId)
+    public function __construct($senderKeyStore, $senderKeyId)
     {
         $this->senderKeyStore = $senderKeyStore;
         $this->senderKeyId = $senderKeyId;
@@ -34,6 +34,7 @@ class GroupCipher
                                                                  $senderKeyState->getSigningKeyPrivate());
 
             $senderKeyState->setSenderChainKey($senderKeyState->getSenderChainKey()->getNext());
+
             $this->senderKeyStore->storeSenderKey($this->senderKeyId, $record);
 
             return $senderKeyMessage->serialize();
@@ -46,12 +47,11 @@ class GroupCipher
     {
         try {
             $record = $this->senderKeyStore->loadSenderKey($this->senderKeyId);
-            $senderKeyMessage = new SenderKeyMessage(null, null, null, null, $senderKeyMessageBytes);
 
+            $senderKeyMessage = new SenderKeyMessage(null, null, null, null, $senderKeyMessageBytes);
             $senderKeyState = $record->getSenderKeyState($senderKeyMessage->getKeyId());
             $senderKeyMessage->verifySignature($senderKeyState->getSigningKeyPublic());
             $senderKey = $this->getSenderKey($senderKeyState, $senderKeyMessage->getIteration());
-
             $plaintext = $this->getPlainText($senderKey->getIv(), $senderKey->getCipherKey(), $senderKeyMessage->getCipherText());
 
             $this->senderKeyStore->storeSenderKey($this->senderKeyId, $record);

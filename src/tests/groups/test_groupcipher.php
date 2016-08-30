@@ -84,38 +84,24 @@ class GroupCipherTest extends PHPUnit_Framework_TestCase
 {
     public function test_basicEncryptDecrypt()
     {
+        $groupSender = 'groupWithBobInIt:aliceUserName';
         $aliceStore = new InMemorySenderKeyStore();
         $bobStore = new InMemorySenderKeyStore();
-        $charlieStore = new InMemorySenderKeyStore();
 
         $aliceSessionBuilder = new GroupSessionBuilder($aliceStore);
         $bobSessionBuilder = new GroupSessionBuilder($bobStore);
-        $charlieSessionBuilder = new GroupSessionBuilder($charlieStore);
 
-        $aliceGroupCipher = new GroupCipher($aliceStore, 'groupWithBobInIt');
-        $bobGroupCipher = new GroupCipher($bobStore, 'groupWithBobInIt::aliceUserName');
-        $charlieGroupCipher = new GroupCipher($charlieStore, 'groupWithBobInIt::aliceUserName');
+        $aliceGroupCipher = new GroupCipher($aliceStore, $groupSender);
+        $bobGroupCipher = new GroupCipher($bobStore, $groupSender);
 
-        $aliceSenderKey = KeyHelper::generateSenderKey();
-        $aliceSenderSigningKey = KeyHelper::generateSenderSigningKey();
-        $aliceSenderKeyId = KeyHelper::generateSenderKeyId();
-
-        $aliceDistributionMessage = $aliceSessionBuilder->process('groupWithBobInIt', $aliceSenderKeyId, 0,
-                                $aliceSenderKey, $aliceSenderSigningKey);
-        echo niceVarDump($aliceDistributionMessage);
-        echo niceVarDump($aliceDistributionMessage->serialize());
-        echo $aliceDistributionMessage->serialize();
-        $bobSessionBuilder->processSender('groupWithBobInIt::aliceUserName', $aliceDistributionMessage);
+        $sentAliceDistributionMessage = $aliceSessionBuilder->create($groupSender);
+        $receivedAliceDistributionMessage = new SenderKeyDistributionMessage(null, null, null, null, $sentAliceDistributionMessage->serialize());
+        $bobSessionBuilder->process($groupSender, $receivedAliceDistributionMessage);
 
         $ciphertextFromAlice = $aliceGroupCipher->encrypt('smert ze smert');
-        $plaintextFromAlice_Bob = $bobGroupCipher->decrypt($ciphertextFromAlice);
-        $ciphertextFromAlice_2 = $aliceGroupCipher->encrypt('smert ze smert');
-        echo niceVarDump($aliceDistributionMessage);
-        $charlieSessionBuilder->processSender('groupWithBobInIt::aliceUserName', $aliceDistributionMessage);
-        $plaintextFromAlice_Charlie = $charlieGroupCipher->decrypt($ciphertextFromAlice_2);
+        $plaintextFromAlice = $bobGroupCipher->decrypt($ciphertextFromAlice);
 
-        $this->assertEquals($plaintextFromAlice_Bob, 'smert ze smert');
-        $this->assertEquals($plaintextFromAlice_Charlie, 'smert ze smert');
+        $this->assertEquals($plaintextFromAlice, 'smert ze smert');
     }
 
   /*  public function test_basicRatchet()

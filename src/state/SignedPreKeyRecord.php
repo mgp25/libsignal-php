@@ -5,12 +5,12 @@ require_once __DIR__.'/../ecc/Curve.php';
 require_once __DIR__.'/../ecc/ECKeyPair.php';
 require_once __DIR__.'/../ecc/ECPrivateKey.php';
 require_once __DIR__.'/../ecc/ECPublicKey.php';
-require_once __DIR__.'/../state/pb_proto_LocalStorageProtocol.php';
+require_once __DIR__.'/../protobuf/pb_proto_LocalStorageProtocol.php';
 class SignedPreKeyRecord
 {
     protected $structure;
 
-    public function SignedPreKeyRecord($id = null, $timestamp = null, $keyPair = null, $signature = null, $serialized = null) // [int id, long timestamp, ECKeyPair keyPair, byte[] signature]
+    public function __construct($id = null, $timestamp = null, $keyPair = null, $signature = null, $serialized = null) // [int id, long timestamp, ECKeyPair keyPair, byte[] signature]
     {
         $struct = new Textsecure_SignedPreKeyRecordStructure();
         if ($serialized == null) {

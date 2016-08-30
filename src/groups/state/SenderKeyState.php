@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../../state/pb_proto_LocalStorageProtocol.php';
+require_once __DIR__.'/../../protobuf/pb_proto_LocalStorageProtocol.php';
 require_once __DIR__.'/../ratchet/SenderChainKey.php';
 require_once __DIR__.'/../ratchet/SenderMessageKey.php';
 require_once __DIR__.'/../../ecc/Curve.php';
@@ -10,9 +10,9 @@ class SenderKeyState
     protected $senderKeyStateStructure;
     protected $senderChainKey;
 
-    public function SenderKeyState($id = null, $iteration = null, $chainKey = null,
-                 $signatureKeyPublic = null, $signatureKeyPrivate = null,
-                 $signatureKeyPair = null, $senderKeyStateStructure = null)
+    const MAX_MESSAGE_KEYS = 2000;
+
+    public function __construct($id = null, $iteration = null, $chainKey = null, $signatureKeyPublic = null, $signatureKeyPrivate = null, $signatureKeyPair = null, $senderKeyStateStructure = null)
     {
 
         /*if(!(($id && $iteration && $chainKey) || ($senderKeyStateStructure ^ ($signatureKeyPublic || $signatureKeyPair))
@@ -100,6 +100,10 @@ class SenderKeyState
         $smk->setIteration($senderMessageKey->getIteration());
         $smk->setSeed($senderMessageKey->getSeed());
         $this->senderKeyStateStructure->appendSenderMessageKeys($smk);
+
+        if ($this->senderKeyStateStructure->getSenderMessageKeysCount() > self::MAX_MESSAGE_KEYS) {
+            $this->senderKeyStateStructure->clearSenderMessageKeys();
+        }
     }
 
     public function removeSenderMessageKey($iteration)
@@ -115,16 +119,16 @@ class SenderKeyState
                 break;
             }
         }
+
         $this->senderKeyStateStructure->clearSenderMessageKeys();
         foreach ($keys as $key) {
             $this->senderKeyStateStructure->appendSenderMessageKeys($key);
         }
 
+
         if (!is_null($result)) {
             return new SenderMessageKey($result->getIteration(), $result->getSeed());
         }
-
-        return;
     }
 
     public function getStructure()

@@ -2,7 +2,7 @@
 
 class DuplicateMessageException extends Exception
 {
-    public function DuplicateMessageException($s) // [String s]
+    public function __construct($s) // [String s]
     {
         $this->message = $s;
     }

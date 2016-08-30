@@ -4,24 +4,46 @@ class ByteUtil
 {
     public static function combine($elements) // [byte[]... elements]
     {
-        $result = '';
-        foreach ($elements as $e) {
-            $result .= $e;
-        }
+        if (is_array($elements[0])) {
+            $result = [];
+            foreach ($elements as $e) {
+                $e = [$e];
+                $result = array_merge($result, $e);
+            }
 
-        return $result;
+            return $result;
+        } else {
+            $result = '';
+            foreach ($elements as $e) {
+                $result .= $e;
+            }
+
+            return $result;
+        }
     }
 
     public static function split($input, $firstLength, $secondLength, $thirdLength = null) // [byte[] input, int firstLength, int secondLength]
     {
-        $parts = [];
-        $parts[] = substr($input, 0, $firstLength);
-        $parts[] = substr($input, $firstLength, $secondLength);
-        if (is_int($thirdLength)) {
-            $parts[] = substr($input, $firstLength + $secondLength, $thirdLength);
-        }
+        if (is_array($input)) {
+            //public static void arraycopy(Object src, int srcPos, Object dest, int destPos, int length)
+        $parts[] = [];
+            $parts[0] = [];
+            $parts[0] = array_slice($input, 0, $firstLength);
 
-        return $parts;
+            $parts[1] = [];
+            $parts[1] = array_slice($input, $firstLength, $secondLength);
+
+            return $parts;
+        } else {
+            $parts = [];
+            $parts[] = substr($input, 0, $firstLength);
+            $parts[] = substr($input, $firstLength, $secondLength);
+            if (is_int($thirdLength)) {
+                $parts[] = substr($input, $firstLength + $secondLength, $thirdLength);
+            }
+
+            return $parts;
+        }
     }
 
     public static function trim($input, $length) // [byte[] input, int length]
@@ -34,9 +56,19 @@ class ByteUtil
         $output = [];
         foreach (range(0, (count($output) /*from: output.length*/ + 0)) as $_upto) {
             $output[$_upto] = $input[$_upto - (0) + 0];
-        } /* from: System.arraycopy(input, 0, output, 0, output.length) */;
+        } /* from: System.arraycopy(input, 0, output, 0, output.length) */
 
         return $output;
+    }
+
+    public static function toByteArray($input)
+    {
+        return unpack('C*', $input);
+    }
+
+    public static function toString($bytes)
+    {
+        return implode(array_map('chr', $bytes));
     }
 
     public static function intsToByteHighAndLow($highValue, $lowValue) // [int highValue, int lowValue]
@@ -81,6 +113,11 @@ class ByteUtil
     public static function lowBitsToMedium($value) // [int value]
     {
         return $value & 0xFFF;
+    }
+
+    public static function shortToByteArray($value)
+    {
+        return unpack('C*', pack('L', $value));
     }
 
     public static function shortToByteArray_197ef($value) // [int value]
@@ -184,6 +221,17 @@ class ByteUtil
         return 4;
     }
 
+    public static function byteArrayToString($bytes)
+    {
+        $str = '';
+        foreach ($bytes as $b) {
+            $hex = dechex($b);
+            $str .= str_pad($hex, 2, 0, STR_PAD_LEFT);
+        }
+
+        return $str;
+    }
+
     public static function byteArrayToShort_ae1a4a6a($bytes) // [byte[] bytes]
     {
         return self::byteArrayToShort($bytes, 0);
@@ -222,6 +270,11 @@ class ByteUtil
     public static function byteArray4ToLong($bytes, $offset) // [byte[] bytes, int offset]
     {
         return (((((($bytes[($offset + 0)] & 0xff)) << 24)) | (((($bytes[($offset + 1)] & 0xff)) << 16))) | (((($bytes[($offset + 2)] & 0xff)) << 8))) | ((($bytes[($offset + 3)] & 0xff)));
+    }
+
+    public static function byteArray5ToLong($bytes, $offset) // [byte[] bytes, int offset]
+    {
+        return (((((($bytes[($offset)] & 0xff)) << 32)) | (((($bytes[($offset + 1)] & 0xff)) << 24))) | (((($bytes[($offset + 2)] & 0xff)) << 16))) | ((((($bytes[($offset + 3)] & 0xff)) << 8))) | ((($bytes[($offset + 4)] & 0xff)));
     }
 
     public static function byteArrayToLong_29e7cc9a($bytes, $offset) // [byte[] bytes, int offset]

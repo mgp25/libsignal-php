@@ -1,7 +1,7 @@
 <?php
     require_once __DIR__.'/../ecc/ECPublicKey.php';
     require_once __DIR__.'/../util/ByteUtil.php';
-    require_once __DIR__.'/pb_proto_WhisperTextProtocol.php';
+    require_once __DIR__.'/../protobuf/pb_proto_WhisperTextProtocol.php';
     require_once __DIR__.'/CiphertextMessage.php';
     require_once __DIR__.'/../InvalidMessageException.php';
     require_once __DIR__.'/../LegacyMessageException.php';
@@ -15,7 +15,7 @@
         protected $cipherText;
         protected $serialized;
 
-        public function WhisperMessage($messageVersion = null,
+        public function __construct($messageVersion = null,
                                         $macKey = null,
                                         $senderRatchetKey = null,
                                         $counter = null,

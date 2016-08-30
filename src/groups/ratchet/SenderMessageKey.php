@@ -9,7 +9,7 @@ class SenderMessageKey
     protected $cipherKey;    // byte[]
     protected $seed;    // byte[]
 
-    public function SenderMessageKey($iteration, $seed) // [int iteration, byte[] seed]
+    public function __construct($iteration, $seed) // [int iteration, byte[] seed]
     {
         $hkdf = new HKDFv3();
         $derivative = $hkdf->deriveSecrets($seed, 'WhisperGroup', 48);

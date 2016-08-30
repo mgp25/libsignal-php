@@ -1,7 +1,7 @@
 <?php
     require_once __DIR__.'/../ecc/ECPublicKey.php';
     require_once __DIR__.'/../util/ByteUtil.php';
-    require_once __DIR__.'/pb_proto_WhisperTextProtocol.php';
+    require_once __DIR__.'/../protobuf/pb_proto_WhisperTextProtocol.php';
     require_once __DIR__.'/CiphertextMessage.php';
     require_once __DIR__.'/../InvalidMessageException.php';
     require_once __DIR__.'/../LegacyMessageException.php';
@@ -22,7 +22,7 @@
         protected $identityKey;
         protected $serialized;
 
-        public function KeyExchangeMessage($messageVersion = null, $sequence = null, $flags = null,
+        public function __construct($messageVersion = null, $sequence = null, $flags = null,
                                             $baseKey = null, $baseKeySignature = null,
                                             $ratchetKey = null,
                                             $identityKey = null,

@@ -2,7 +2,7 @@
 
 class InvalidVersionException extends Exception
 {
-    public function InvalidVersionException($detailMessage) // [String detailMessage]
+    public function __construct($detailMessage) // [String detailMessage]
     {
         $this->message = $detailMessage;
     }

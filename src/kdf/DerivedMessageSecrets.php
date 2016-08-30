@@ -15,7 +15,7 @@ class DerivedMessageSecrets
     protected $macKey;    // SecretKeySpec
     protected $iv;    // IvParameterSpec
 
-    public function DerivedMessageSecrets($okm) // [byte[] okm]
+    public function __construct($okm) // [byte[] okm]
     {
         $keys = ByteUtil::split($okm, self::CIPHER_KEY_LENGTH, self::MAC_KEY_LENGTH, self::IV_LENGTH);
         $this->cipherKey = $keys[0]; //AES

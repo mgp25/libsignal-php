@@ -4,7 +4,7 @@ class DjbECPrivateKey implements ECPrivateKey
 {
     protected $privateKey;    // byte[] --> php string now
 
-    public function DjbECPrivateKey($privateKey) // [byte[] privateKey]
+    public function __construct($privateKey) // [byte[] privateKey]
     {
         $this->privateKey = $privateKey;
     }
