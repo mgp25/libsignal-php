@@ -71,7 +71,7 @@ class AliceBuilder
     protected $theirRatchetKey;
     protected $theirOneTimePreKey;
 
-    public function AliceBuilder()
+    public function __construct()
     {
         $this->ourIdentityKey = null;
         $this->ourBaseKey = null;

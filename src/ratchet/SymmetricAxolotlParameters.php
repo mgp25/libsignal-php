@@ -73,7 +73,7 @@ class SymmetricBuilder
         protected $theirRatchetKey;    // ECPublicKey
         protected $theirIdentityKey;    // IdentityKey
 
-        public function SymmetricBuilder()
+        public function __construct()
         {
             $this->ourIdentityKey = null;
             $this->ourBaseKey = null;

@@ -397,7 +397,7 @@ class SessionState
 }
 class UnacknowledgedPreKeyMessageItems
 {
-    public function UnacknowledgedPreKeyMessageItems($preKeyId, $signedPreKeyId, $baseKey)
+    public function __construct($preKeyId, $signedPreKeyId, $baseKey)
     {
         /*
         :type preKeyId: int

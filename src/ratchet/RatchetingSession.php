@@ -142,7 +142,7 @@ class DerivedKeys
     protected $rootKey;
     protected $chainKey;
 
-    public function DerivedKeys($rootKey, $chainKey)
+    public function __construct($rootKey, $chainKey)
     {
         /*
         :type rootKey: RootKey

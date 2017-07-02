@@ -74,7 +74,7 @@ class BobBuilder
     protected $theirIdentityKey;
     protected $theirBaseKey;
 
-    public function BobBuilder()
+    public function __construct()
     {
         $this->ourIdentityKey = null;
         $this->ourSignedPreKey = null;

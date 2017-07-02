@@ -315,7 +315,7 @@ class CryptoCounter
     protected $size;
     protected $val;
 
-    public function CryptoCounter($size = 128, $init_val = 0)
+    public function __construct($size = 128, $init_val = 0)
     {
         $this->val = $init_val;
         if (!in_array($size, [128, 192, 256])) {
@@ -343,7 +343,7 @@ class AESCipher
     protected $version;
     protected $counter;
 
-    public function AESCipher($key, $iv, $version = 3, $counter = null)
+    public function __construct($key, $iv, $version = 3, $counter = null)
     {
         $this->key = $key;
         $this->iv = $iv;
@@ -374,16 +374,16 @@ class AESCipher
         if ($this->version >= 3) {
             $rawPadded = $this->pad($raw);
 
-            return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $rawPadded, MCRYPT_MODE_CBC, $this->iv);
+            return openssl_encrypt($rawPadded, 'aes-128-cbc', $this->key, $this->iv);
         } else {
-            return mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $this->key, $raw, 'ctr', $this->counter->Next());
+            return openssl_encrypt($raw, 'aes-128-ctr', $this->key, $this->counter->Next());
         }
     }
 
     public function decrypt($enc)
     {
         if ($this->version >= 3) {
-            $result = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $enc, MCRYPT_MODE_CBC, $this->iv);
+            $result = openssl_decrypt($enc, 'aes-128-cbc', $this->key, 0, $this->iv);
 
             $unpaded = $this->unpad($result);
             $last_unpadded = $unpaded[strlen($unpaded) - 1];
