@@ -1,4 +1,5 @@
 <?php
+namespace Libsignal\ecc;
 
 interface ECPublicKey
 {

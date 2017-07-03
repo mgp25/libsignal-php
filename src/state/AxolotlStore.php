@@ -1,6 +1,6 @@
 <?php
+namespace Libsignal\state;
 
-require_once __DIR__.'/IdentityKeyStore.php';
 abstract class AxolotlStore extends IdentityKeyStore
 {
 }

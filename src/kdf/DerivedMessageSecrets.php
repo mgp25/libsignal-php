@@ -1,6 +1,7 @@
 <?php
+namespace Libsignal\kdf;
 
-require_once __DIR__.'/../util/ByteUtil.php';
+use Libsignal\util\ByteUtil;
 //require_once("java/text/ParseException.php");
 //require_once("javax/crypto/spec/IvParameterSpec.php");
 //require_once("javax/crypto/spec/SecretKeySpec.php");

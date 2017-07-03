@@ -1,13 +1,12 @@
 <?php
+namespace Libsignal\groups\state;
 
-require_once __DIR__.'/../../protobuf/pb_proto_LocalStorageProtocol.php';
-require_once __DIR__.'/SenderKeyState.php';
-require_once __DIR__.'/../../InvalidKeyIdException.php';
+use Localstorage\SenderKeyRecordStructure as TextSecure_SenderKeyRecordStructure;
+use Libsignal\exceptions\InvalidKeyIdException;
 
 class SenderKeyRecord
 {
     protected $senderKeyStates;
-    const MAX_STATES = 3;
 
     public function __construct($serialized = null)
     {
@@ -44,10 +43,7 @@ class SenderKeyRecord
 
     public function addSenderKeyState($id, $iteration, $chainKey, $signatureKey)
     {
-        array_unshift($this->senderKeyStates, new SenderKeyState($id, $iteration, $chainKey, $signatureKey));
-        if (count($this->senderKeyStates > self::MAX_STATES)) {
-            //$this->senderKeyStates->removeLast();
-        }
+        $this->senderKeyStates[] = new SenderKeyState($id, $iteration, $chainKey, $signatureKey);
     }
 
     public function setSenderKeyState($id, $iteration, $chainKey, $signatureKey)
@@ -66,10 +62,5 @@ class SenderKeyRecord
         }
 
         return $recordStructure->serializeToString();
-    }
-
-    public function isEmpty()
-    {
-        return empty($this->senderKeyStates);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+namespace Libsignal\util;
 
 class Medium
 {

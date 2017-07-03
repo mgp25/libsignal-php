@@ -1,7 +1,9 @@
 <?php
+namespace Libsignal;
 
-require_once __DIR__.'/protobuf/pb_proto_LocalStorageProtocol.php';
-require_once __DIR__.'/IdentityKey.php';
+use Localstorage\IdentityKeyPairStructure as Textsecure_IdentityKeyPairStructure;
+use Libsignal\ecc\Curve;
+
 class IdentityKeyPair
 {
     protected $publicKey;    // IdentityKey

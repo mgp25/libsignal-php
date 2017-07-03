@@ -1,9 +1,11 @@
 <?php
+namespace Libsignal\ratchet;
 
-require_once __DIR__.'/../IdentityKey.php';
-require_once __DIR__.'/../IdentityKeyPair.php';
-require_once __DIR__.'/../ecc/ECKeyPair.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
+use Libsignal\IdentityKey;
+use Libsignal\IdentityKeyPair;
+use Libsignal\ecc\ECKeyPair;
+use Libsignal\ecc\ECPublicKey;
+
 class AliceAxolotlParameters
 {
     protected $ourIdentityKey;    // IdentityKeyPair
@@ -62,6 +64,7 @@ class AliceAxolotlParameters
         return $this->theirRatchetKey;
     }
 }
+
 class AliceBuilder
 {
     protected $ourIdentityKey;
@@ -71,7 +74,7 @@ class AliceBuilder
     protected $theirRatchetKey;
     protected $theirOneTimePreKey;
 
-    public function __construct()
+    public function AliceBuilder()
     {
         $this->ourIdentityKey = null;
         $this->ourBaseKey = null;

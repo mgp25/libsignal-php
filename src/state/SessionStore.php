@@ -1,4 +1,5 @@
 <?php
+namespace Libsignal\state;
 
 abstract class SessionStore
 {

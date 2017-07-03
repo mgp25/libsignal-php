@@ -1,7 +1,9 @@
 <?php
+namespace Libsignal\state;
 
-require_once __DIR__.'/../IdentityKey.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
+use Libsignal\IdentityKey;
+use Libsignal\ecc\ECPublicKey;
+
 class PreKeyBundle
 {
     protected $registrationId;    // int

@@ -1,28 +1,32 @@
 <?php
+namespace Libsignal;
 
-require_once __DIR__.'/ecc/Curve.php';
-require_once __DIR__.'/ecc/ECKeyPair.php';
-require_once __DIR__.'/ecc/ECPublicKey.php';
-require_once __DIR__.'/logging/Log.php';
-require_once __DIR__.'/protocol/CiphertextMessage.php';
-require_once __DIR__.'/protocol/KeyExchangeMessage.php';
-require_once __DIR__.'/protocol/PreKeyWhisperMessage.php';
-require_once __DIR__.'/ratchet/AliceAxolotlParameters.php';
-require_once __DIR__.'/ratchet/BobAxolotlParameters.php';
-require_once __DIR__.'/ratchet/RatchetingSession.php';
-require_once __DIR__.'/ratchet/SymmetricAxolotlParameters.php';
-require_once __DIR__.'/state/AxolotlStore.php';
-require_once __DIR__.'/state/IdentityKeyStore.php';
-require_once __DIR__.'/state/PreKeyBundle.php';
-require_once __DIR__.'/state/PreKeyStore.php';
-require_once __DIR__.'/state/SessionRecord.php';
-require_once __DIR__.'/state/SessionState.php';
-require_once __DIR__.'/state/SessionStore.php';
-require_once __DIR__.'/state/SignedPreKeyStore.php';
-require_once __DIR__.'/util/KeyHelper.php';
-require_once __DIR__.'/util/Medium.php';
-require_once __DIR__.'/StaleKeyExchangeException.php';
-require_once __DIR__.'/UntrustedIdentityException.php';
+use Libsignal\ecc\Curve;
+use Libsignal\ecc\ECKeyPair;
+use Libsignal\ecc\ECPublicKey;
+use Libsignal\protocol\CiphertextMessage;
+use Libsignal\protocol\KeyExchangeMessage;
+use Libsignal\protocol\PreKeyWhisperMessage;
+use Libsignal\state\AxolotlStore;
+use Libsignal\state\IdentityKeyStore;
+use Libsignal\state\PreKeyBundle;
+use Libsignal\state\PreKeyStore;
+use Libsignal\state\SessionRecord;
+use Libsignal\state\SessionState;
+use Libsignal\state\SessionStore;
+use Libsignal\state\SignedPreKeyStore;
+use Libsignal\util\KeyHelper;
+use Libsignal\exceptions\InvalidKeyException, Exception;
+use Libsignal\ratchet\SymmetricBuilder;
+use Libsignal\ratchet\RatchetingSession;
+use Libsignal\ratchet\BobAxolotlParameters;
+use Libsignal\exceptions\StaleKeyExchangeException;
+use Libsignal\exceptions\UntrustedIdentityException;
+use Libsignal\ratchet\AliceAxolotlParameters;
+use Libsignal\ratchet\SymmetricAxolotlParameters;
+use Libsignal\util\Medium;
+use Libsignal\logging\Log;
+
 class SessionBuilder
 {
     protected $sessionStore;

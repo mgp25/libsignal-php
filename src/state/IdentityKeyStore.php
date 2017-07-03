@@ -1,7 +1,9 @@
 <?php
+namespace Libsignal\state;
 
-require_once __DIR__.'/../IdentityKey.php';
-require_once __DIR__.'/../IdentityKeyPair.php';
+use Libsignal\IdentityKey;
+use Libsignal\IdentityKeyPair;
+
 abstract class IdentityKeyStore
 {
     abstract public function getIdentityKeyPair();

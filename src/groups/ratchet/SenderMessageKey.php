@@ -1,7 +1,9 @@
 <?php
+namespace Libsignal\groups\ratchet;
 
-require_once __DIR__.'/../../kdf/HKDFv3.php';
-require_once __DIR__.'/../../util/ByteUtil.php';
+use Libsignal\kdf\HKDFv3;
+use Libsignal\util\ByteUtil;
+
 class SenderMessageKey
 {
     protected $iteration;    // int

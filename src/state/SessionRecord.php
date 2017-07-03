@@ -1,4 +1,7 @@
 <?php
+namespace Libsignal\state;
+
+use Localstorage\RecordStructure as Textsecure_RecordStructure;
 
 class SessionRecord
 {

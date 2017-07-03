@@ -1,11 +1,8 @@
 <?php
+namespace Libsignal\ecc;
 
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/ECKeyPair.php';
-require_once __DIR__.'/ECPrivateKey.php';
-require_once __DIR__.'/ECPublicKey.php';
-require_once __DIR__.'/DjbECPublicKey.php';
-require_once __DIR__.'/DjbECPrivateKey.php';
+use Libsignal\exceptions\InvalidKeyException;
+
 class Curve
 {
     const DJB_TYPE = 0x05;  // int
@@ -24,7 +21,7 @@ class Curve
         $type = ((ord($bytes[$offset]) & 0xFF));
         switch ($type) {
             case self::DJB_TYPE:
-                $keyBytes = substr($bytes, $offset + 1); /* from: System.arraycopy(bytes, offset + 1, keyBytes, 0, keyBytes.length) -> php string == java byte array*/
+                $keyBytes = substr($bytes, $offset + 1); /* from: System.arraycopy(bytes, offset + 1, keyBytes, 0, keyBytes.length) -> php string == java byte array*/;
                 //foreach (range(0, (count($keyBytes) /*from: keyBytes.length*/ + 0)) as $_upto) $keyBytes[$_upto] = $bytes[$_upto - (0) + ($offset + 1)]; /* from: System.arraycopy(bytes, offset + 1, keyBytes, 0, keyBytes.length) */;
                 return new DjbECPublicKey($keyBytes);
             default:
