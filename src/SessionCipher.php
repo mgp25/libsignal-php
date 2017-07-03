@@ -17,28 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//namespace libaxolotl;
+namespace Libsignal;
 
-require_once __DIR__.'/ecc/Curve.php';
-require_once __DIR__.'/ecc/ECKeyPair.php';
-require_once __DIR__.'/ecc/ECPublicKey.php';
-require_once __DIR__.'/protocol/CiphertextMessage.php';
-require_once __DIR__.'/protocol/PreKeyWhisperMessage.php';
-require_once __DIR__.'/protocol/WhisperMessage.php';
-require_once __DIR__.'/ratchet/ChainKey.php';
-require_once __DIR__.'/ratchet/MessageKeys.php';
-require_once __DIR__.'/ratchet/RootKey.php';
-require_once __DIR__.'/state/AxolotlStore.php';
-require_once __DIR__.'/state/IdentityKeyStore.php';
-require_once __DIR__.'/state/PreKeyStore.php';
-require_once __DIR__.'/state/SessionRecord.php';
-require_once __DIR__.'/state/SessionState.php';
-require_once __DIR__.'/state/SessionStore.php';
-require_once __DIR__.'/state/SignedPreKeyStore.php';
-require_once __DIR__.'/util/ByteUtil.php';
-require_once __DIR__.'/util/Pair.php';
-require_once __DIR__.'/NoSessionException.php';
-
+use Libsignal\ecc\Curve;
+use Libsignal\ecc\ECKeyPair;
+use Libsignal\ecc\ECPublicKey;
+use Libsignal\protocol\CiphertextMessage;
+use Libsignal\protocol\PreKeyWhisperMessage;
+use Libsignal\protocol\WhisperMessage;
+use Libsignal\ratchet\ChainKey;
+use Libsignal\ratchet\MessageKeys;
+use Libsignal\ratchet\RootKey;
+use Libsignal\state\AxolotlStore;
+use Libsignal\state\IdentityKeyStore;
+use Libsignal\state\PreKeyStore;
+use Libsignal\state\SessionRecord;
+use Libsignal\state\SessionState;
+use Libsignal\state\SessionStore;
+use Libsignal\state\SignedPreKeyStore;
+use Libsignal\util\ByteUtil;
+use Libsignal\util\Pair;
 //require_once "/state/SessionState/UnacknowledgedPreKeyMessageItems.php";
 class SessionCipher
 {
@@ -138,7 +136,6 @@ class SessionCipher
         if sys.version_info >= (3, 0):
             return plaintext.decode()
         */
-
         return $plaintext;
     }
 
@@ -150,7 +147,6 @@ class SessionCipher
         */
 
         $previousStates = $sessionRecord->getPreviousSessionStates();
-
         $exceptions = [];
         try {
             $sessionState = new SessionState($sessionRecord->getSessionState());
@@ -162,6 +158,7 @@ class SessionCipher
             echo $e->getMessage()."\n";
             $exceptions[] = $e;
         }
+
         for ($i = 0; $i < count($previousStates); $i++) {
             $previousState = $previousStates[$i];
             try {
@@ -176,6 +173,7 @@ class SessionCipher
                 $exceptions[] = $e;
             }
         }
+
         throw new InvalidMessageException('No valid sessions', $exceptions);
     }
 
@@ -307,9 +305,10 @@ class SessionCipher
 
         return cipher;*/
         return new AESCipher($key, null, 2, new CryptoCounter(128, $counter));
-        throw new Exception('To be implemented.');
+        throw new \Exception('To be implemented.');
     }
 }
+
 class CryptoCounter
 {
     protected $size;
@@ -334,78 +333,5 @@ class CryptoCounter
         $this->val++;
 
         return $ctrVal;
-    }
-}
-class AESCipher
-{
-    protected $key;
-    protected $iv;
-    protected $version;
-    protected $counter;
-
-    public function __construct($key, $iv, $version = 3, $counter = null)
-    {
-        $this->key = $key;
-        $this->iv = $iv;
-        $this->version = $version;
-        if ($this->version < 3 && $counter == null) {
-            throw new Exception('Counter is needed for version < 3');
-        }
-        $this->counter = $counter;
-    }
-
-    private function pad($s)
-    {
-        $BS = 16;
-
-        return $s.str_repeat(chr($BS - (strlen($s) % $BS)), ($BS - (strlen($s) % $BS)));
-    }
-
-    private function unpad($s, $diff = 0)
-    {
-        return substr($s, 0, -1 * (ord($s[strlen($s) - 1]) - $diff));
-    }
-
-    public function encrypt($raw)
-    {
-        // if sys.version_info >= (3,0):
-        //     rawPadded = pad(raw.decode()).encode()
-        // else:
-        if ($this->version >= 3) {
-            $rawPadded = $this->pad($raw);
-
-            return openssl_encrypt($rawPadded, 'aes-128-cbc', $this->key, $this->iv);
-        } else {
-            return openssl_encrypt($raw, 'aes-128-ctr', $this->key, $this->counter->Next());
-        }
-    }
-
-    public function decrypt($enc)
-    {
-        if ($this->version >= 3) {
-            $result = openssl_decrypt($enc, 'aes-128-cbc', $this->key, 0, $this->iv);
-
-            $unpaded = $this->unpad($result);
-            $last_unpadded = $unpaded[strlen($unpaded) - 1];
-            $double_padding = substr($unpaded, -1 * (ord($last_unpadded) - 1));
-            if (ord($last_unpadded) - 1 == strlen($double_padding)) {
-                $has_dp = true;
-                for ($x = 0; $x < strlen($double_padding); $x++) {
-                    if ($double_padding[$x] != $last_unpadded) {
-                        $has_dp = false;
-                        break;
-                    }
-                }
-            } else {
-                $has_dp = false;
-            }
-            if ($has_dp) {
-                $unpaded = $this->unpad($unpaded, 1);
-            }
-
-            return $unpaded;
-        } else {
-            return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $this->key, $enc, 'ctr', $this->counter->Next());
-        }
     }
 }

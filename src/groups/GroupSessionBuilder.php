@@ -1,51 +1,41 @@
 <?php
+namespace Libsignal\groups;
+
+use Libsignal\groups\state\SenderKeyStore;
+use Libsignal\protocol\SenderKeyDistributionMessage;
 
 require_once __DIR__.'/../ecc/ECKeyPair.php';
 require_once __DIR__.'/state/SenderKeyRecord.php';
-require_once __DIR__.'/state/SenderKeyStore.php';
-require_once __DIR__.'/../util/KeyHelper.php';
-require_once __DIR__.'/../protocol/SenderKeyDistributionMessage.php';
+//require_once __DIR__.'/../protocol/SenderKeyDistributionMessage.php';
+
 class GroupSessionBuilder
 {
     protected $senderKeyStore;
 
-    public function __construct($senderKeyStore)
+    public function __construct(SenderKeyStore $senderKeyStore)
     {
         $this->senderKeyStore = $senderKeyStore;
     }
 
-    public function process($groupId, $senderKeyDistributionMessage)
+    public function processSender($sender, $senderKeyDistributionMessage)
     {
-        $senderKeyRecord = $this->senderKeyStore->loadSenderKey($groupId);
+        $senderKeyRecord = $this->senderKeyStore->loadSenderKey($sender);
+
         $senderKeyRecord->addSenderKeyState($senderKeyDistributionMessage->getId(),
-            $senderKeyDistributionMessage->getIteration(),
-            $senderKeyDistributionMessage->getChainKey(),
-            $senderKeyDistributionMessage->getSignatureKey());
-        $this->senderKeyStore->storeSenderKey($groupId, $senderKeyRecord);
+                                            $senderKeyDistributionMessage->getIteration(),
+                                            $senderKeyDistributionMessage->getChainKey(),
+                                            $senderKeyDistributionMessage->getSignatureKey());
+        $this->senderKeyStore->storeSenderKey($sender, $senderKeyRecord);
     }
 
-    public function create($senderKeyName)
+    public function process($groupId, $keyId, $iteration, $chainKey, $signatureKey)
     {
-        try {
-            $senderKeyRecord = $this->senderKeyStore->loadSenderKey($senderKeyName);
-            if ($senderKeyRecord->isEmpty()) {
-                $senderKeyRecord->setSenderKeyState(KeyHelper::generateSenderKeyId(),
-                                              0,
-                                              KeyHelper::generateSenderKey(),
-                                              KeyHelper::generateSenderSigningKey());
+        $senderKeyRecord = $this->senderKeyStore->loadSenderKey($groupId);
 
-                $this->senderKeyStore->storeSenderKey($senderKeyName, $senderKeyRecord);
-            }
-            $state = $senderKeyRecord->getSenderKeyState();
+        $senderKeyRecord->setSenderKeyState($keyId, $iteration, $chainKey, $signatureKey);
 
-            return new SenderKeyDistributionMessage($state->getKeyId(),
-                                                $state->getSenderChainKey()->getIteration(),
-                                                $state->getSenderChainKey()->getSeed(),
-                                                $state->getSigningKeyPublic());
-        } catch (Exception $e) {
-            if (($e instanceof InvalidKeyIdException) || ($e instanceof InvalidKeyException)) {
-                throw new Exception($e);
-            }
-        }
+        $this->senderKeyStore->storeSenderKey($groupId, $senderKeyRecord);
+
+        return new SenderKeyDistributionMessage($keyId, $iteration, $chainKey, $signatureKey->getPublicKey());
     }
 }

@@ -1,12 +1,13 @@
 <?php
+namespace Libsignal\protocol;
 
+use Libsignal\util\ByteUtil;
+use Libsignal\ecc\ECPublicKey;
+use Libsignal\exceptions\InvalidMessageException;
+use Libsignal\exceptions\LegacyMessageException;
+use Whispertext\SenderKeyDistributionMessage as Textsecure_SenderKeyDistributionMessage;
 //require_once("com/google/protobuf/ByteString.php");
-require_once __DIR__.'/../ecc/ECPublicKey.php';
-require_once __DIR__.'/../util/ByteUtil.php';
-require_once __DIR__.'/../protobuf/pb_proto_WhisperTextProtocol.php';
-require_once __DIR__.'/CiphertextMessage.php';
-require_once __DIR__.'/../InvalidMessageException.php';
-require_once __DIR__.'/../LegacyMessageException.php';
+
 class SenderKeyDistributionMessage extends CiphertextMessage
 {
     protected $id;    // int

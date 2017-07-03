@@ -1,4 +1,5 @@
 <?php
+namespace Libsignal\groups\state;
 
 abstract class SenderKeyStore
 {

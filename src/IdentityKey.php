@@ -1,7 +1,9 @@
 <?php
+namespace Libsignal;
 
-require_once __DIR__.'/ecc/Curve.php';
-require_once __DIR__.'/ecc/ECPublicKey.php';
+use Libsignal\ecc\Curve;
+use Libsignal\ecc\ECPublicKey;
+
 class IdentityKey
 {
     protected $publicKey;    // ECPublicKey

@@ -1,6 +1,9 @@
 <?php
+namespace Libsignal\ratchet;
 
-require_once __DIR__.'/../kdf/DerivedRootSecrets.php';
+use Libsignal\kdf\DerivedRootSecrets;
+use Libsignal\ecc\Curve;
+
 class RootKey
 {
     protected $kdf;

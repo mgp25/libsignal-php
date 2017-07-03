@@ -1,6 +1,8 @@
 <?php
+namespace Libsignal\kdf;
 
-require_once __DIR__.'/../util/ByteUtil.php';
+use Libsignal\util\ByteUtil;
+
 class DerivedRootSecrets
 {
     const SIZE = 64;    // int

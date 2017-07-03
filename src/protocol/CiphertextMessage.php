@@ -1,4 +1,5 @@
 <?php
+namespace Libsignal\protocol;
 
 abstract class CiphertextMessage
 {

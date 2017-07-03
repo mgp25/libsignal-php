@@ -1,17 +1,30 @@
 <?php
+namespace Libsignal\state;
+
+use Libsignal\IdentityKey;
+use Localstorage\SessionStructure as Textsecure_SessionStructure;
+use Localstorage\SessionStructure\Chain as Textsecure_SessionStructure_Chain;
+use Localstorage\SessionStructure\Chain\ChainKey as Textsecure_SessionStructure_Chain_ChainKey;
+use Localstorage\SessionStructure\Chain\MessageKey as Textsecure_SessionStructure_Chain_MessageKey;
+use Localstorage\SessionStructure\PendingPreKey as Textsecure_SessionStructure_PendingPreKey;
+use Localstorage\SessionStructure\PendingKeyExchange as Textsecure_SessionStructure_PendingKeyExchange;
+use Libsignal\ecc\Curve;
+use Libsignal\ecc\ECKeyPair;
+use Libsignal\IdentityKeyPair;
+use Libsignal\ratchet\ChainKey;
+use Libsignal\kdf\HKDF;
+use Libsignal\ratchet\RootKey;
 
 class SessionState
 {
-    const MAX_MESSAGE_KEYS = 2000;
-
     protected $sessionStructure;
 
     public function __construct($session = null)
     {
         if ($session == null) {
-            $this->sessionStructure = new Textsecure_SessionStructure();
+            $this->sessionStructure = new Textsecure_SessionStructure;
         } elseif ($session instanceof self) {
-            $this->sessionStructure = new Textsecure_SessionStructure();
+            $this->sessionStructure = new Textsecure_SessionStructure;
             $this->sessionStructure->parseFromString($session->getStructure()->serializeToString());
         } else {
             $this->sessionStructure = $session;
@@ -252,10 +265,7 @@ class SessionState
         $chain->appendMessageKeys($messageKeyStructure); //$chain->messageKeys.add()
 
         //chain.messageKeys.append(messageKeyStructure)
-/*
-        if ($this->chain->getSenderMessageKeysCount() > self::MAX_MESSAGE_KEYS)
-          $this->chain->clearSenderMessageKeys();
-*/
+
         $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->parseFromString($chain->serializeToString());
     }
 
@@ -397,7 +407,7 @@ class SessionState
 }
 class UnacknowledgedPreKeyMessageItems
 {
-    public function __construct($preKeyId, $signedPreKeyId, $baseKey)
+    public function UnacknowledgedPreKeyMessageItems($preKeyId, $signedPreKeyId, $baseKey)
     {
         /*
         :type preKeyId: int

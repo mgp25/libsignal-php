@@ -1,13 +1,14 @@
 <?php
+namespace Libsignal\groups;
 
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/../InvalidMessageException.php';
-require_once __DIR__.'/../DuplicateMessageException.php';
-require_once __DIR__.'/../NoSessionException.php';
-require_once __DIR__.'/state/SenderKeyStore.php';
-require_once __DIR__.'/../protocol/SenderKeyMessage.php';
-require_once __DIR__.'/../SessionCipher.php';
+use Libsignal\exceptions\InvalidKeyException;
+use Libsignal\exceptions\InvalidMessageException;
+use Libsignal\exceptions\DuplicateMessageException;
+use Libsignal\exceptions\NoSessionException;
+use Libsignal\state\SenderKeyStore;
+use Libsignal\protocol\SenderKeyMessage;
+use Libsignal\SessionCipher;
+use Libsignal\AESCipher;
 
 class GroupCipher
 {
@@ -34,7 +35,6 @@ class GroupCipher
                                                                  $senderKeyState->getSigningKeyPrivate());
 
             $senderKeyState->setSenderChainKey($senderKeyState->getSenderChainKey()->getNext());
-
             $this->senderKeyStore->storeSenderKey($this->senderKeyId, $record);
 
             return $senderKeyMessage->serialize();
@@ -47,11 +47,12 @@ class GroupCipher
     {
         try {
             $record = $this->senderKeyStore->loadSenderKey($this->senderKeyId);
-
             $senderKeyMessage = new SenderKeyMessage(null, null, null, null, $senderKeyMessageBytes);
+
             $senderKeyState = $record->getSenderKeyState($senderKeyMessage->getKeyId());
             $senderKeyMessage->verifySignature($senderKeyState->getSigningKeyPublic());
             $senderKey = $this->getSenderKey($senderKeyState, $senderKeyMessage->getIteration());
+
             $plaintext = $this->getPlainText($senderKey->getIv(), $senderKey->getCipherKey(), $senderKeyMessage->getCipherText());
 
             $this->senderKeyStore->storeSenderKey($this->senderKeyId, $record);

@@ -1,17 +1,17 @@
 <?php
+namespace Libsignal\ratchet;
 
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/../ecc/Curve.php';
-require_once __DIR__.'/../ecc/ECKeyPair.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
-require_once __DIR__.'/../kdf/HKDF.php';
-//require_once(__DIR__."/../state/SessionState.php");
-require_once __DIR__.'/../util/ByteUtil.php';
-require_once __DIR__.'/ChainKey.php';
-require_once __DIR__.'/RootKey.php';
+use Libsignal\ecc\Curve;
+use Libsignal\ecc\ECKeyPair;
+use Libsignal\ecc\ECPublicKey;
+use Libsignal\util\ByteUtil;
+use Libsignal\kdf\HKDF;
+use Libsignal\exceptions\InvalidKeyException;
+use Libsignal\state\SessionState;
+
 class RatchetingSession
 {
-    public static function initializeSession($sessionState, $sessionVersion, $parameters)
+    public static function initializeSession(SessionState $sessionState, $sessionVersion, $parameters)
     {
         /*
         :type sessionState: SessionState
@@ -137,6 +137,7 @@ class RatchetingSession
         return $ourKey->compareTo($theirKey)  == -1;
     }
 }
+
 class DerivedKeys
 {
     protected $rootKey;

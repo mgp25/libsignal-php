@@ -1,11 +1,12 @@
 <?php
+namespace Libsignal\state;
 
-require_once __DIR__.'/../InvalidKeyException.php';
-require_once __DIR__.'/../ecc/Curve.php';
-require_once __DIR__.'/../ecc/ECKeyPair.php';
-require_once __DIR__.'/../ecc/ECPrivateKey.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
-require_once __DIR__.'/../protobuf/pb_proto_LocalStorageProtocol.php';
+use Libsignal\ecc\Curve;
+use Libsignal\ecc\ECKeyPair;
+use Libsignal\ecc\ECPrivateKey;
+use Libsignal\ecc\ECPublicKey;
+use Libsignal\exceptions\InvalidKeyException;
+
 class PreKeyRecord
 {
     protected $structure;    // PreKeyRecordStructure

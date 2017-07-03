@@ -1,6 +1,8 @@
 <?php
+namespace Libsignal\state;
 
-require_once __DIR__.'/../InvalidKeyIdException.php';
+use Libsignal\exceptions\InvalidKeyIdException;
+
 abstract class SignedPreKeyStore
 {
     abstract public function loadSignedPreKey($signedPreKeyId);

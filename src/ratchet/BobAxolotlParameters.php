@@ -1,9 +1,11 @@
 <?php
+namespace Libsignal\ratchet;
 
-require_once __DIR__.'/../IdentityKey.php';
-require_once __DIR__.'/../IdentityKeyPair.php';
-require_once __DIR__.'/../ecc/ECKeyPair.php';
-require_once __DIR__.'/../ecc/ECPublicKey.php';
+use Libsignal\IdentityKey;
+use Libsignal\IdentityKeyPair;
+use Libsignal\ecc\ECKeyPair;
+use Libsignal\ecc\ECPublicKey;
+
 class BobAxolotlParameters
 {
     protected $ourIdentityKey;
@@ -65,6 +67,7 @@ class BobAxolotlParameters
         return $this->ourOneTimePreKey;
     }
 }
+
 class BobBuilder
 {
     protected $ourIdentityKey;
