@@ -1,7 +1,7 @@
 <?php
 namespace Libsignal\Tests;
 
-abstract class TestCase extends \PHPUnit_Framework_TestCase {
+abstract class TestCase extends \PHPUnit\Framework\TestCase {
 
 	function parseText($txt)
 	{
@@ -15,7 +15,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase {
 
 	    return $txt;
 	}
-	
+
 	function niceVarDump($obj, $ident = 0)
 	{
 	    $data = '';
