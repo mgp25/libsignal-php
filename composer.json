@@ -13,7 +13,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Libsignal\\": "src/"
+            "Libsignal\\": "src/",
+            "Whispertext\\": "src/Whispertext/",
+            "Localstorage\\": "src/Localstorage/"
         }
     },
     "autoload-dev": {
