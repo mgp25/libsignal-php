@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Libsignal\\": "src/",
+            "Libsignal\\": "src/"
         }
     },
     "autoload-dev": {
