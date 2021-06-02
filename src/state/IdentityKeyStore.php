@@ -11,13 +11,23 @@ abstract class IdentityKeyStore
      */
     abstract public function getIdentityKeyPair();
 
+    /**
+     * @return int
+     */
     abstract public function getLocalRegistrationId();
 
+    /**
+     * @param int $recipientId
+     * @param IdentityKey $identityKey
+     * @return mixed
+     */
     abstract public function saveIdentity($recipientId, $identityKey);
 
- // [long recipientId, IdentityKey identityKey]
-
+    /**
+     * @param int $recipientId
+     * @param IdentityKey $identityKey
+     * @return mixed
+     */
     abstract public function isTrustedIdentity($recipientId, $identityKey);
 
- // [long recipientId, IdentityKey identityKey]
 }

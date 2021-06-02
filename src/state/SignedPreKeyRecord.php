@@ -1,10 +1,9 @@
 <?php
 namespace Libsignal\state;
 
+use Exception;
 use Libsignal\ecc\Curve;
 use Libsignal\ecc\ECKeyPair;
-use Libsignal\ecc\ECPrivateKey;
-use Libsignal\ecc\ECPublicKey;
 use Libsignal\exceptions\InvalidKeyException;
 use Localstorage\SignedPreKeyRecordStructure as Textsecure_SignedPreKeyRecordStructure;
 
@@ -12,6 +11,15 @@ class SignedPreKeyRecord
 {
     protected $structure;
 
+    /**
+     * SignedPreKeyRecord constructor.
+     * @param null $id
+     * @param null $timestamp
+     * @param ECKeyPair $keyPair
+     * @param null $signature
+     * @param null $serialized
+     * @throws \Exception
+     */
     public function __construct($id = null, $timestamp = null, $keyPair = null, $signature = null, $serialized = null) // [int id, long timestamp, ECKeyPair keyPair, byte[] signature]
     {
         $struct = new Textsecure_SignedPreKeyRecordStructure();
@@ -22,7 +30,7 @@ class SignedPreKeyRecord
             $struct->setSignature((string) $signature);
             $struct->setTimestamp($timestamp);
         } else {
-            $struct->parseFromString($serialized);
+            $struct->mergeFromString($serialized);
         }
         $this->structure = $struct; //$SignedPreKeyRecordStructure->newBuilder()->setId($id)->setPublicKey($ByteString->copyFrom($keyPair->getPublicKey()->serialize()))->setPrivateKey($ByteString->copyFrom($keyPair->getPrivateKey()->serialize()))->setSignature($ByteString->copyFrom($signature))->setTimestamp($timestamp)->build();
     }
@@ -37,6 +45,10 @@ class SignedPreKeyRecord
         return $this->structure->getTimestamp();
     }
 
+    /**
+     * @return ECKeyPair
+     * @throws Exception
+     */
     public function getKeyPair()
     {
         try {
@@ -45,7 +57,7 @@ class SignedPreKeyRecord
 
             return  new ECKeyPair($publicKey, $privateKey);
         } catch (InvalidKeyException $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 

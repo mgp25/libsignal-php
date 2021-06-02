@@ -16,7 +16,7 @@ class IdentityKeyPair
             $this->privateKey = $privateKey;
         } else {
             $structure = new Textsecure_IdentityKeyPairStructure();
-            $structure->parseFromString($serialized);
+            $structure->mergeFromString($serialized);
             $this->publicKey = new IdentityKey($structure->getPublicKey(), 0);
             $this->privateKey = Curve::decodePrivatePoint($structure->getPrivateKey());
         }

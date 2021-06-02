@@ -2,10 +2,9 @@
 namespace Libsignal\state;
 
 use Libsignal\IdentityKey;
-use Libsignal\ecc\ECPublicKey;
 
-class PreKeyBundle
-{
+class PreKeyBundle{
+
     protected $registrationId;    // int
     protected $deviceId;    // int
     protected $preKeyId;    // int

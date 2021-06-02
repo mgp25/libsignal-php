@@ -1,24 +1,33 @@
 <?php
 namespace Libsignal\state;
 
+use Exception;
 use Libsignal\ecc\Curve;
 use Libsignal\ecc\ECKeyPair;
-use Libsignal\ecc\ECPrivateKey;
-use Libsignal\ecc\ECPublicKey;
-use Libsignal\exceptions\InvalidKeyException;
+use Localstorage\PreKeyRecordStructure;
 
-class PreKeyRecord
-{
-    protected $structure;    // PreKeyRecordStructure
+class PreKeyRecord{
 
+    /**
+     * @var PreKeyRecordStructure $structure
+     */
+    protected $structure;
+
+    /**
+     * PreKeyRecord constructor.
+     * @param null $id
+     * @param ECKeyPair $keyPair
+     * @param null $serialized
+     * @throws Exception
+     */
     public function __construct($id = null, $keyPair = null, $serialized = null) // [int id, ECKeyPair keyPair]
     {
-        $this->structure = new Textsecure_PreKeyRecordStructure();
+        $this->structure = new PreKeyRecordStructure();
         if ($serialized == null) {
             $this->structure->setId($id)->setPublicKey((string) $keyPair->getPublicKey()->serialize())->setPrivateKey((string) $keyPair->getPrivateKey()->serialize());
         } else {
             try {
-                $this->structure->parseFromString($serialized);
+                $this->structure->mergeFromString($serialized);
             } catch (Exception $ex) {
                 throw new Exception('Cannot unserialize PreKEyRecordStructure');
             }
@@ -30,6 +39,10 @@ class PreKeyRecord
         return $this->structure->getId();
     }
 
+    /**
+     * @return ECKeyPair
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function getKeyPair()
     {
         $publicKey = Curve::decodePoint($this->structure->getPublicKey(), 0);

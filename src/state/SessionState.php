@@ -1,8 +1,12 @@
 <?php
 namespace Libsignal\state;
 
+use Exception;
+use Libsignal\groups\state\SenderKeyRecord;
 use Libsignal\IdentityKey;
+use Libsignal\ratchet\MessageKeys;
 use Localstorage\SessionStructure as Textsecure_SessionStructure;
+use Localstorage\SessionStructure;
 use Localstorage\SessionStructure\Chain as Textsecure_SessionStructure_Chain;
 use Localstorage\SessionStructure\Chain\ChainKey as Textsecure_SessionStructure_Chain_ChainKey;
 use Localstorage\SessionStructure\Chain\MessageKey as Textsecure_SessionStructure_Chain_MessageKey;
@@ -17,15 +21,23 @@ use Libsignal\ratchet\RootKey;
 
 class SessionState
 {
+    /**
+     * @var SessionStructure $sessionStructure
+     */
     protected $sessionStructure;
 
+    /**
+     * SessionState constructor.
+     * @param null $session
+     * @throws \Exception
+     */
     public function __construct($session = null)
     {
         if ($session == null) {
             $this->sessionStructure = new Textsecure_SessionStructure;
         } elseif ($session instanceof self) {
             $this->sessionStructure = new Textsecure_SessionStructure;
-            $this->sessionStructure->parseFromString($session->getStructure()->serializeToString());
+            $this->sessionStructure->mergeFromString($session->getStructure()->serializeToString());
         } else {
             $this->sessionStructure = $session;
         }
@@ -58,11 +70,17 @@ class SessionState
         return $sessionVersion == 0 ? 2 : $sessionVersion;
     }
 
+    /**
+     * @param IdentityKey $identityKey
+     */
     public function setRemoteIdentityKey($identityKey)
     {
         $this->sessionStructure->setRemoteIdentityPublic($identityKey->serialize());
     }
 
+    /**
+     * @param IdentityKey $identityKey
+     */
     public function setLocalIdentityKey($identityKey)
     {
         $this->sessionStructure->setLocalIdentityPublic($identityKey->serialize());
@@ -71,7 +89,7 @@ class SessionState
     public function getRemoteIdentityKey()
     {
         if ($this->sessionStructure->getRemoteIdentityPublic() == null) {
-            return;
+            return null;
         }
 
         return new IdentityKey($this->sessionStructure->getRemoteIdentityPublic(), 0);
@@ -92,21 +110,36 @@ class SessionState
         $this->sessionStructure->setPreviousCounter($previousCounter);
     }
 
+    /**
+     * @return RootKey
+     * @throws Exception
+     */
     public function getRootKey()
     {
         return new RootKey(HKDF::createFor($this->getSessionVersion()), $this->sessionStructure->getRootKey());
     }
 
+    /**
+     * @param RootKey $rootKey
+     */
     public function setRootKey($rootKey)
     {
         $this->sessionStructure->setRootKey($rootKey->getKeyBytes());
     }
 
+    /**
+     * @return \Libsignal\ecc\DjbECPublicKey
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function getSenderRatchetKey()
     {
         return Curve::decodePoint($this->sessionStructure->getSenderChain()->getSenderRatchetKey(), 0);
     }
 
+    /**
+     * @return ECKeyPair
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function getSenderRatchetKeyPair()
     {
         $publicKey = $this->getSenderRatchetKey();
@@ -115,6 +148,11 @@ class SessionState
         return new ECKeyPair($publicKey, $privateKey);
     }
 
+    /**
+     * @param $ECPublickKey_senderEphemeral
+     * @return bool
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function hasReceiverChain($ECPublickKey_senderEphemeral)
     {
         return $this->getReceiverChain($ECPublickKey_senderEphemeral) != null;
@@ -125,6 +163,11 @@ class SessionState
         return $this->sessionStructure->getSenderChain() != null;
     }
 
+    /**
+     * @param $ECPublickKey_senderEphemeral
+     * @return array
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function getReceiverChain($ECPublickKey_senderEphemeral)
     {
         $receiverChains = $this->sessionStructure->getReceiverChains();
@@ -136,14 +179,21 @@ class SessionState
             }
             $index += 1;
         }
+        return [];
     }
 
+    /**
+     * @param $ECPublicKey_senderEphemeral
+     * @return ChainKey
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     * @throws Exception
+     */
     public function getReceiverChainKey($ECPublicKey_senderEphemeral)
     {
         $receiverChainAndIndex = $this->getReceiverChain($ECPublicKey_senderEphemeral);
         $receiverChain = $receiverChainAndIndex[0];
         if ($receiverChain == null) {
-            return;
+            return null;
         }
 
         return new ChainKey(HKDF::createFor($this->getSessionVersion()),
@@ -151,6 +201,10 @@ class SessionState
                         $receiverChain->getChainKey()->getIndex());
     }
 
+    /**
+     * @param SenderKeyRecord $ECPublickKey_senderRatchetKey
+     * @param ChainKey $chainKey
+     */
     public function addReceiverChain($ECPublickKey_senderRatchetKey, $chainKey)
     {
         $senderRatchetKey = $ECPublickKey_senderRatchetKey;
@@ -161,19 +215,19 @@ class SessionState
         $chain->getChainKey()->setKey($chainKey->getKey());
         $chain->getChainKey()->setIndex($chainKey->getIndex());
 
-        $this->sessionStructure->appendReceiverChains($chain);
+        $this->sessionStructure->setReceiverChains([$chain]);
 
         if (count($this->sessionStructure->getReceiverChains()) > 5) {
             $chains = $this->sessionStructure->getReceiverChains();
             $chains = array_slice($chains, 1);
-            $this->sessionStructure->clearReceiverChains();
-            foreach ($chains as $chain) {
-                $this->sessionStructure->appendReceiverChains($chain);
-            }
-            //$this->sessionStructure->setReceiverChains($chains);
+            $this->sessionStructure->setReceiverChains($chains);
         }
     }
 
+    /**
+     * @param ECKeyPair $ECKeyPair_senderRatchetKeyPair
+     * @param ChainKey $chainKey
+     */
     public function setSenderChain($ECKeyPair_senderRatchetKeyPair, $chainKey)
     {
         $senderRatchetKeyPair = $ECKeyPair_senderRatchetKeyPair;
@@ -187,6 +241,10 @@ class SessionState
         $this->sessionStructure->getSenderChain()->getChainKey()->setIndex($chainKey->getIndex());
     }
 
+    /**
+     * @return ChainKey
+     * @throws Exception
+     */
     public function getSenderChainKey()
     {
         $chainKeyStructure = $this->sessionStructure->getSenderChain()->getChainKey();
@@ -203,6 +261,12 @@ class SessionState
         $this->sessionStructure->getSenderChain()->getChainKey()->setIndex($nextChainKey->getIndex());
     }
 
+    /**
+     * @param $ECPublickKey_senderEphemeral
+     * @param int $counter
+     * @return bool
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function hasMessageKeys($ECPublickKey_senderEphemeral, $counter)
     {
         $senderEphemeral = $ECPublickKey_senderEphemeral;
@@ -222,6 +286,12 @@ class SessionState
         return false;
     }
 
+    /**
+     * @param $ECPublicKey_senderEphemeral
+     * @param $counter
+     * @return MessageKeys|null|void
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function removeMessageKeys($ECPublicKey_senderEphemeral, $counter)
     {
         $senderEphemeral = $ECPublicKey_senderEphemeral;
@@ -247,11 +317,16 @@ class SessionState
         foreach ($messageKeyList as $msgKey) {
             $chain->appendMessageKeys($msgKey);
         }
-        $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->parseFromString($chain->serializeToString());
+        $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->mergeFromString($chain->serializeToString());
 
         return $result;
     }
 
+    /**
+     * @param $ECPublicKey_senderEphemeral
+     * @param MessageKeys $messageKeys
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function setMessageKeys($ECPublicKey_senderEphemeral, $messageKeys)
     {
         $senderEphemeral = $ECPublicKey_senderEphemeral;
@@ -266,9 +341,14 @@ class SessionState
 
         //chain.messageKeys.append(messageKeyStructure)
 
-        $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->parseFromString($chain->serializeToString());
+        $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->mergeFromString($chain->serializeToString());
     }
 
+    /**
+     * @param $ECPublicKey_senderEphemeral
+     * @param $chainKey
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function setReceiverChainKey($ECPublicKey_senderEphemeral, $chainKey)
     {
         $senderEphemeral = $ECPublicKey_senderEphemeral;
@@ -278,9 +358,15 @@ class SessionState
         $chain->getChainKey()->setIndex($chainKey->getIndex());
 
         //$this->sessionStructure.receiverChains[chainAndIndex[1]].ClearField()
-        $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->parseFromString($chain->serializeToString());
+        $this->sessionStructure->getReceiverChains()[$chainAndIndex[1]]->mergeFromString($chain->serializeToString());
     }
 
+    /**
+     * @param $sequence
+     * @param ECKeyPair $ourBaseKey
+     * @param ECKeyPair $ourRatchetKey
+     * @param IdentityKey $ourIdentityKey
+     */
     public function setPendingKeyExchange($sequence, $ourBaseKey, $ourRatchetKey, $ourIdentityKey)
     {
         /*
@@ -310,6 +396,10 @@ class SessionState
         return $this->sessionStructure->getPendingKeyExchange()->getSequence();
     }
 
+    /**
+     * @return ECKeyPair
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function getPendingKeyExchangeBaseKey()
     {
         $publicKey = Curve::decodePoint($this->sessionStructure->getPendingKeyExchange()->getLocalBaseKey(), 0);
@@ -318,6 +408,10 @@ class SessionState
         return new ECKeyPair($publicKey, $privateKey);
     }
 
+    /**
+     * @return ECKeyPair
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function getPendingKeyExchangeRatchetKey()
     {
         $publicKey = Curve::decodePoint($this->sessionStructure->getPendingKeyExchange()->getLocalRatchetKey(), 0);
