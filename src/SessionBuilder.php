@@ -1,29 +1,26 @@
 <?php
 namespace Libsignal;
 
+use Exception;
 use Libsignal\ecc\Curve;
-use Libsignal\ecc\ECKeyPair;
-use Libsignal\ecc\ECPublicKey;
+use Libsignal\exceptions\InvalidKeyException;
+use Libsignal\exceptions\InvalidKeyIdException;
 use Libsignal\protocol\CiphertextMessage;
 use Libsignal\protocol\KeyExchangeMessage;
 use Libsignal\protocol\PreKeyWhisperMessage;
-use Libsignal\state\AxolotlStore;
+use Libsignal\ratchet\AliceBuilder;
+use Libsignal\ratchet\BobBuilder;
 use Libsignal\state\IdentityKeyStore;
 use Libsignal\state\PreKeyBundle;
 use Libsignal\state\PreKeyStore;
 use Libsignal\state\SessionRecord;
-use Libsignal\state\SessionState;
 use Libsignal\state\SessionStore;
 use Libsignal\state\SignedPreKeyStore;
 use Libsignal\util\KeyHelper;
-use Libsignal\exceptions\InvalidKeyException, Exception;
 use Libsignal\ratchet\SymmetricBuilder;
 use Libsignal\ratchet\RatchetingSession;
-use Libsignal\ratchet\BobAxolotlParameters;
 use Libsignal\exceptions\StaleKeyExchangeException;
 use Libsignal\exceptions\UntrustedIdentityException;
-use Libsignal\ratchet\AliceAxolotlParameters;
-use Libsignal\ratchet\SymmetricAxolotlParameters;
 use Libsignal\util\Medium;
 use Libsignal\logging\Log;
 
@@ -36,16 +33,32 @@ class SessionBuilder
     protected $recipientId;
     protected $deviceId;
 
-    public function __construct($sessionStore, $preKeyStore, $signedPreKeyStore, $identityKeyStore, $recepientId, $deviceId)
+    /**
+     * SessionBuilder constructor.
+     * @param SessionStore $sessionStore
+     * @param PreKeyStore $preKeyStore
+     * @param SignedPreKeyStore $signedPreKeyStore
+     * @param IdentityKeyStore $identityKeyStore
+     * @param $recipientId
+     * @param $deviceId
+     */
+    public function __construct($sessionStore, $preKeyStore, $signedPreKeyStore, $identityKeyStore, $recipientId, $deviceId)
     {
         $this->sessionStore = $sessionStore;
         $this->preKeyStore = $preKeyStore;
         $this->signedPreKeyStore = $signedPreKeyStore;
         $this->identityKeyStore = $identityKeyStore;
-        $this->recipientId = $recepientId;
+        $this->recipientId = $recipientId;
         $this->deviceId = $deviceId;
     }
 
+    /**
+     * @param SessionRecord $sessionRecord
+     * @param PreKeyWhisperMessage $message
+     * @return null
+     * @throws UntrustedIdentityException
+     * @throws Exception
+     */
     public function process($sessionRecord, $message)
     {
         /*
@@ -75,6 +88,13 @@ class SessionBuilder
         return $unsignedPreKeyId;
     }
 
+    /**
+     * @param SessionRecord $sessionRecord
+     * @param PreKeyWhisperMessage $message
+     * @return null
+     * @throws InvalidKeyIdException
+     * @throws exceptions\InvalidKeyException
+     */
     public function processV2($sessionRecord, $message)
     {
         /*
@@ -89,7 +109,7 @@ class SessionBuilder
             $this->sessionStore->containsSession($this->recipientId, $this->deviceId)) {
             Log::warn('v2', "We've already processed the prekey part of this V2 session, letting bundled message fall through...");
 
-            return;
+            return null;
         }
 
         $ourPreKey = $this->preKeyStore->loadPreKey($message->getPreKeyId())->getKeyPair();
@@ -116,10 +136,17 @@ class SessionBuilder
         if ($message->getPreKeyId() != Medium::MAX_VALUE) {
             return $message->getPreKeyId();
         } else {
-            return;
+            return null;
         }
     }
 
+    /**
+     * @param SessionRecord $sessionRecord
+     * @param PreKeyWhisperMessage $message
+     * @return null|string
+     * @throws exceptions\InvalidKeyException
+     * @throws Exception
+     */
     public function processV3($sessionRecord, $message)
     {
         /*
@@ -131,7 +158,7 @@ class SessionBuilder
         if ($sessionRecord->hasSessionState($message->getMessageVersion(), $message->getBaseKey()->serialize())) {
             Log::warn('v3', "We've already setup a session for this V3 message, letting bundled message fall through...");
 
-            return;
+            return null;
         }
 
         $ourSignedPreKey = $this->signedPreKeyStore->loadSignedPreKey($message->getSignedPreKeyId())->getKeyPair();
@@ -160,10 +187,16 @@ class SessionBuilder
         if ($message->getPreKeyId() != null && $message->getPreKeyId() != Medium::MAX_VALUE) {
             return $message->getPreKeyId();
         } else {
-            return;
+            return null;
         }
     }
 
+    /**
+     * @param PreKeyBundle $preKey
+     * @throws UntrustedIdentityException
+     * @throws exceptions\InvalidKeyException
+     * @throws Exception
+     */
     public function processPreKeyBundle($preKey)
     {
         /*
@@ -215,6 +248,16 @@ class SessionBuilder
         $this->identityKeyStore->saveIdentity($this->recipientId, $preKey->getIdentityKey());
     }
 
+    /**
+     * @param KeyExchangeMessage $keyExchangeMessage
+     * @return KeyExchangeMessage|null
+     * @throws InvalidKeyException
+     * @throws StaleKeyExchangeException
+     * @throws UntrustedIdentityException
+     * @throws exceptions\InvalidMessageException
+     * @throws exceptions\InvalidVersionException
+     * @throws exceptions\LegacyMessageException
+     */
     public function processKeyExchangeMessage($keyExchangeMessage)
     {
         if (!$this->identityKeyStore->isTrustedIdentity($this->recipientId, $keyExchangeMessage->getIdentityKey())) {
@@ -232,6 +275,15 @@ class SessionBuilder
         return $responseMessage;
     }
 
+    /**
+     * @param KeyExchangeMessage $keyExchangeMessage
+     * @return KeyExchangeMessage
+     * @throws InvalidKeyException
+     * @throws exceptions\InvalidMessageException
+     * @throws exceptions\InvalidVersionException
+     * @throws exceptions\LegacyMessageException
+     * @throws Exception
+     */
     public function processInitiate($keyExchangeMessage)
     {
         $flags = KeyExchangeMessage::RESPONSE_FLAG;
@@ -253,7 +305,7 @@ class SessionBuilder
             $builder->setOurIdentityKey($sessionRecord->getSessionState()->getPendingKeyExchangeIdentityKey())
                 ->setOurBaseKey($sessionRecord->getSessionState()->getPendingKeyExchangeBaseKey())
                 ->setOurRatchetKey($sessionRecord->getSessionState()->getPendingKeyExchangeRatchetKey());
-            $flags |= KeyExchangeMessage::SIMULTAENOUS_INITIATE_FLAG;
+            $flags |= KeyExchangeMessage::SIMULTANEOUS_INITIATE_FLAG;
         }
 
         $builder->setTheirBaseKey($keyExchangeMessage->getBaseKey())
@@ -283,6 +335,12 @@ class SessionBuilder
                                   $parameters->getOurIdentityKey()->getPublicKey());
     }
 
+    /**
+     * @param KeyExchangeMessage $keyExchangeMessage
+     * @throws InvalidKeyException
+     * @throws StaleKeyExchangeException
+     * @throws Exception
+     */
     public function processResponse($keyExchangeMessage)
     {
         $sessionRecord = $this->sessionStore->loadSession($this->recipientId, $this->deviceId);
@@ -328,6 +386,13 @@ class SessionBuilder
         $this->identityKeyStore->saveIdentity($this->recipientId, $keyExchangeMessage->getIdentityKey());
     }
 
+    /**
+     * @return KeyExchangeMessage
+     * @throws exceptions\InvalidMessageException
+     * @throws exceptions\InvalidVersionException
+     * @throws exceptions\LegacyMessageException
+     * @throws Exception
+     */
     public function processInitKeyExchangeMessage()
     {
         try {

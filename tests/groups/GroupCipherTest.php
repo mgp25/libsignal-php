@@ -6,9 +6,6 @@ use Libsignal\groups\GroupSessionBuilder;
 use Libsignal\groups\GroupCipher;
 use Libsignal\util\KeyHelper;
 
-//require_once __DIR__.'/../../src/DuplicateMessageException.php';
-//require_once __DIR__.'/../../src/NoSessionException.php';
-
 class GroupCipherTest extends TestCase
 {
     public function testBasicEncryptDecrypt()

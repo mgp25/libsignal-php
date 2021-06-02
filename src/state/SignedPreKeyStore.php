@@ -1,10 +1,12 @@
 <?php
 namespace Libsignal\state;
 
-use Libsignal\exceptions\InvalidKeyIdException;
-
 abstract class SignedPreKeyStore
 {
+    /**
+     * @param string $signedPreKeyId
+     * @return SignedPreKeyRecord
+     */
     abstract public function loadSignedPreKey($signedPreKeyId);
 
  // [int signedPreKeyId]

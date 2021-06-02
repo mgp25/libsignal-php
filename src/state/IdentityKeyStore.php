@@ -6,6 +6,9 @@ use Libsignal\IdentityKeyPair;
 
 abstract class IdentityKeyStore
 {
+    /**
+     * @return IdentityKeyPair
+     */
     abstract public function getIdentityKeyPair();
 
     abstract public function getLocalRegistrationId();

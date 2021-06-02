@@ -47,6 +47,9 @@ class PreKeyBundle
         return $this->signedPreKeyId;
     }
 
+    /**
+     * @return SignedPreKeyRecord
+     */
     public function getSignedPreKey()
     {
         return $this->signedPreKeyPublic;
@@ -57,6 +60,9 @@ class PreKeyBundle
         return $this->signedPreKeySignature;
     }
 
+    /**
+     * @return IdentityKey
+     */
     public function getIdentityKey()
     {
         return $this->identityKey;

@@ -124,6 +124,9 @@ class PreKeyWhisperMessage extends CiphertextMessage
         return $this->preKeyId;
     }
 
+    /**
+     * @return null|string
+     */
     public function getSignedPreKeyId()
     {
         return $this->signedPreKeyId;
