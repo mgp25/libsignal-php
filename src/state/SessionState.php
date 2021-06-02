@@ -5,13 +5,7 @@ use Exception;
 use Libsignal\groups\state\SenderKeyRecord;
 use Libsignal\IdentityKey;
 use Libsignal\ratchet\MessageKeys;
-use Localstorage\SessionStructure as Textsecure_SessionStructure;
 use Localstorage\SessionStructure;
-use Localstorage\SessionStructure\Chain as Textsecure_SessionStructure_Chain;
-use Localstorage\SessionStructure\Chain\ChainKey as Textsecure_SessionStructure_Chain_ChainKey;
-use Localstorage\SessionStructure\Chain\MessageKey as Textsecure_SessionStructure_Chain_MessageKey;
-use Localstorage\SessionStructure\PendingPreKey as Textsecure_SessionStructure_PendingPreKey;
-use Localstorage\SessionStructure\PendingKeyExchange as Textsecure_SessionStructure_PendingKeyExchange;
 use Libsignal\ecc\Curve;
 use Libsignal\ecc\ECKeyPair;
 use Libsignal\IdentityKeyPair;
@@ -34,9 +28,9 @@ class SessionState
     public function __construct($session = null)
     {
         if ($session == null) {
-            $this->sessionStructure = new Textsecure_SessionStructure;
+            $this->sessionStructure = new SessionStructure;
         } elseif ($session instanceof self) {
-            $this->sessionStructure = new Textsecure_SessionStructure;
+            $this->sessionStructure = new SessionStructure;
             $this->sessionStructure->mergeFromString($session->getStructure()->serializeToString());
         } else {
             $this->sessionStructure = $session;
@@ -209,9 +203,9 @@ class SessionState
     {
         $senderRatchetKey = $ECPublickKey_senderRatchetKey;
 
-        $chain = new Textsecure_SessionStructure_Chain();
+        $chain = new SessionStructure\Chain();
         $chain->setSenderRatchetKey($senderRatchetKey->serialize());
-        $chain->setChainKey(new Textsecure_SessionStructure_Chain_ChainKey());
+        $chain->setChainKey(new SessionStructure\Chain\ChainKey());
         $chain->getChainKey()->setKey($chainKey->getKey());
         $chain->getChainKey()->setIndex($chainKey->getIndex());
 
@@ -232,11 +226,11 @@ class SessionState
     {
         $senderRatchetKeyPair = $ECKeyPair_senderRatchetKeyPair;
 
-        $senderChain = new Textsecure_SessionStructure_Chain();
+        $senderChain = new SessionStructure\Chain();
         $this->sessionStructure->setSenderChain($senderChain);
         $this->sessionStructure->getSenderChain()->setSenderRatchetKey($senderRatchetKeyPair->getPublicKey()->serialize());
         $this->sessionStructure->getSenderChain()->setSenderRatchetKeyPrivate($senderRatchetKeyPair->getPrivateKey()->serialize());
-        $this->sessionStructure->getSenderChain()->setChainKey(new Textsecure_SessionStructure_Chain_ChainKey());
+        $this->sessionStructure->getSenderChain()->setChainKey(new SessionStructure\Chain\ChainKey());
         $this->sessionStructure->getSenderChain()->getChainKey()->setKey($chainKey->getKey());
         $this->sessionStructure->getSenderChain()->getChainKey()->setIndex($chainKey->getIndex());
     }
@@ -253,6 +247,9 @@ class SessionState
                         $chainKeyStructure->getKey(), $chainKeyStructure->getIndex());
     }
 
+    /**
+     * @param ChainKey $ChainKey_nextChainKey
+     */
     public function setSenderChainKey($ChainKey_nextChainKey)
     {
         $nextChainKey = $ChainKey_nextChainKey;
@@ -332,7 +329,7 @@ class SessionState
         $senderEphemeral = $ECPublicKey_senderEphemeral;
         $chainAndIndex = $this->getReceiverChain($senderEphemeral);
         $chain = $chainAndIndex[0];
-        $messageKeyStructure = new Textsecure_SessionStructure_Chain_MessageKey(); //$chain->messageKeys.add() #storageprotos.SessionStructure.Chain.MessageKey()
+        $messageKeyStructure = new SessionStructure\Chain\MessageKey(); //$chain->messageKeys.add() #storageprotos.SessionStructure.Chain.MessageKey()
         $messageKeyStructure->setCipherKey($messageKeys->getCipherKey());
         $messageKeyStructure->setMacKey($messageKeys->getMacKey());
         $messageKeyStructure->setIndex($messageKeys->getCounter());
@@ -378,7 +375,7 @@ class SessionState
 
         $structure = $this->sessionStructure->getPendingKeyExchange();
         if ($structure == null) {
-            $structure = new Textsecure_SessionStructure_PendingKeyExchange();
+            $structure = new SessionStructure\PendingKeyExchange();
         }
         $structure->setSequence($sequence);
         $structure->setLocalBaseKey($ourBaseKey->getPublicKey()->serialize());
@@ -442,7 +439,7 @@ class SessionState
         :type baseKey: ECPublicKey
         */
         if (!$this->hasUnacknowledgedPreKeyMessage()) {
-            $this->sessionStructure->setPendingPreKey(new Textsecure_SessionStructure_PendingPreKey());
+            $this->sessionStructure->setPendingPreKey(new SessionStructure\PendingPreKey());
         }
         $this->sessionStructure->getPendingPreKey()->setSignedPreKeyId($signedPreKeyId);
         $this->sessionStructure->getPendingPreKey()->setBaseKey($baseKey->serialize());
