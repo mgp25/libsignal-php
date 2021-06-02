@@ -1,12 +1,13 @@
 <?php
 namespace Libsignal\protocol;
 
-use Libsignal\util\ByteUtil;
+use Exception;
+use Libsignal\ecc\Curve;
 use Libsignal\ecc\ECPublicKey;
+use Libsignal\util\ByteUtil;
 use Libsignal\exceptions\InvalidMessageException;
 use Libsignal\exceptions\LegacyMessageException;
 use Whispertext\SenderKeyDistributionMessage as Textsecure_SenderKeyDistributionMessage;
-//require_once("com/google/protobuf/ByteString.php");
 
 class SenderKeyDistributionMessage extends CiphertextMessage
 {
@@ -16,6 +17,17 @@ class SenderKeyDistributionMessage extends CiphertextMessage
     protected $signatureKey;    // ECPublicKey
     protected $serialized;    // byte[]
 
+    /**
+     * SenderKeyDistributionMessage constructor.
+     * @param int $id
+     * @param int $iteration
+     * @param string $chainKey
+     * @param ECPublicKey $signatureKey
+     * @param string $serialized
+     * @throws InvalidMessageException
+     * @throws LegacyMessageException
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function __construct($id = null, $iteration = null, $chainKey = null, $signatureKey = null, $serialized = null) // [int id, int iteration, byte[] chainKey, ECPublicKey signatureKey]
     {
         if ($serialized == null) {
@@ -36,14 +48,14 @@ class SenderKeyDistributionMessage extends CiphertextMessage
             $version = ord($parts[0][0]);
             $message = $parts[1];
             if (ByteUtil::highBitsToInt($version) < self::CURRENT_VERSION) {
-                throw new LegacyMessageException('Legacy message: ' + ByteUtil::highBitsToInt($version));
+                throw new LegacyMessageException('Legacy message: ' . ByteUtil::highBitsToInt($version));
             }
             if (ByteUtil::highBitsToInt($version) > self::CURRENT_VERSION) {
-                throw new InvalidMessageException('Unknown version: ' + ByteUtil::highBitsToInt($version));
+                throw new InvalidMessageException('Unknown version: ' . ByteUtil::highBitsToInt($version));
             }
             $proto_skdm = new Textsecure_SenderKeyDistributionMessage();
             try {
-                $proto_skdm->parseFromString($message);
+                $proto_skdm->mergeFromString($message);
             } catch (Exception $ex) {
                 throw new InvalidMessageException('Incomplete message.');
             }

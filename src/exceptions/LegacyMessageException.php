@@ -1,10 +1,15 @@
 <?php
 namespace Libsignal\exceptions;
 
-class LegacyMessageException extends \Exception
-{
-    public function __construct($detailMesssage) // [String s]
-    {
+use Exception;
+
+class LegacyMessageException extends Exception{
+    /**
+     * LegacyMessageException constructor.
+     * @param string $detailMesssage
+     */
+    public function __construct($detailMesssage){
         $this->message = $detailMesssage;
     }
+
 }

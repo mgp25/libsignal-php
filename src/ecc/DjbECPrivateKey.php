@@ -1,12 +1,18 @@
 <?php
 namespace Libsignal\ecc;
 
-class DjbECPrivateKey implements ECPrivateKey
-{
-    protected $privateKey;    // byte[] --> php string now
+class DjbECPrivateKey implements ECPrivateKey{
 
-    public function __construct($privateKey) // [byte[] privateKey]
-    {
+    /**
+     * @var string $privateKey
+     */
+    protected $privateKey;
+
+    /**
+     * DjbECPrivateKey constructor.
+     * @param string $privateKey
+     */
+    public function __construct($privateKey){
         $this->privateKey = $privateKey;
     }
 

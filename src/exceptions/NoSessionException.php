@@ -1,10 +1,16 @@
 <?php
 namespace Libsignal\exceptions;
 
-class NoSessionException extends \Exception
-{
-    public function __construct($s) // [String s]
-    {
+use Exception;
+
+class NoSessionException extends Exception{
+
+    /**
+     * NoSessionException constructor.
+     * @param string $s
+     */
+    public function __construct($s){
         $this->message = $s;
     }
+
 }

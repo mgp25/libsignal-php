@@ -2,11 +2,15 @@
 namespace Libsignal\ratchet;
 
 use Libsignal\kdf\DerivedMessageSecrets;
+use Libsignal\kdf\HKDF;
 
 class ChainKey
 {
     const MESSAGE_KEY_SEED = "\x01";
     const CHAIN_KEY_SEED = "\x02";
+    /**
+     * @var HKDF $kdf
+     */
     protected $kdf;
     protected $key;
     protected $index;

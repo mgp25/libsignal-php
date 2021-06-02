@@ -1,9 +1,10 @@
 <?php
 namespace Libsignal\ecc;
 
-interface ECPublicKey
-{
+interface ECPublicKey{
+
     public function serialize();
 
     public function getType();
+
 }

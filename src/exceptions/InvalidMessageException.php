@@ -1,13 +1,20 @@
 <?php
 namespace Libsignal\exceptions;
 
-class InvalidMessageException extends \Exception
-{
-    public function __construct($detailMessage, $throw = null) // [String detailMessage]
-    {
+use Exception;
+
+class InvalidMessageException extends Exception{
+
+    /**
+     * InvalidMessageException constructor.
+     * @param string $detailMessage
+     * @param null $throw
+     */
+    public function __construct($detailMessage, $throw = null){
         $this->message = $detailMessage;
         if ($throw != null) {
             $this->previous = $throw;
         }
     }
+
 }

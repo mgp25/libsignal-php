@@ -1,10 +1,8 @@
 <?php
 namespace Libsignal\ratchet;
 
+use Exception;
 use Libsignal\IdentityKey;
-use Libsignal\IdentityKeyPair;
-use Libsignal\ecc\ECKeyPair;
-use Libsignal\ecc\ECPublicKey;
 
 class AliceAxolotlParameters
 {
@@ -15,6 +13,16 @@ class AliceAxolotlParameters
     protected $theirOneTimePreKey;    // Optional<ECPublicKey>
     protected $theirRatchetKey;    // ECPublicKey
 
+    /**
+     * AliceAxolotlParameters constructor.
+     * @param $ourIdentityKey
+     * @param $ourBaseKey
+     * @param $theirIdentityKey
+     * @param $theirSignedPreKey
+     * @param $theirRatchetKey
+     * @param $theirOneTimePreKey
+     * @throws Exception
+     */
     public function __construct($ourIdentityKey, $ourBaseKey, $theirIdentityKey, $theirSignedPreKey, $theirRatchetKey, $theirOneTimePreKey) // [IdentityKeyPair ourIdentityKey, ECKeyPair ourBaseKey, IdentityKey theirIdentityKey, ECPublicKey theirSignedPreKey, ECPublicKey theirRatchetKey, Optional<ECPublicKey> theirOneTimePreKey]
     {
         $this->ourIdentityKey = $ourIdentityKey;
@@ -29,6 +37,9 @@ class AliceAxolotlParameters
         }
     }
 
+    /**
+     * @return IdentityKey
+     */
     public function getOurIdentityKey()
     {
         return $this->ourIdentityKey;
@@ -126,6 +137,10 @@ class AliceBuilder
         return $this;
     }
 
+    /**
+     * @return AliceAxolotlParameters
+     * @throws Exception
+     */
     public function create()
     {
         return new AliceAxolotlParameters($this->ourIdentityKey, $this->ourBaseKey, $this->theirIdentityKey,

@@ -1,10 +1,8 @@
 <?php
 namespace Libsignal\ratchet;
 
-use Libsignal\IdentityKey;
+use Exception;
 use Libsignal\IdentityKeyPair;
-use Libsignal\ecc\ECKeyPair;
-use Libsignal\ecc\ECPublicKey;
 
 class SymmetricAxolotlParameters
 {
@@ -15,6 +13,16 @@ class SymmetricAxolotlParameters
     protected $theirRatchetKey;    // ECPublicKey
     protected $theirIdentityKey;    // IdentityKey
 
+    /**
+     * SymmetricAxolotlParameters constructor.
+     * @param $ourBaseKey
+     * @param $ourRatchetKey
+     * @param $ourIdentityKey
+     * @param $theirBaseKey
+     * @param $theirRatchetKey
+     * @param $theirIdentityKey
+     * @throws Exception
+     */
     public function __construct($ourBaseKey, $ourRatchetKey, $ourIdentityKey, $theirBaseKey, $theirRatchetKey, $theirIdentityKey) // [ECKeyPair ourBaseKey, ECKeyPair ourRatchetKey, IdentityKeyPair ourIdentityKey, ECPublicKey theirBaseKey, ECPublicKey theirRatchetKey, IdentityKey theirIdentityKey]
     {
         $this->ourBaseKey = $ourBaseKey;
@@ -27,7 +35,7 @@ class SymmetricAxolotlParameters
         if (($ourBaseKey == null) || ($ourRatchetKey == null)
             || ($ourIdentityKey == null) || ($theirBaseKey == null)
             || ($theirRatchetKey == null) || ($theirIdentityKey == null)) {
-            throw new \Exception('Null values!');
+            throw new Exception('Null values!');
         }
     }
 
@@ -41,6 +49,9 @@ class SymmetricAxolotlParameters
         return $this->ourRatchetKey;
     }
 
+    /**
+     * @return IdentityKeyPair
+     */
     public function getOurIdentityKey()
     {
         return $this->ourIdentityKey;

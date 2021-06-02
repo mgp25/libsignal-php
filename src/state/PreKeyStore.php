@@ -1,23 +1,32 @@
 <?php
 namespace Libsignal\state;
 
-use Libsignal\exceptions\InvalidKeyIdException;
-
 abstract class PreKeyStore
 {
+
+    /**
+     * @param int $preKeyId
+     * @return PreKeyRecord
+     */
     abstract public function loadPreKey($preKeyId);
 
- // [int preKeyId]
-
+    /**
+     * @param int $preKeyId
+     * @param PreKeyRecord $record
+     * @return mixed
+     */
     abstract public function storePreKey($preKeyId, $record);
 
- // [int preKeyId, PreKeyRecord record]
-
+    /**
+     * @param int $preKeyId
+     * @return mixed
+     */
     abstract public function containsPreKey($preKeyId);
 
- // [int preKeyId]
-
+    /**
+     * @param int $preKeyId
+     * @return mixed
+     */
     abstract public function removePreKey($preKeyId);
 
- // [int preKeyId]
 }

@@ -3,8 +3,8 @@ namespace Libsignal\kdf;
 
 use Libsignal\util\ByteUtil;
 
-class DerivedRootSecrets
-{
+class DerivedRootSecrets{
+
     const SIZE = 64;    // int
     protected $rootKey;    // byte[]
     protected $chainKey;    // byte[]
@@ -25,4 +25,5 @@ class DerivedRootSecrets
     {
         return $this->chainKey;
     }
+
 }

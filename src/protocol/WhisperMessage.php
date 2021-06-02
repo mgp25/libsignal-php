@@ -1,8 +1,8 @@
 <?php
 namespace Libsignal\protocol;
 
-use Libsignal\protocol\CiphertextMessage;
-use Libsignal\ecc\ECPublicKey;
+use Exception;
+use Libsignal\IdentityKey;
 use Libsignal\util\ByteUtil;
 use Libsignal\exceptions\InvalidMessageException;
 use Libsignal\exceptions\LegacyMessageException;
@@ -19,6 +19,19 @@ class WhisperMessage extends CiphertextMessage
     protected $cipherText;
     protected $serialized;
 
+    /**
+     * WhisperMessage constructor.
+     * @param string $messageVersion
+     * @param string $macKey
+     * @param null $senderRatchetKey
+     * @param null $counter
+     * @param null $previousCounter
+     * @param null $cipherText
+     * @param null $senderIdentityKey
+     * @param null $receiverIdentityKey
+     * @param null $serialized
+     * @throws InvalidMessageException
+     */
     public function __construct($messageVersion = null,
                                     $macKey = null,
                                     $senderRatchetKey = null,
@@ -53,7 +66,7 @@ class WhisperMessage extends CiphertextMessage
 
                 $version = ord($messageParts[0][0]);
                 $message = $messageParts[1];
-                $mac = $messageParts[2];
+//                $mac = $messageParts[2];
                 if (ByteUtil::highBitsToInt($version) <= self::UNSUPPORTED_VERSION) {
                     throw new LegacyMessageException('Legacy message '.ByteUtil::highBitsToInt($version));
                 }
@@ -63,7 +76,7 @@ class WhisperMessage extends CiphertextMessage
 
                 $proto_message = new Textsecure_WhisperMessage();
                 try {
-                    $proto_message->parseFromString($message);
+                    $proto_message->mergeFromString($message);
                 } catch (Exception $ex) {
                     throw new InvalidMessageException('Incomplete message.');
                 }
@@ -117,6 +130,13 @@ class WhisperMessage extends CiphertextMessage
         return $message != null &&  strlen($message) >= 1 && ByteUtil::highBitsToInt($message[0]) <= self::UNSUPPORTED_VERSION;
     }
 
+    /**
+     * @param $messageVersion
+     * @param $senderIdentityKey
+     * @param $receiverIdentityKey
+     * @param $macKey
+     * @throws InvalidMessageException
+     */
     public function verifyMac($messageVersion, $senderIdentityKey, $receiverIdentityKey, $macKey)
     {
         $parts = ByteUtil::split($this->serialized, strlen($this->serialized) - self::MAC_LENGTH, self::MAC_LENGTH);
@@ -127,6 +147,14 @@ class WhisperMessage extends CiphertextMessage
         }
     }
 
+    /**
+     * @param int $messageVersion
+     * @param IdentityKey $senderIdentityKey
+     * @param IdentityKey $receiverIdentityKey
+     * @param $macKey
+     * @param $serialized
+     * @return bool|string
+     */
     private function getMac($messageVersion, $senderIdentityKey, $receiverIdentityKey, $macKey, $serialized)
     {
         $mac = hash_init('sha256', HASH_HMAC, $macKey);

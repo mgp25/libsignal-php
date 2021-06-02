@@ -2,10 +2,9 @@
 namespace Libsignal\state;
 
 use Libsignal\IdentityKey;
-use Libsignal\ecc\ECPublicKey;
 
-class PreKeyBundle
-{
+class PreKeyBundle{
+
     protected $registrationId;    // int
     protected $deviceId;    // int
     protected $preKeyId;    // int
@@ -47,6 +46,9 @@ class PreKeyBundle
         return $this->signedPreKeyId;
     }
 
+    /**
+     * @return SignedPreKeyRecord
+     */
     public function getSignedPreKey()
     {
         return $this->signedPreKeyPublic;
@@ -57,6 +59,9 @@ class PreKeyBundle
         return $this->signedPreKeySignature;
     }
 
+    /**
+     * @return IdentityKey
+     */
     public function getIdentityKey()
     {
         return $this->identityKey;

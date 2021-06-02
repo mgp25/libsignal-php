@@ -1,6 +1,8 @@
 <?php
 namespace Libsignal\logging;
 
+use Exception;
+
 class Log extends AxolotlLogger
 {
     public static function verbose($tag, $msg) // [String tag, String msg]

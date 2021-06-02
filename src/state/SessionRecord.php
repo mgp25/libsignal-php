@@ -10,6 +10,12 @@ class SessionRecord
     protected $sessionState;
     protected $fresh;
 
+    /**
+     * SessionRecord constructor.
+     * @param SessionState $sessionState
+     * @param null $serialized
+     * @throws \Exception
+     */
     public function __construct($sessionState = null, $serialized = null)
     {
         /*
@@ -22,7 +28,7 @@ class SessionRecord
             $this->fresh = false;
         } elseif ($serialized != null) {
             $record = new Textsecure_RecordStructure();
-            $record->parseFromString($serialized);
+            $record->mergeFromString($serialized);
             $this->sessionState = new SessionState($record->getCurrentSession());
             $this->fresh = false;
             foreach ($record->getPreviousSessions() as $previousStructure) {
@@ -97,9 +103,11 @@ class SessionRecord
         //previousState.getStructure() for previousState in self.previousStates
         $record = new Textsecure_RecordStructure();
         $record->setCurrentSession($this->sessionState->getStructure());
+        $previousSessions = [];
         foreach ($this->previousStates as $previousState) {
-            $record->appendPreviousSessions($previousState->getStructure());
+            $previousSessions[] = $previousState->getStructure();
         }
+        $record->setPreviousSessions($previousSessions);
         /*
             Python
             record.currentSession.MergeFrom(self.sessionState.getStructure())

@@ -20,6 +20,12 @@ class RootKey
         return $this->key;
     }
 
+    /**
+     * @param $ECPublicKey_theirRatchetKey
+     * @param $ECKeyPair_ourRatchetKey
+     * @return RootKey[]
+     * @throws \Libsignal\exceptions\InvalidKeyException
+     */
     public function createChain($ECPublicKey_theirRatchetKey, $ECKeyPair_ourRatchetKey)
     {
         $sharedSecret = Curve::calculateAgreement($ECPublicKey_theirRatchetKey, $ECKeyPair_ourRatchetKey->getPrivateKey());

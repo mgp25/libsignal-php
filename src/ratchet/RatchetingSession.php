@@ -2,15 +2,19 @@
 namespace Libsignal\ratchet;
 
 use Libsignal\ecc\Curve;
-use Libsignal\ecc\ECKeyPair;
-use Libsignal\ecc\ECPublicKey;
 use Libsignal\util\ByteUtil;
 use Libsignal\kdf\HKDF;
 use Libsignal\exceptions\InvalidKeyException;
 use Libsignal\state\SessionState;
 
-class RatchetingSession
-{
+class RatchetingSession{
+
+    /**
+     * @param SessionState $sessionState
+     * @param $sessionVersion
+     * @param SymmetricAxolotlParameters $parameters
+     * @throws \Exception
+     */
     public static function initializeSession(SessionState $sessionState, $sessionVersion, $parameters)
     {
         /*
@@ -40,6 +44,13 @@ class RatchetingSession
         }
     }
 
+    /**
+     * @param SessionState $sessionState
+     * @param $sessionVersion
+     * @param AliceAxolotlParameters $parameters
+     * @throws InvalidKeyException
+     * @throws \Exception
+     */
     public static function initializeSessionAsAlice($sessionState, $sessionVersion, $parameters)
     {
         /*
@@ -77,6 +88,12 @@ class RatchetingSession
         $sessionState->setRootKey($sendingChain[0]);
     }
 
+    /**
+     * @param SessionState $sessionState
+     * @param $sessionVersion
+     * @param BobAxolotlParameters $parameters
+     * @throws InvalidKeyException
+     */
     public static function initializeSessionAsBob($sessionState, $sessionVersion, $parameters)
     {
         /*

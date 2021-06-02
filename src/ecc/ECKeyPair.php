@@ -1,13 +1,23 @@
 <?php
 namespace Libsignal\ecc;
 
-class ECKeyPair
-{
-    protected $publicKey;    // ECPublicKey
-    protected $privateKey;    // ECPrivateKey
+class ECKeyPair{
 
-    public function __construct($publicKey, $privateKey) // [ECPublicKey publicKey, ECPrivateKey privateKey]
-    {
+    /**
+     * @var ECPublicKey $publicKey
+     */
+    protected $publicKey;
+    /**
+     * @var ECPrivateKey $privateKey
+     */
+    protected $privateKey;
+
+    /**
+     * ECKeyPair constructor.
+     * @param ECPublicKey $publicKey
+     * @param ECPrivateKey$privateKey
+     */
+    public function __construct($publicKey, $privateKey){
         $this->publicKey = $publicKey;
         $this->privateKey = $privateKey;
     }
@@ -21,4 +31,5 @@ class ECKeyPair
     {
         return $this->privateKey;
     }
+
 }

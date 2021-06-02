@@ -1,8 +1,8 @@
 <?php
 namespace Libsignal\protocol;
 
-use Libsignal\protocol\CiphertextMessage;
-use Libsignal\ecc\ECPublicKey;
+use Exception;
+use Libsignal\exceptions\InvalidKeyException;
 use Libsignal\util\ByteUtil;
 use Libsignal\exceptions\InvalidMessageException;
 use Libsignal\exceptions\LegacyMessageException;
@@ -18,6 +18,16 @@ class SenderKeyMessage extends CiphertextMessage
     protected $iteration;
     protected $ciphertext;
 
+    /**
+     * SenderKeyMessage constructor.
+     * @param null $keyId
+     * @param null $iteration
+     * @param null $ciphertext
+     * @param null $signatureKey
+     * @param null $serialized
+     * @throws InvalidMessageException
+     * @throws Exception
+     */
     public function __construct($keyId = null, $iteration = null, $ciphertext = null, $signatureKey = null, $serialized = null)
     {
         if ($serialized == null) {
@@ -43,7 +53,7 @@ class SenderKeyMessage extends CiphertextMessage
 
                 $version = ord($messageParts[0][0]);
                 $message = $messageParts[1];
-                $signature = $messageParts[2];
+//                $signature = $messageParts[2];
                 if (ByteUtil::highBitsToInt($version) < 3) {
                     throw new LegacyMessageException('Legacy message: '.ByteUtil::highBitsToInt($version));
                 }
@@ -54,7 +64,7 @@ class SenderKeyMessage extends CiphertextMessage
 
                 $proto_message = new Textsecure_SenderKeyMessage();
                 try {
-                    $proto_message->parseFromString($message);
+                    $proto_message->mergeFromString($message);
                 } catch (Exception $ex) {
                     throw new InvalidMessageException('Incomplete message');
                 }
@@ -89,6 +99,10 @@ class SenderKeyMessage extends CiphertextMessage
         return $this->ciphertext;
     }
 
+    /**
+     * @param $signatureKey
+     * @throws InvalidMessageException
+     */
     public function verifySignature($signatureKey)
     {
         try {
@@ -101,6 +115,12 @@ class SenderKeyMessage extends CiphertextMessage
         }
     }
 
+    /**
+     * @param $signatureKey
+     * @param $serialized
+     * @return mixed
+     * @throws Exception
+     */
     private function getSignature($signatureKey, $serialized)
     {
         try {
