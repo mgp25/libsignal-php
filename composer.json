@@ -15,6 +15,7 @@
     "autoload": {
         "psr-4": {
             "Libsignal\\": "src/",
+            "GPBMetadata\\": "src/GPBMetadata/",
             "Whispertext\\": "src/Whispertext/",
             "Localstorage\\": "src/Localstorage/"
         }
