@@ -1,49 +1,41 @@
 <?php
-
-/**
- * Copyright (C) 2013 Open Whisper Systems.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 namespace Libsignal;
 
+use Exception;
 use Libsignal\ecc\Curve;
-use Libsignal\ecc\ECKeyPair;
-use Libsignal\ecc\ECPublicKey;
-use Libsignal\protocol\CiphertextMessage;
+use Libsignal\exceptions\DuplicateMessageException;
+use Libsignal\exceptions\InvalidMessageException;
+use Libsignal\exceptions\NoSessionException;
 use Libsignal\protocol\PreKeyWhisperMessage;
 use Libsignal\protocol\WhisperMessage;
 use Libsignal\ratchet\ChainKey;
 use Libsignal\ratchet\MessageKeys;
-use Libsignal\ratchet\RootKey;
-use Libsignal\state\AxolotlStore;
-use Libsignal\state\IdentityKeyStore;
 use Libsignal\state\PreKeyStore;
 use Libsignal\state\SessionRecord;
 use Libsignal\state\SessionState;
 use Libsignal\state\SessionStore;
-use Libsignal\state\SignedPreKeyStore;
-use Libsignal\util\ByteUtil;
-use Libsignal\util\Pair;
-//require_once "/state/SessionState/UnacknowledgedPreKeyMessageItems.php";
-class SessionCipher
-{
+
+class SessionCipher{
+
+    /**
+     * @var SessionStore $sessionStore
+     */
     protected $sessionStore;
+    /**
+     * @var PreKeyStore $preKeyStore
+     */
     protected $preKeyStore;
-    protected $recepientId;
+    /**
+     * @var string $recipientId
+     */
+    protected $recipientId;
+    /**
+     * @var string $deviceId
+     */
     protected $deviceId;
+    /**
+     * @var SessionBuilder $sessionBuilder
+     */
     protected $sessionBuilder;
 
     public function __construct($sessionStore, $preKeyStore, $signedPreKeyStore, $identityKeyStore, $recepientId, $deviceId)
@@ -56,15 +48,15 @@ class SessionCipher
                                              $identityKeyStore, $recepientId, $deviceId);
     }
 
-    public function encrypt($paddedMessage)
-    {
-        /*
-        :type paddedMessage: str
-        */
-
-    /*paddedMessage = bytearray(paddedMessage.encode()
-                                  if (sys.version_info >= (3,0) and not type(paddedMessage) in (bytes, bytearray))
-                                     or type(paddedMessage) is unicode else paddedMessage)*/
+    /**
+     * @param string $paddedMessage
+     * @return PreKeyWhisperMessage|WhisperMessage
+     * @throws exceptions\InvalidMessageException
+     * @throws exceptions\InvalidVersionException
+     * @throws exceptions\LegacyMessageException
+     * @throws Exception
+     */
+    public function encrypt($paddedMessage){
         $sessionRecord = $this->sessionStore->loadSession($this->recipientId, $this->deviceId);
         $sessionState = $sessionRecord->getSessionState();
 
@@ -97,6 +89,13 @@ class SessionCipher
         return $ciphertextMessage;
     }
 
+    /**
+     * @param $ciphertext
+     * @return bool|string
+     * @throws DuplicateMessageException
+     * @throws InvalidMessageException
+     * @throws NoSessionException
+     */
     public function decryptMsg($ciphertext)
     {
         /*
@@ -116,6 +115,13 @@ class SessionCipher
         return $plaintext;
     }
 
+    /**
+     * @param PreKeyWhisperMessage $ciphertext
+     * @return bool|string
+     * @throws DuplicateMessageException
+     * @throws InvalidMessageException
+     * @throws exceptions\UntrustedIdentityException
+     */
     public function decryptPkmsg($ciphertext)
     {
         /*
@@ -139,6 +145,13 @@ class SessionCipher
         return $plaintext;
     }
 
+    /**
+     * @param SessionRecord $sessionRecord
+     * @param $cipherText
+     * @return bool|string
+     * @throws InvalidMessageException
+     * @throws DuplicateMessageException
+     */
     public function decryptWithSessionRecord($sessionRecord, $cipherText)
     {
         /*
@@ -177,6 +190,14 @@ class SessionCipher
         throw new InvalidMessageException('No valid sessions', $exceptions);
     }
 
+    /**
+     * @param SessionState $sessionState
+     * @param WhisperMessage $ciphertextMessage
+     * @return bool|string
+     * @throws InvalidMessageException
+     * @throws DuplicateMessageException
+     * @throws Exception
+     */
     public function decryptWithSessionState($sessionState, $ciphertextMessage)
     {
         if (!$sessionState->hasSenderChain()) {
@@ -205,6 +226,12 @@ class SessionCipher
         return $plaintext;
     }
 
+    /**
+     * @param SessionState $sessionState
+     * @param $ECPublicKey_theirEphemeral
+     * @return mixed
+     * @throws \Exception
+     */
     public function getOrCreateChainKey($sessionState, $ECPublicKey_theirEphemeral)
     {
         $theirEphemeral = $ECPublicKey_theirEphemeral;
@@ -227,6 +254,15 @@ class SessionCipher
         }
     }
 
+    /**
+     * @param SessionState $sessionState
+     * @param $ECPublicKey_theirEphemeral
+     * @param ChainKey $chainKey
+     * @param $counter
+     * @return mixed
+     * @throws InvalidMessageException
+     * @throws DuplicateMessageException
+     */
     public function getOrCreateMessageKeys($sessionState, $ECPublicKey_theirEphemeral, $chainKey, $counter)
     {
         $theirEphemeral = $ECPublicKey_theirEphemeral;
@@ -252,6 +288,13 @@ class SessionCipher
         return $chainKey->getMessageKeys();
     }
 
+    /**
+     * @param int $version
+     * @param MessageKeys $messageKeys
+     * @param string $plainText
+     * @return string
+     * @throws \Exception
+     */
     public function getCiphertext($version, $messageKeys, $plainText)
     {
         /*
@@ -269,6 +312,13 @@ class SessionCipher
         return $cipher->encrypt($plainText);
     }
 
+    /**
+     * @param int $version
+     * @param MessageKeys $messageKeys
+     * @param string $cipherText
+     * @return bool|string
+     * @throws \Exception
+     */
     public function getPlaintext($version, $messageKeys, $cipherText)
     {
         $cipher = null;
@@ -281,6 +331,12 @@ class SessionCipher
         return $cipher->decrypt($cipherText);
     }
 
+    /**
+     * @param $key
+     * @param $iv
+     * @return AESCipher
+     * @throws Exception
+     */
     public function getCipher($key, $iv)
     {
         //Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -289,6 +345,12 @@ class SessionCipher
         return new AESCipher($key, $iv);
     }
 
+    /**
+     * @param $key
+     * @param $counter
+     * @return AESCipher
+     * @throws Exception
+     */
     public function getCipher_v2($key, $counter)
     {
         /* #AES/CTR/NoPadding
@@ -305,7 +367,7 @@ class SessionCipher
 
         return cipher;*/
         return new AESCipher($key, null, 2, new CryptoCounter(128, $counter));
-        throw new \Exception('To be implemented.');
+//        throw new Exception('To be implemented.');
     }
 }
 
@@ -314,6 +376,12 @@ class CryptoCounter
     protected $size;
     protected $val;
 
+    /**
+     * CryptoCounter constructor.
+     * @param int $size
+     * @param int $init_val
+     * @throws Exception
+     */
     public function __construct($size = 128, $init_val = 0)
     {
         $this->val = $init_val;

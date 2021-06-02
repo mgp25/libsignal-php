@@ -1,15 +1,14 @@
 <?php
 namespace Libsignal\protocol;
 
-use Libsignal\protocol\CiphertextMessage;
+use Exception;
+use Libsignal\ecc\Curve;
 use Libsignal\ecc\ECPublicKey;
 use Libsignal\util\ByteUtil;
 use Libsignal\exceptions\InvalidMessageException;
 use Libsignal\exceptions\InvalidVersionException;
 use Libsignal\exceptions\LegacyMessageException;
 use Libsignal\IdentityKey;
-
-require_once __DIR__.'/../protocol/WhisperMessage.php';
 
 class PreKeyWhisperMessage extends CiphertextMessage
 {
@@ -22,6 +21,21 @@ class PreKeyWhisperMessage extends CiphertextMessage
     protected $message;
     protected $serialized;
 
+    /**
+     * PreKeyWhisperMessage constructor.
+     * @param string $messageVersion
+     * @param string $registrationId
+     * @param string $preKeyId
+     * @param string $signedPreKeyId
+     * @param ECPublicKey $ecPublicBaseKey
+     * @param IdentityKey $identityKey
+     * @param WhisperMessage $whisperMessage
+     * @param string $serialized
+     * @throws InvalidMessageException
+     * @throws InvalidVersionException
+     * @throws LegacyMessageException
+     * @throws Exception
+     */
     public function __construct($messageVersion = null,
                                          $registrationId = null,
                                          $preKeyId = null,
@@ -36,9 +50,9 @@ class PreKeyWhisperMessage extends CiphertextMessage
             if ($this->version  > self::CURRENT_VERSION) {
                 throw new InvalidVersionException('Unknown version '.$this->version);
             }
-            $preKeyWhisperMessage = new Textsecure_PreKeyWhisperMessage();
+            $preKeyWhisperMessage = new \Whispertext\PreKeyWhisperMessage();
 
-            $preKeyWhisperMessage->parseFromString(substr($serialized, 1));
+            $preKeyWhisperMessage->mergeFromString(substr($serialized, 1));
             if (($this->version == 2 && $preKeyWhisperMessage->getPreKeyId() == null) ||
                 ($this->version == 3 && $preKeyWhisperMessage->getSignedPreKeyId() == null) ||
                 $preKeyWhisperMessage->getBaseKey() == null ||
@@ -72,7 +86,7 @@ class PreKeyWhisperMessage extends CiphertextMessage
                 $this->identityKey = $identityKey;
                 $this->message = $whisperMessage;
 
-                $builder = new Textsecure_PreKeyWhisperMessage();
+                $builder = new \Whispertext\PreKeyWhisperMessage();
                 $builder->setSignedPreKeyId($this->signedPreKeyId);
                 $builder->setBaseKey($this->baseKey->serialize());
                 $builder->setIdentityKey($this->identityKey->serialize());

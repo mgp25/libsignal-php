@@ -1,21 +1,26 @@
 <?php
 namespace Libsignal\groups\state;
 
-use Localstorage\SenderKeyRecordStructure as TextSecure_SenderKeyRecordStructure;
 use Libsignal\exceptions\InvalidKeyIdException;
+use Localstorage\SenderKeyRecordStructure;
 
-class SenderKeyRecord
-{
+class SenderKeyRecord{
+
     protected $senderKeyStates;
 
+    /**
+     * SenderKeyRecord constructor.
+     * @param null $serialized
+     * @throws \Exception
+     */
     public function __construct($serialized = null)
     {
         $this->senderKeyStates = [];
 
         if ($serialized != null) {
-            $senderKeyRecordStructure = new TextSecure_SenderKeyRecordStructure();
+            $senderKeyRecordStructure = new SenderKeyRecordStructure();
 
-            $senderKeyRecordStructure->parseFromString($serialized);
+            $senderKeyRecordStructure->mergeFromString($serialized);
 
             foreach ($senderKeyRecordStructure->getSenderKeyStates() as $structure) {
                 $this->senderKeyStates[] = new SenderKeyState(null, null, null, null, null, null, $structure);
@@ -23,6 +28,11 @@ class SenderKeyRecord
         }
     }
 
+    /**
+     * @param null $keyId
+     * @return mixed
+     * @throws InvalidKeyIdException
+     */
     public function getSenderKeyState($keyId = null)
     {
         if (is_null($keyId)) {
@@ -55,11 +65,14 @@ class SenderKeyRecord
 
     public function serialize()
     {
-        $recordStructure = new TextSecure_SenderKeyRecordStructure();
+        $recordStructure = new SenderKeyRecordStructure();
+
+        $states = [];
 
         foreach ($this->senderKeyStates as $senderKeyState) {
-            $recordStructure->appendSenderKeyStates($senderKeyState->getStructure());
+            $states[] = $senderKeyState->getStructure();
         }
+        $recordStructure->setSenderKeyStates($states);
 
         return $recordStructure->serializeToString();
     }

@@ -2,11 +2,9 @@
 namespace Libsignal\kdf;
 
 use Libsignal\util\ByteUtil;
-//require_once("java/text/ParseException.php");
-//require_once("javax/crypto/spec/IvParameterSpec.php");
-//require_once("javax/crypto/spec/SecretKeySpec.php");
-class DerivedMessageSecrets
-{
+
+class DerivedMessageSecrets{
+
     const SIZE = 80;
     const CIPHER_KEY_LENGTH = 32;
     const MAC_KEY_LENGTH = 32;
@@ -38,4 +36,5 @@ class DerivedMessageSecrets
     {
         return $this->iv;
     }
+
 }

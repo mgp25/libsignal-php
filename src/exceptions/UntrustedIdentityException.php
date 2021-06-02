@@ -1,6 +1,8 @@
 <?php
 namespace Libsignal\exceptions;
 
-class UntrustedIdentityException extends \Exception
-{
+use Exception;
+
+class UntrustedIdentityException extends Exception{
+
 }

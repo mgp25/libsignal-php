@@ -26,22 +26,26 @@ class KeyExchangeMessage
     protected $identityKey;
     protected $serialized;
 
+    /**
+     * KeyExchangeMessage constructor.
+     * @param int $messageVersion
+     * @param int $sequence
+     * @param int $flags
+     * @param ECPublicKey $baseKey
+     * @param string $baseKeySignature
+     * @param ECPublicKey $ratchetKey
+     * @param IdentityKey $identityKey
+     * @param string $serialized
+     * @throws InvalidMessageException
+     * @throws InvalidVersionException
+     * @throws LegacyMessageException
+     * @throws \Exception
+     */
     public function __construct($messageVersion = null, $sequence = null, $flags = null,
                                         $baseKey = null, $baseKeySignature = null,
                                         $ratchetKey = null,
                                         $identityKey = null,
-                                        $serialized = null)
-    {
-        /*
-    :type messageVersion: int
-    :type  sequence: int
-    :type flags:int
-    :type baseKey: ECPublicKey
-    :type baseKeySignature: bytearray
-    :type ratchetKey: ECPublicKey
-    :type identityKey: IdentityKey
-    :type serialized: bytearray
-    */
+                                        $serialized = null){
         if ($serialized == null) {
             $this->supportedVersion = CiphertextMessage::CURRENT_VERSION;
             $this->version = $messageVersion;
@@ -76,7 +80,7 @@ class KeyExchangeMessage
                     throw new InvalidVersionException('Unkown version: '.$this->version);
                 }
                 $message = new Textsecure_KeyExchangeMessage();
-                $message->parseFromString($parts[1]);
+                $message->mergeFromString($parts[1]);
 
                 if ($message->getId() == null || $message->getBaseKey() == null ||
                    $message->getRatchetKey() == null || $message->getIdentityKey() == null ||

@@ -1,10 +1,16 @@
 <?php
 namespace Libsignal\exceptions;
 
-class InvalidKeyException extends \Exception
-{
-    public function __construct($detailMessage) // [String detailMessage]
-    {
+use Exception;
+
+class InvalidKeyException extends Exception{
+
+    /**
+     * InvalidKeyException constructor.
+     * @param string $detailMessage
+     */
+    public function __construct($detailMessage){
         $this->message = $detailMessage;
     }
+
 }

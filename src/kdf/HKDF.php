@@ -1,10 +1,17 @@
 <?php
 namespace Libsignal\kdf;
 
-class HKDF
-{
+use Exception;
+
+abstract class HKDF{
+
     const HASH_OUTPUT_SIZE = 32;
 
+    /**
+     * @param $version
+     * @return HKDFv2|HKDFv3
+     * @throws Exception
+     */
     public static function createFor($version)
     {
         if ($version == 2) {
@@ -55,4 +62,7 @@ class HKDF
 
         return $result;
     }
+
+    public abstract function getIterationStartOffset();
+
 }

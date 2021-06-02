@@ -1,10 +1,16 @@
 <?php
 namespace Libsignal\exceptions;
 
-class DuplicateMessageException extends \Exception
-{
-    public function __construct($s) // [String s]
-    {
+use Exception;
+
+class DuplicateMessageException extends Exception{
+
+    /**
+     * DuplicateMessageException constructor.
+     * @param string $s
+     */
+    public function __construct($s){
         $this->message = $s;
     }
+
 }

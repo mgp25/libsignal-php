@@ -1,6 +1,8 @@
 <?php
 namespace Libsignal\exceptions;
 
-class StaleKeyExchangeException extends \Exception
-{
+use Exception;
+
+class StaleKeyExchangeException extends Exception{
+
 }

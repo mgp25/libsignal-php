@@ -3,6 +3,11 @@ namespace Libsignal\state;
 
 abstract class SessionStore
 {
+    /**
+     * @param $recipientId
+     * @param $deviceId
+     * @return SessionRecord
+     */
     abstract public function loadSession($recipientId, $deviceId);
 
  // [long recipientId, int deviceId]

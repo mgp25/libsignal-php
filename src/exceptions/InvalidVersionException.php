@@ -1,10 +1,16 @@
 <?php
 namespace Libsignal\exceptions;
 
-class InvalidVersionException extends \Exception
-{
-    public function __construct($detailMessage) // [String detailMessage]
-    {
+use Exception;
+
+class InvalidVersionException extends Exception{
+
+    /**
+     * InvalidVersionException constructor.
+     * @param string $detailMessage
+     */
+    public function __construct($detailMessage){
         $this->message = $detailMessage;
     }
+
 }

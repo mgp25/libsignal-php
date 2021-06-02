@@ -1,18 +1,25 @@
 <?php
 namespace Libsignal\groups;
 
+use Exception;
 use Libsignal\exceptions\InvalidKeyException;
 use Libsignal\exceptions\InvalidMessageException;
 use Libsignal\exceptions\DuplicateMessageException;
 use Libsignal\exceptions\NoSessionException;
-use Libsignal\state\SenderKeyStore;
+use Libsignal\groups\state\SenderKeyState;
+use Libsignal\groups\state\SenderKeyStore;
 use Libsignal\protocol\SenderKeyMessage;
-use Libsignal\SessionCipher;
 use Libsignal\AESCipher;
 
-class GroupCipher
-{
+class GroupCipher{
+
+    /**
+     * @var SenderKeyStore $senderKeyStore
+     */
     protected $senderKeyStore;
+    /**
+     * @var string $senderKeyId
+     */
     protected $senderKeyId;
 
     public function __construct($senderKeyStore, $senderKeyId)
@@ -21,6 +28,13 @@ class GroupCipher
         $this->senderKeyId = $senderKeyId;
     }
 
+    /**
+     * @param $paddedPlaintext
+     * @return null
+     * @throws InvalidMessageException
+     * @throws NoSessionException
+     * @throws \Libsignal\exceptions\LegacyMessageException
+     */
     public function encrypt($paddedPlaintext)
     {
         try {
@@ -43,6 +57,14 @@ class GroupCipher
         }
     }
 
+    /**
+     * @param string $senderKeyMessageBytes
+     * @return bool|string
+     * @throws DuplicateMessageException
+     * @throws InvalidKeyException
+     * @throws InvalidMessageException
+     * @throws \Libsignal\exceptions\LegacyMessageException
+     */
     public function decrypt($senderKeyMessageBytes)
     {
         try {
@@ -63,8 +85,14 @@ class GroupCipher
         }
     }
 
-    public function getSenderKey($senderKeyState, $iteration)
-    {
+    /**
+     * @param SenderKeyState $senderKeyState
+     * @param $iteration
+     * @return mixed
+     * @throws DuplicateMessageException
+     * @throws InvalidMessageException
+     */
+    public function getSenderKey($senderKeyState, $iteration){
         $senderChainKey = $senderKeyState->getSenderChainKey();
 
         if ($senderChainKey->getIteration() > $iteration) {
@@ -91,6 +119,13 @@ class GroupCipher
         return $senderChainKey->getSenderMessageKey();
     }
 
+    /**
+     * @param $iv
+     * @param $key
+     * @param $ciphertext
+     * @return bool|string
+     * @throws InvalidMessageException
+     */
     public function getPlainText($iv, $key, $ciphertext)
     {
         try {
@@ -103,6 +138,13 @@ class GroupCipher
         }
     }
 
+    /**
+     * @param $iv
+     * @param $key
+     * @param $plaintext
+     * @return string
+     * @throws \Exception
+     */
     public function getCipherText($iv, $key, $plaintext)
     {
         $cipher = new AESCipher($key, $iv);
